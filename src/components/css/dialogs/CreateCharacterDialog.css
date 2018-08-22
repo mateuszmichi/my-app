@@ -1,0 +1,218 @@
+.HeroCreator {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 670px;
+}
+
+    .HeroCreator .StepperNavigation {
+        display: inline-flex;
+        width: 100%;
+        height: 100%;
+        flex-grow: 1;
+    }
+
+    .HeroCreator .NavContent {
+        width: 100%;
+    }
+
+    .HeroCreator .TitleBar {
+        color: #0E1B69;
+        padding: 5px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .HeroCreator .FormData {
+        padding: 10px;
+        padding-bottom: 20px;
+        display: inline-block;
+    }
+
+        .HeroCreator .FormData .TitleBar {
+            margin-top: 10px;
+        }
+
+.StepperNavigation .NavButton {
+    display: flex;
+}
+
+.CharacterIdentity {
+    text-align: center;
+}
+
+    .CharacterIdentity p {
+        padding: 10px;
+        max-width: 300px;
+        text-align: justify;
+        margin: auto;
+    }
+
+.SexSelect {
+    text-align: center;
+}
+
+    .SexSelect button {
+        margin: 10px;
+        background: none;
+        border: 2px solid;
+        border-color: lightgray;
+        text-align: center;
+        width: 195px;
+        cursor: pointer;
+    }
+
+        .SexSelect button span {
+            font-size: 14px;
+        }
+
+    .SexSelect .ButtonActive {
+        border-color: #0E1B69;
+    }
+
+    .SexSelect button:hover {
+        border-color: cornflowerblue;
+    }
+
+    .SexSelect .ButtonActive span {
+        color: #0E1B69;
+        font-weight: bold;
+    }
+
+    .SexSelect img {
+        height: 240px;
+    }
+
+
+.CountrySelect {
+    text-align: center;
+}
+
+    .CountrySelect button {
+        margin: 10px;
+        background: none;
+        border: 4px solid;
+        border-color: lightgray;
+        text-align: center;
+        cursor: pointer;
+        padding: 0;
+        background-color: lightgray;
+    }
+
+        .CountrySelect button span {
+            font-size: 14px;
+        }
+
+    .CountrySelect .ButtonActive {
+        border-color: #0E1B69;
+        background-color: #0E1B69;
+    }
+
+    .CountrySelect button:hover {
+        border-color: cornflowerblue;
+        background-color: cornflowerblue;
+    }
+
+    .CountrySelect .ButtonActive span {
+        color: #0E1B69;
+        font-weight: bold;
+    }
+
+    .CountrySelect img {
+        height: 150px;
+    }
+
+
+.OriginSelect {
+    text-align: center;
+}
+
+    .OriginSelect button {
+        margin: 10px;
+        background: none;
+        border: 2px solid;
+        border-color: lightgray;
+        text-align: center;
+        height: 190px;
+        cursor: pointer;
+    }
+
+        .OriginSelect button span {
+            font-size: 14px;
+        }
+
+    .OriginSelect .ButtonActive {
+        border-color: #0E1B69;
+    }
+
+    .OriginSelect button:hover {
+        border-color: cornflowerblue;
+    }
+
+    .OriginSelect .ButtonActive span {
+        color: #0E1B69;
+        font-weight: bold;
+    }
+
+    .OriginSelect img {
+        width: 95px;
+    }
+
+.AttributesSelect {
+    text-align: center;
+}
+
+.AttributesSelector {
+    display: flex;
+}
+
+    .AttributesSelector .AttributesList {
+        float:right;
+    }
+
+    .AttributesSelector .AttributesSelectorPart {
+        display: inline-block;
+        width: 50%;
+        height: 100%;
+        padding:5px;
+    }
+.AttributeShow div {
+    text-align: right;
+    display: table-cell;
+    min-width: 30px;
+    padding: 2px;
+    padding-right: 5px;
+}
+
+.AttributeShow {
+    display: table-row;
+    cursor:default;
+}
+.AttributeShow div:first-child {
+    cursor: pointer;
+}
+
+.AttributesSelector .AttributesDescription {
+    padding:10px;
+    text-align:justify;
+}
+.AttributeShow button {
+    border:none;
+    border-left:1px solid #666666;
+    width:22px;
+    cursor:pointer;
+    background-color:lightgreen;
+}
+.AttributeShow button:hover {
+        background-color:forestgreen;
+        color:snow;
+    }
+    .AttributeShow button:first-child {
+        border: none;
+        border-right: 1px solid #666666;
+        width: 22px;
+        background-color: palevioletred;
+    }
+    .AttributeShow button:first-child:hover {
+        background-color: red;
+    }

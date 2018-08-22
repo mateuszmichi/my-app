@@ -1,0 +1,99 @@
+.LogField {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+    width: 340px;
+    min-height: 395px;
+    margin: auto;
+    background-color: rgb(255,255,255);
+    background-color: rgba(255,255,255,0.78);
+    border: solid 2px rgb(255,255,255);
+    border: solid 2px rgba(255,255,255,0.95);
+    border-radius: 16px;
+}
+
+.LogInner {
+    text-align:center;
+    width: 310px;
+    margin: auto;
+    /*padding-left:40px;
+    padding-right:40px*/
+}
+
+    .LogInner input:not([type='checkbox']) {
+        width: 230px;
+        margin-top: -1px;
+        margin-bottom: -1px;
+        padding: 5px;
+        border-width: 2px;
+    }
+
+    .LogInner .Validated {
+        margin-left: 27px;
+    }
+
+    .LogInner .ValidationImg {
+        height: 24px;
+        width: 24px;
+        margin-left: 3px;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+    /*.LogInner input:focus {
+        }*/
+    .LogInner input[type=submit] {
+        cursor: pointer;
+        width: 244px;
+        margin-top: 10px;
+        padding: 5px;
+        border-width: 2px;
+        border-radius: 5px;
+        border: none;
+        background-color: #303f9f;
+        color: white;
+    }
+
+        .LogInner input[type=submit]:disabled {
+            background-color: rgb(170,170,170);
+            background-color: rgba(170,170,170,1.0);
+        }
+    .LogInner form {
+        padding-bottom: 10px;
+    }
+        .LogInner form .CheckBoxDesc {
+            padding-top: 10px;
+        }
+            .LogInner form .CheckBoxDesc input[type=checkbox] {
+                padding-top: 10px;
+                vertical-align: middle;
+            }
+            .LogInner form .CheckBoxDesc span {
+                font-weight:bold;
+                font-size:14px;
+                cursor:pointer;
+            }
+
+.LogField button {
+    cursor: pointer;
+    width: 244px;
+    padding: 5px;
+    border-width: 2px;
+    border-radius: 5px;
+    border: none;
+    background-color: #303f9f;
+    color: white;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+.TopLogo {
+    width:75px;
+    margin:auto;
+}

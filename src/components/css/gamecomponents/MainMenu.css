@@ -1,0 +1,73 @@
+.GameContent .GameDisplay .MainMenu {
+    padding-top: 2%;
+    padding-bottom: 2%;
+    height: 100%;
+    background-color: rgb(255, 234, 198);
+    background-color: rgb(197, 159, 95);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+.MainMenu img {
+    width: 60%;
+    padding-left: 20%;
+    padding-right: 20%;
+}
+.MainMenu .MainMenuButton {
+    font-size: 1.6vh;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10%;
+    padding-bottom: 10%;
+    cursor: pointer;
+    overflow: hidden;
+    color: snow;
+    /*background-color: rgb(255, 234, 198);*/
+}
+    .MainMenu .MainMenuButton:hover {
+        background-color: rgb(197, 159, 95);
+        background-color: rgb(255, 234, 198);
+        background-color: rgb(237, 205, 151);
+        color: snow;
+        color:#333333;
+    }
+.MainMenu .MainButtons {
+    /*display: table-row;*/
+    flex-grow:1;
+}
+.MainMenu .ExitButtons {
+    /*height: 13%;*/
+    display:flex;
+    flex-direction:column;
+    align-content:center;
+}
+    .MainMenu .ExitButtons .MainMenuButton {
+        flex-grow: 1;
+    }
+        .MainMenu .ExitButtons .MainMenuButton:hover {
+            background-color: rgb(181, 146, 87);
+            color:snow;
+        }
+.MainMenu .ExitButtons svg {
+    width:100%;
+    font-size:336%;
+    font-weight:normal;
+}
+
+@media screen and (min-height: 760px) {
+    .MainMenu .MainMenuButton {
+        font-size: 0.84em;
+    }
+    .MainMenu .ExitButtons svg {
+        font-size: 336%;
+    }
+}
+@media screen and (max-height: 500px){
+    .MainMenu .MainMenuButton {
+        font-size: 40%;
+    }
+
+    .MainMenu .ExitButtons svg {
+        font-size: 336%;
+    }
+}

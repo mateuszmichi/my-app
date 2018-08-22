@@ -1,0 +1,54 @@
+.Popup {
+    /*padding: 20px;
+    padding-bottom: 50px;*/
+    width: 300px;
+    max-width: 300px;
+    margin: auto;
+    border-radius:20px;
+    cursor:default;
+}
+.Popup img {
+    margin: auto;
+    height: 64px;
+    width: 64px;
+}
+
+.Popup .Title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.Popup .Centered {
+    text-align: center;
+}
+
+.Popup button {
+    color: snow;
+    /*bottom: 0;
+    left: 0;*/
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+    .Popup .PopupContent{
+        padding:20px;
+    }
+
+    .ErrorPopup {
+        background-color: #FF9999;
+    }
+    .ErrorPopup button {
+        background-color: #D46A6A;
+    }
+.SuccessPopup {
+    background-color: #99DD88;
+}
+    .SuccessPopup button {
+        background-color: #6ac259;
+    }

@@ -1,0 +1,38 @@
+.Game {
+    height:100vh;
+    align-content:center;
+    display:flex;
+}
+.GameContent {
+    margin: auto;
+    padding: 10px;
+    height: calc(100vw * 6 / 10 - 20px);
+    width: calc(100vw - 20px);
+    max-width : 1200px;
+    max-height: 720px;
+    min-width: 600px;
+    min-height: 360px;
+}
+    .GameContent .GameDisplay {
+        /*border: 2px solid;*/
+        /*border-color: rgb(197, 159, 95);*/
+        /*border-color: rgba(197, 159, 95,0.9);*/
+        background-color: rgb(237, 205, 151);
+        /*background-color: rgba(237, 205, 151,0.9);*/
+        height: 100%;
+    }
+
+.GameMax {
+    height:100%;
+}
+.GameDisplayComponent {
+    display:flex;
+    flex-direction:column;
+    align-content:center;
+}
+#Game {
+    width:100%;
+    position:absolute;
+    bottom:0;
+    text-align:center;
+}

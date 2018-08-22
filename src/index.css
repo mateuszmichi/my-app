@@ -1,0 +1,59 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    color: #333333;
+}
+
+#root {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+#content {
+    margin: 0;
+    padding: 0;
+    display: table;
+    width: 100%;
+    min-height: 100vh;
+    height:100vh;
+}
+
+#menu {
+    display: table-row;
+}
+
+#inside {
+    display: table-row;
+    height: 100%;
+    /*background-color: aliceblue;
+    background-image: url("./components/img/MainPage/Plains_exm.png");
+    background-position: center;
+    background-attachment: scroll;
+    background-size: cover;
+    background-repeat:no-repeat;*/
+}
+body {
+    /* The image used */
+    background-image: url("./components/img/MainPage/Plains_exm.png");
+    /* Set a specific height */
+    height: 100%;
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/*@media only screen and (max-device-width: 1366px) {
+    body {
+        background-attachment: scroll;
+    }
+}*/
+
+    #inside .insideContent {
+        display:table-cell;
+        vertical-align:middle;
+    }

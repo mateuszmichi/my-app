@@ -1,0 +1,160 @@
+.LowerBar {
+    background-color: rgb(237, 205, 151);
+    height: 13%;
+    position: relative;
+    font-size: 2vh;
+}
+
+    .LowerBar .StatusBars {
+        position: absolute;
+        width: 10%;
+        padding-top: 10%;
+        border: solid;
+        border-width: thick;
+        bottom: 0;
+        overflow: hidden;
+        border-radius: 50%;
+        background-color: wheat;
+        cursor: pointer;
+    }
+
+        .LowerBar .StatusBars .StatusDivider {
+            display: inline-block;
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            border: none;
+        }
+
+            .LowerBar .StatusBars .StatusDivider:last-child {
+                right: 0;
+                border: none;
+            }
+
+    .LowerBar .HPBGR {
+        background-color: rgb(138,7,7);
+        left: 20%;
+        border-color: rgb(138,7,7);
+    }
+
+    .LowerBar .SLBGR {
+        background-color: rgb(71, 89, 132);
+        right: 20%;
+        border-color: rgb(71, 89, 132);
+    }
+
+    .LowerBar .StatusBars .HPBar {
+        background-color: rgb(255, 145, 145);
+        position: absolute;
+        top: 0;
+        width: 100%;
+        transition: height 0.25s ease-in;
+    }
+
+    .LowerBar .StatusBars .SLBar {
+        background-color: rgb(191, 200, 219);
+        position: absolute;
+        top: 0;
+        width: 100%;
+        transition: height 0.25s ease-in;
+    }
+
+    .LowerBar .DisabledBar {
+        background-color: #C9C7C7;
+        border-color: #9D9C9C;
+        cursor: pointer;
+    }
+
+
+        .LowerBar .StatusBars .Info {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            font-weight: bold;
+            display: flex;
+            align-content: center;
+            color: snow;
+        }
+
+            .LowerBar .StatusBars .Info .InnerDiv {
+                margin: auto;
+            }
+
+    .LowerBar .StatusData {
+        position: absolute;
+        bottom: 0;
+        left: 25%;
+        width: 38%;
+        padding-left: 6%;
+        padding-right: 6%;
+        background-color: rgb(132, 78, 42);
+        height: 100%;
+        margin: auto;
+        color: rgb( 255, 245, 228);
+    }
+
+        .LowerBar .StatusData .StatusDescription {
+            padding-top: 2.5%;
+        }
+
+.StatusDescription .overflowtext {
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.LowerBar .ExpBar {
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%;
+    padding: 1%;
+    display: flex;
+}
+
+    .LowerBar .ExpBar .ExpLevel {
+        min-width: 10%;
+        text-align: center;
+        font-weight:bold;
+    }
+
+    .LowerBar .ExpBar .ExpProgress {
+        position: relative;
+        flex-grow: 1;
+        background-color: #FFE34D;
+        border: solid #FFE34D;
+        border-width: medium;
+        cursor: pointer;
+    }
+
+        .LowerBar .ExpBar .ExpProgress .ExpCurrent {
+            background-color: #A88E00;
+            height: 100%;
+            transition: width 0.25s ease-in;
+        }
+
+        .LowerBar .ExpBar .ExpProgress .Info {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            text-align: center;
+            font-size: smaller;
+            font-weight: bold;
+            margin: auto;
+            color: #333333;
+        }
+
+
+@media screen and (min-height: 760px) {
+    .LowerBar {
+        font-size: 1.05em;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    .LowerBar {
+        font-size: 50%;
+    }
+}

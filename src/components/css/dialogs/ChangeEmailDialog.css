@@ -1,0 +1,55 @@
+.ChangeEmailDialog {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width:320px;
+}
+    .ChangeEmailDialog .CurrentEmail{
+        padding:10px;
+    }
+    .ChangeEmailDialog .inlineDiv {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .ChangeEmailDialog .TitleBar {
+        color: #0E1B69;
+        padding: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .ChangeEmailDialog .ChangeEmailForm {
+        margin: auto;
+        width:100%;
+    }
+
+    .ChangeEmailDialog button {
+        cursor: pointer;
+        width: 195px;
+        padding: 5px;
+        border-width: 2px;
+        border-radius: 5px;
+        border: none;
+        background-color: #303f9f;
+        color: white;
+        margin-top: 10px;
+    }
+
+        .ChangeEmailDialog button:disabled {
+            background-color: rgb(170,170,170);
+            background-color: rgba(170,170,170,1.0);
+        }
+
+    .ChangeEmailDialog .ValidationImg {
+        height: 24px;
+        width: 24px;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+
+    .ChangeEmailDialog .Validated {
+        margin-left: 27px;
+    }

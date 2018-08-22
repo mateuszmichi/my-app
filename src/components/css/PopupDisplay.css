@@ -1,0 +1,69 @@
+.popupClosed{
+    display:none;
+    visibility:hidden;
+}
+.popupVisible {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    position: fixed;
+    background-color: none;
+    background-color: rgba(150,150,150,0.3);
+}
+.popupContainer {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    /* Firefox */
+    display: -moz-box;
+    -moz-box-pack: center;
+    -moz-box-align: center;
+    /* Safari and Chrome */
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    /* W3C */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.dialogContainer {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    /* Firefox */
+    display: -moz-box;
+    -moz-box-pack: center;
+    -moz-box-align: center;
+    /* Safari and Chrome */
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    /* W3C */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.PopupBackground {
+    background-color: rgb(170,170,170);
+    background-color: rgba(170,170,170,0.3);
+}
+.dialog {
+    background-color: white;
+    max-width: 800px;
+    min-height: 400px;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius:5px;
+}
+.dialogBottom {
+    text-align: right;
+    padding: 10px;
+}

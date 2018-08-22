@@ -1,0 +1,66 @@
+#topMenu {
+    display: table-row;
+    background-color: rgb(60, 60, 60);
+    background-color: rgba(60, 60, 60, 1.0);
+    color: snow;
+    width: 100%;
+    font-size: 14px;
+}
+
+    #topMenu .menuContent {
+        display: table-cell;
+    }
+    #topMenu .logoContainer {
+        padding:0;
+        margin:0;
+        vertical-align:middle;
+    }
+    #topMenu .menuContent .itemContainer {
+        display: inline-block;
+        vertical-align: middle;
+    }
+        #topMenu .menuContent .linkContainer {
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+            #topMenu .menuContent .linkContainer:hover {
+                padding-bottom: 0;
+                border-bottom: solid cornflowerblue 3px;
+                color: cornflowerblue;
+                background-color: rgb(45,45,45);
+                background-color: rgba(45, 45, 45, 1.0);
+                /*border-radius:5px;*/
+            }
+            #topMenu .menuContent .menuDescription {
+                padding: 10px;
+            }
+
+
+
+        #topMenu .menuContent .menuButton {
+            /*margin-left: 1px;
+            margin-right: 1px;*/
+            /*border-left: 2px solid grey;*/
+            /*min-width: 130px;*/
+            /*border-left: 2px solid grey;*/
+            display:table-cell;
+            text-align: center;
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            height:28px;
+            vertical-align:middle;
+        }
+
+    #topMenu .menuLink {
+        color: inherit;
+        text-decoration: inherit;
+        /*border-bottom:solid 1px;*/
+    }
+.inlineDiv {
+    display:inline-block;
+    vertical-align:middle;
+}
+.svgInMenu {
+    padding-right:4px;
+}

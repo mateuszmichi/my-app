@@ -1,0 +1,86 @@
+.RemoveCharacterDialog {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    min-width: 320px;
+}
+
+    .RemoveCharacterDialog .RemoveCharacterForm {
+        width: 100%;
+        margin: auto;
+    }
+
+.HerosList {
+    display: table;
+    width: 100%;
+    margin-top: 5px;
+}
+
+    .HerosList .HeroDisplay {
+        display: table-row;
+        cursor: pointer;
+    }
+
+        .HerosList .HeroDisplay:hover {
+            background-color: cornflowerblue;
+        }
+
+    .HerosList .HeroActive {
+        background-color: #303f9f;
+        color: white;
+    }
+
+    .HerosList .HeroDisplay .TableCell {
+        padding: 5px;
+        display: table-cell;
+        text-align: right;
+    }
+
+        .HerosList .HeroDisplay .TableCell:first-child {
+            padding-left: 20px;
+            text-align: center;
+        }
+
+        .HerosList .HeroDisplay .TableCell:last-child {
+            padding-right: 20px;
+        }
+
+.RemoveCharacterDialog .TitleBar {
+    color: #0E1B69;
+    padding: 5px;
+    padding-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.RemoveCharacterDialog button {
+    cursor: pointer;
+    width: 195px;
+    padding: 5px;
+    border-width: 2px;
+    border-radius: 5px;
+    border: none;
+    background-color: #303f9f;
+    color: white;
+    margin-top: 10px;
+}
+
+    .RemoveCharacterDialog button:disabled {
+        background-color: rgb(170,170,170);
+        background-color: rgba(170,170,170,1.0);
+    }
+
+.RemoveCharacterDialog .ValidationImg {
+    height: 24px;
+    width: 24px;
+    margin-left: 3px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.RemoveCharacterDialog .Validated {
+    margin-left: 27px;
+}
