@@ -6,6 +6,32 @@ export function ExpToLevel(level: number): number {
         return 25 * level * (level - 13 * level) + 1650;
     }
 }
+export function MoneyToGems(money: number): string[] {
+    let left = money;
+    const arr: number[] = [];
+    for (let i = 0; i < 2; i++) {
+        arr.push(left % 100);
+        if ((left - left % 100) / 100 === 0) {
+            left = 0;
+            break;
+        } else {
+            left = (left - left % 100) / 100;
+        }
+    }
+    if (left > 0) {
+        arr.push(left);
+    }
+    const res: string[] = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] < 10 && i !== (arr.length - 1)) {
+            res.push('0' + String(arr[i]));
+        }
+        else {
+            res.push(String(arr[i]));
+        }
+    }
+    return res;
+}
 
 
 // ------ vector functions

@@ -32,7 +32,7 @@ export const CharacterAttributes: IAttribute[] = [
     },
     {
 
-        description: "Intteligence is the base to quickly understand the situation. With fresh mind and analitical thinking, your character will always find \
+        description: "Intelligence is the base to quickly understand the situation. With fresh mind and analitical thinking, your character will always find \
         the way out of trouble.",
         name: "Intelligence",
     },
@@ -316,26 +316,31 @@ export interface ITravelResult {
 }
 
 // ---------------- equipement
-export interface IEquipment {
-    backpack: Array<IItem | null>;
-    backpackSize: number;
-    firstHand: IItem|null;
-    secondHand: IItem | null;
-    armour: IItem | null;
-    trousers: IItem | null;
-    shoes: IItem | null;
-    gloves: IItem | null;
-    ring1: IItem | null;
-    ring2: IItem | null;
-    neckles: IItem | null;
-    bracelet: IItem | null;
+export interface IEquipmentResult {
+    knownItems: IItemResult[];
+    backpack: Array<number | null>;
+    backpackSize: number |null;
+    firstHand: number | null;
+    secondHand: number | null;
+    armour: number | null;
+    trousers: number | null;
+    shoes: number | null;
+    gloves: number | null;
+    ring1: number | null;
+    ring2: number | null;
+    neckles: number | null;
+    bracelet: number | null;
+    money: number;
 }
 
-export interface IItem {
+export interface IItemResult {
     itemID: number;
     itemType: ItemTypes;
     name: string;
-    // attributes: int[],
+    attributes: number[],
+    lvl: number,
+    primaryAttr: number,
+    secondaryAttr:number,
 }
 
 export enum ItemTypes {

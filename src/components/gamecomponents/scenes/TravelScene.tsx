@@ -161,5 +161,4 @@ export class TravelScene extends Phaser.Scene {
             Width,
         }
     }
-
 }

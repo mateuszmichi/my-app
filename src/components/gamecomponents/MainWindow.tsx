@@ -5,7 +5,10 @@ import '../css/gamecomponents/MainWindow.css';
 import LowerBar from './LowerBar';
 
 import { IHero, } from '../TYPES';
+
+import { Equipment } from './Equipment';
 import { GameComponent } from './GameComponent';
+
 
 
 // ------------- images
@@ -48,7 +51,8 @@ class MainWindow extends React.Component<{ character: IHero, CurrentPosition: nu
             <div className="MainWindow">
                 <div className="GameElement">
                     <div className="GameDisplayComponent" ref={this.CallbackFun} id="GameDisplayArea">
-                        <GameComponent height={this.state.height} width={this.state.width}/>
+                        <GameComponent height={this.state.height} width={this.state.width} visible={0 === this.props.CurrentPosition}/>
+                        <Equipment visible={1 === this.props.CurrentPosition} hero={this.props.character}/>
                     </div>
                 </div>
                 <LowerBar character={this.props.character} />

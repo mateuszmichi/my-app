@@ -1,0 +1,346 @@
+#Equipment {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    font-size: 2vh;
+}
+
+    #Equipment .Backpack {
+        position: absolute;
+        left: 0;
+        width: 35%;
+        height: 100%;
+        /*background-color: rgb(112,112,120);*/
+        background-color: rgb(58,41,37);
+        display: flex;
+    }
+
+@media screen and (min-height: 760px) {
+    #Equipment {
+        font-size: 1.05em;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    #Equipment {
+        font-size: 50%;
+    }
+}
+
+.Backpack .BackpackInside {
+    width: 98%;
+    margin: 1%;
+    background-color: rgb(58,41,37);
+    background-color: rgb(97, 67, 55);
+    flex-grow: 1;
+}
+
+.Backpack .ItemSlotHolder {
+    position: relative;
+    display: inline-block;
+    width: 18.2%;
+    margin-top: 1.5%;
+    margin-left: 1.5%;
+    padding-bottom: 18.2%;
+    /*background-color: rgb(92,65,54);*/
+    background-color: rgb(141, 106, 92);
+    background-color: rgb(92,65,54);
+    background-color: rgb(58,41,37);
+    border-radius: 5%;
+}
+
+    .Backpack .ItemSlotHolder .ItemSlot {
+        position: absolute;
+        width: 92%;
+        height: 92%;
+        bottom: 4%;
+        right: 4%;
+        border-radius: 5%;
+        background-color: rgb(92,65,54);
+        background-color: rgb(141, 106, 92);
+    }
+
+.ItemContainer::-webkit-scrollbar {
+    width: 3%;
+}
+
+/* Track */
+.ItemContainer::-webkit-scrollbar-track {
+    background: rgb(94, 100, 125);
+    border-radius: 999px;
+}
+
+/* Handle */
+.ItemContainer::-webkit-scrollbar-thumb {
+    background: #434860;
+    border-radius: 999px;
+}
+
+    /* Handle on hover */
+    .ItemContainer::-webkit-scrollbar-thumb:hover {
+        background: #282C3F;
+    }
+
+.Backpack .ItemContainer {
+    position: relative;
+    width: 98%;
+    line-height: 19.7%;
+    height: 86%;
+}
+
+.ItemContainer {
+    overflow-y: auto;
+}
+
+.BackpackInside .TopDescription {
+    position: relative;
+    top: 0;
+    height: 10%;
+}
+
+.BackpackInside .Gold {
+    position:relative;
+    text-align:right;
+    color: snow;
+    height: 4%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+    .BackpackInside .Gold div {
+        position:relative;
+        height:100%;
+    }
+.BackpackInside .Gold img {
+    height: 80%;
+    padding-right: 2%;
+    margin:auto;
+}
+    .BackpackInside .Gold span {
+        margin:auto;
+    }
+
+
+    .TopDescription .BackGroundBar {
+        position: absolute;
+        top: 0;
+        height: 50%;
+        width: 100%;
+        background-color: rgb(97, 67, 55);
+        background-color: rgb(58,41,37);
+    }
+
+.TopDescription .Description {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-content: center;
+}
+
+.Description .Text {
+    margin: auto;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 6%;
+    padding-right: 6%;
+    border-radius: 999px;
+    background-color: rgb(219, 191, 179);
+    color: rgb(58,41,37);
+    font-weight: bold;
+}
+
+.Inventory {
+    position: absolute;
+    height: 100%;
+    width: 28%;
+    left: 0;
+    top: 0;
+    line-height: 28%;
+}
+
+    .Inventory .InventorySlotHolder {
+        position: relative;
+        width: 30%;
+        padding-bottom: 30%;
+        margin-left: 2%;
+        margin-top: 2%;
+        border-radius: 5%;
+        background-color: rgb(58,41,37);
+        /*background-color: rgb(141, 106, 92);*/
+        display: inline-block;
+        opacity: 0.8;
+    }
+
+        .Inventory .InventorySlotHolder.Hidden {
+            visibility: hidden;
+        }
+
+.InventorySlotHolder .InventorySlot {
+    position: absolute;
+    width: 92%;
+    height: 92%;
+    bottom: 4%;
+    right: 4%;
+    border-radius: 5%;
+    background-color: rgb(92,65,54);
+    background-color: rgb(177, 142, 128);
+    background-position: center;
+    background-size: 90%;
+    background-repeat: no-repeat;
+}
+
+.ItemSlot .Item {
+    position: absolute;
+    height: 94%;
+    width: 94%;
+    padding: 3%;
+}
+
+.Item img {
+    height: 100%;
+    width: 100%;
+}
+
+#Helmet {
+    background-image: url("../../img/Game/EQ/helmet.svg");
+}
+
+#Ring1 {
+    background-image: url("../../img/Game/EQ/rings.svg");
+}
+
+#Ring2 {
+    background-image: url("../../img/Game/EQ/rings.svg");
+}
+
+#Neckles {
+    background-image: url("../../img/Game/EQ/necklace.svg");
+}
+
+#Gloves {
+    background-image: url("../../img/Game/EQ/gloves.svg");
+}
+
+#Armour {
+    background-image: url("../../img/Game/EQ/armour.svg");
+}
+
+#Bracelet {
+    background-image: url("../../img/Game/EQ/bracelet.svg");
+}
+
+#FirstHand {
+    background-image: url("../../img/Game/EQ/weapon.svg");
+    -webkit-transform: rotate(180deg);
+}
+
+#Trousers {
+    background-image: url("../../img/Game/EQ/trousers.svg");
+}
+
+#SecondHand {
+    background-image: url("../../img/Game/EQ/shield.svg");
+}
+
+#Shoes {
+    background-image: url("../../img/Game/EQ/shoe.svg");
+}
+
+.HeroModel {
+    position: absolute;
+    right: 0;
+    width: 65%;
+    height: 100%;
+}
+
+    .HeroModel .TopField {
+        position: relative;
+        background-color: rgb(40, 67, 105);
+        height: 20%;
+        top: 0;
+    }
+
+    .HeroModel .BottomField {
+        position: relative;
+        background-color: yellowgreen;
+        height: 80%;
+        top: 0;
+    }
+
+#Equipment .HeroDisplay {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.TopField .Statistics {
+    color: snow;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    /*padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 1%;*/
+    /*background-color: rgb(149, 165, 188);*/
+}
+
+.Statistics .TopStatistics {
+    text-align: center;
+    /*font-style:italic;*/
+    font-weight: bold;
+    padding: 0.75%;
+    background-color: rgb(19, 44, 78);
+}
+
+.Statistics .BottomStatistics {
+    padding-top: 0.75%;
+    padding-bottom: 0.75%;
+}
+
+.Statistics .Block {
+    display: inline-block;
+    width: 33%;
+}
+
+.Statistics .StatisticsGroup {
+    /*margin:auto;*/
+    display: table;
+    table-layout: auto;
+}
+
+    .Statistics .StatisticsGroup .stat {
+        display: table-row;
+    }
+
+.Statistics .stat div {
+    display: table-cell;
+}
+
+    .Statistics .stat div:first-child {
+        text-align: left;
+    }
+
+    .Statistics .stat div:last-child {
+        padding-left: 4px;
+        text-align: right;
+    }
+
+.Middled {
+    text-align: center;
+}
+
+.VerticalMiddle img {
+    width: 100%;
+    height: 100%;
+    display: inline;
+    margin-right: 4%;
+}
+
+.VerticalMiddle {
+    width: 20%;
+    height: 20%;
+    margin-right: 4%;
+}

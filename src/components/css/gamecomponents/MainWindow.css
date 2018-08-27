@@ -18,4 +18,9 @@
             height: calc(100% * 52 / 55);
             width: calc(100% * 52 / 55);
             margin-left: calc(50% * 3 / 55);
+            overflow:hidden;
         }
+
+.InActive {
+    display:none;
+}

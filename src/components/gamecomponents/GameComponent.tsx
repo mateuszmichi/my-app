@@ -16,7 +16,7 @@ import { IConnectionData, IConnectionFunctions, } from '../data/connectionConf';
 import { Close_Dialog, Close_Messages, End_Waiting, Pop_Dialog, Pop_Messages, Start_Waiting, } from '../actions/actionCreators';
 import { IMessage, IMessageTranslator } from '../MessageMenager';
 
-class ConnectedGameComponent extends React.Component<{ height: number, width: number, location: ILocationResult, ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken }, {}>{
+class ConnectedGameComponent extends React.Component<{visible: boolean, height: number, width: number, location: ILocationResult, ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken }, {}>{
     private game: Phaser.Game | null;
     private connData: IConnectionData;
     constructor(props: any) {
@@ -37,7 +37,7 @@ class ConnectedGameComponent extends React.Component<{ height: number, width: nu
         this.game = null;
     }
     public componentWillReceiveProps(nextProps: any) {
-        if (nextProps.height > 0) {
+        if (nextProps.height !== this.props.height) {
             const dim = Math.min(Math.floor(nextProps.height / 9), Math.floor(nextProps.width / 16));
             if (this.game !== null) {
                 // TODO restart
@@ -65,7 +65,7 @@ class ConnectedGameComponent extends React.Component<{ height: number, width: nu
         const style = {
             height: dim * 9 + "px",
         }
-        return (<div id="Game" style={style} />)
+        return (<div id="Game" className={(this.props.visible)?"Active":"InActive"} style={style}/>)
     }
 }
 
