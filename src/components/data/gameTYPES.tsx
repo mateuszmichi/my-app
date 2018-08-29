@@ -6,52 +6,61 @@ export const CharacterAttributes: IAttribute[] = [
         description: "Strength is crucial for all types of warriors who are fighting in close combat. It increases damage dealt with almost all kind of \
         weapons. It also provides higher chance of multiple critical strickes.",
         name: "Strength",
+        shortcut: "STR",
     },
     {
 
         description: "Endurance is describtion of character's physical durability. It allows to take more hits and helps to sustain multiple critical strickes.",
         name: "Endurance",
+        shortcut: "END",
     },
     {
 
         description: "Dexterity is extremly useful for characters, that are using daggers and bows. It is also helpful in case of stealing. Every sneaky character \
         should posses high dexterity.",
         name: "Dexterity",
+        shortcut: "DEX",
     },
     {
 
         description: "Reflex is crucial for characters that are not heavly armoured. It helps to avoid attack rather than to block them. Hgh reflex helps to avoid many \
         critical attacks.",
         name: "Reflex",
+        shortcut: "REF",
     },
     {
 
         description: "Knowledge and wisdom came in one pair. It helps to understand true nature of stormlight. Every character who would like to use \
         power given by Stormfather efficiently, should posses high wisdom.",
         name: "Wisdom",
+        shortcut: "WIS",
     },
     {
 
         description: "Intelligence is the base to quickly understand the situation. With fresh mind and analitical thinking, your character will always find \
         the way out of trouble.",
         name: "Intelligence",
+        shortcut: "INT",
     },
     {
 
         description: "Charisma is the power to influence others. It helps to gain influence. Everyone is going to dance exacly the tune your character is playing.",
         name: "Charisma",
+        shortcut: "CHA",
     },
     {
 
         description: "Willpower is mental durability. Even weakened character with great willpower can carry the mountain. It helps to sustain critical attacks. \
         Character with great willpower will newer loose willing to fight.",
         name: "Willpower",
+        shortcut: "WLP",
     },
 ];
 
 export interface IAttribute {
     name: string;
     description: string;
+    shortcut: string;
 }
 
 // ----------------- map types
@@ -323,6 +332,7 @@ export interface IEquipmentResult {
     firstHand: number | null;
     secondHand: number | null;
     armour: number | null;
+    helmet: number | null;
     trousers: number | null;
     shoes: number | null;
     gloves: number | null;
@@ -339,12 +349,13 @@ export interface IItemResult {
     name: string;
     attributes: number[],
     lvl: number,
-    primaryAttr: number,
-    secondaryAttr:number,
+    dmgMin: number,
+    dmgMax:number,
+    armour: number,
 }
 
 export enum ItemTypes {
-    WEAPON,
+    SINGLEHAND_WEAPON,
     HELMET,
     ARMOUR,
     TROUSERS,
@@ -353,5 +364,23 @@ export enum ItemTypes {
     RING,
     NECKLES,
     BRACELET,
+    DOUBLEHAND_WEAPON,
+    SECONDARY_WEAPON,
+    SHIELD,
 }
+
+export const ItemTypeDescription: string[] = [
+    "Singlehand Weapon",
+    "Helmet",
+    "Armour",
+    "Trousers",
+    "Shoes",
+    "Gloves",
+    "Ring",
+    "Neckles",
+    "Bracelet",
+    "Doublehand Weapon",
+    "Secondary Weapon",
+    "Shield",
+];
 // add uniques

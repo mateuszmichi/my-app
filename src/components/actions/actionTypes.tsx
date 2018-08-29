@@ -13,7 +13,5 @@ export const REMOVE_HERO = "REMOVE_HERO";
 export const START_GAME = "START_GAME";
 export const END_GAME = "END_GAME";
 
-export const LOAD_LOCATION = "LOAD_LOCATION";
-
 export const START_WAITING = "START_WAITING";
 export const END_WAITING = "END_WAITING";

@@ -1,38 +1,18 @@
 import * as React from 'react';
-import { connect } from "react-redux";
-
-import { IActionToken, IUserToken, } from '../TYPES';
 
 import * as Phaser from 'phaser';
 
-import { ILocationResult } from '../data/gameTYPES';
-
-import { IAppStatus } from '../TYPES';
-
 import { MyGame } from './MyGame';
 
-import { IConnectionData, IConnectionFunctions, } from '../data/connectionConf';
+import { IHero } from '../TYPES';
 
-import { Close_Dialog, Close_Messages, End_Waiting, Pop_Dialog, Pop_Messages, Start_Waiting, } from '../actions/actionCreators';
-import { IMessage, IMessageTranslator } from '../MessageMenager';
+import { IConnectionData } from '../data/connectionConf';
 
-class ConnectedGameComponent extends React.Component<{visible: boolean, height: number, width: number, location: ILocationResult, ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken }, {}>{
+export class GameComponent extends React.Component<{visible: boolean, height: number, width: number, hero: IHero, ConnData: IConnectionData }, {}>{
     private game: Phaser.Game | null;
-    private connData: IConnectionData;
     constructor(props: any) {
         super(props);
         // --------- bindings
-
-        this.connData = {
-            actionToken: this.props.actionToken,
-            closeDialog: this.props.ConnFuns.closeDialog,
-            closeMessage: this.props.ConnFuns.closeMessage,
-            closeWaiting: this.props.ConnFuns.closeMessage,
-            popDialog: this.props.ConnFuns.popDialog,
-            popMessage: this.props.ConnFuns.popMessage,
-            popWaiting: this.props.ConnFuns.popWaiting,
-            userToken: this.props.userToken,
-        }
 
         this.game = null;
     }
@@ -49,9 +29,9 @@ class ConnectedGameComponent extends React.Component<{visible: boolean, height: 
                     element.removeChild(element.firstChild);
                 }
                 // this.game.resize(dim * 16, dim * 9);
-                this.game = new MyGame(dim, this.connData, this.props.location);
+                this.game = new MyGame(dim, this.props.ConnData, this.props.hero.location);
             } else {
-                this.game = new MyGame(dim, this.connData, this.props.location);
+                this.game = new MyGame(dim, this.props.ConnData, this.props.hero.location);
             }
         }
     }
@@ -68,23 +48,3 @@ class ConnectedGameComponent extends React.Component<{visible: boolean, height: 
         return (<div id="Game" className={(this.props.visible)?"Active":"InActive"} style={style}/>)
     }
 }
-
-// ------------- connect
-const mapStateToProps = (state: any) => {
-    const pass = state as IAppStatus;
-    return { location: pass.heroLocation, userToken: pass.userToken, actionToken: pass.actionToken };
-};
-const mapDispatchToProps = (dispatch: any) => {
-    return {
-        ConnFuns: {
-            closeDialog: () => dispatch(Close_Dialog()),
-            closeMessage: () => dispatch(Close_Messages()),
-            closeWaiting: () => dispatch(End_Waiting()),
-            popDialog: (element: React.ReactNode) => dispatch(Pop_Dialog(element)),
-            popMessage: (messages: IMessage[], translators: IMessageTranslator[]) => dispatch(Pop_Messages(messages, translators)),
-            popWaiting: () => dispatch(Start_Waiting()),
-        } as IConnectionFunctions,
-    };
-};
-
-export const GameComponent = connect(mapStateToProps, mapDispatchToProps)(ConnectedGameComponent);

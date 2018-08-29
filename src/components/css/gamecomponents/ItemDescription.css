@@ -1,0 +1,134 @@
+.ItemDescription {
+    background-color: white;
+    text-align: center;
+    padding: 5px;
+    padding-top: 10px;
+    position: relative;
+}
+
+    .ItemDescription .ItemAttributes {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        display: table;
+        width: 100%;
+    }
+
+    .ItemDescription .TopOfItem img {
+        height: 64px;
+        width: 64px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .ItemDescription .ItemAttributes .Attribute {
+        display: table-row;
+    }
+
+        .ItemDescription .ItemAttributes .Attribute:first-child {
+            font-size: small;
+        }
+
+        .ItemDescription .ItemAttributes .Attribute .AttributeRow {
+            display: table-cell;
+            /*text-align: right;*/
+            padding: 2px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+            .ItemDescription .ItemAttributes .Attribute .AttributeRow:nth-child(2) {
+                font-weight: bold;
+            }
+
+            .ItemDescription .ItemAttributes .Attribute .AttributeRow .Positive {
+                color: darkgreen;
+            }
+
+            .ItemDescription .ItemAttributes .Attribute .AttributeRow .Negative {
+                color: darkred;
+            }
+
+            .ItemDescription .ItemAttributes .Attribute .AttributeRow img {
+                height: 15px;
+            }
+
+            .ItemDescription .ItemAttributes .Attribute .AttributeRow:first-child {
+                text-align: center;
+            }
+
+            .ItemDescription .ItemAttributes .Attribute .AttributeRow .PossiblePlacement {
+                height: 30px;
+                width: 30px;
+                padding:2px;
+                background-color: rgb(58,41,37);
+                border-radius: 4px;
+                margin: auto;
+            }
+
+                .ItemDescription .ItemAttributes .Attribute .AttributeRow .PossiblePlacement img {
+                    margin:3%;
+                    height: 94%;
+                    width: 94%;
+                }
+                .ItemDescription .ItemAttributes .Attribute .AttributeRow .PossiblePlacement .PossiblePlacementSlot {
+                    position:relative;
+                    height: 30px;
+                    width: 30px;
+                    border-radius: 3px;
+                    background-color: rgb(141, 106, 92);
+                }
+    .ItemDescription .ItemAttributes .Options {
+        display: table-row;
+    }
+    .ItemDescription .ItemAttributes .Options .OptionsRow {
+        display: table-cell;
+    }
+        .ItemDescription .ItemAttributes .Options .OptionsRow button {
+            font-size: small;
+            background-color: rgb(141, 106, 92);
+            border: 1px solid rgb(58,41,37);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 4px;
+            /*padding-top: 8px;
+            padding-bottom: 8px;*/
+        }
+        .ItemDescription .ItemAttributes .Options .OptionsRow button:hover {
+            color:white;
+        }
+
+    .ItemDescription .ItemName {
+        padding: 10px;
+        padding-bottom: 2px;
+        padding-top: 4px;
+        font-weight: bold;
+    }
+
+    .ItemDescription .ItemType {
+        padding: 1px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: small;
+        font-style: italic;
+    }
+    .ItemDescription .ItemLevel {
+        padding: 1px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: small;
+    }
+
+
+    .ItemDescription .ItemAttributes .Attribute:first-child .AttributeRow {
+        text-align: center;
+    }
+
+    .ItemDescription .ItemAttributes .Attribute:nth-child(2n+2) {
+        background-color: #d0dff9;
+    }
+
+    .ItemDescription .BottomPart {
+        padding-top:5px;
+        text-align:right;
+        width:100%;
+    }

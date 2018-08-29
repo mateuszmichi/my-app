@@ -100,35 +100,38 @@
 }
 
 .BackpackInside .Gold {
-    position:relative;
-    text-align:right;
+    position: relative;
+    text-align: right;
     color: snow;
     height: 4%;
     padding-left: 2%;
     padding-right: 2%;
 }
+
     .BackpackInside .Gold div {
-        position:relative;
-        height:100%;
+        position: relative;
+        height: 100%;
     }
-.BackpackInside .Gold img {
-    height: 80%;
-    padding-right: 2%;
-    margin:auto;
-}
+
+    .BackpackInside .Gold img {
+        height: 80%;
+        padding-right: 2%;
+        margin: auto;
+    }
+
     .BackpackInside .Gold span {
-        margin:auto;
+        margin: auto;
     }
 
 
-    .TopDescription .BackGroundBar {
-        position: absolute;
-        top: 0;
-        height: 50%;
-        width: 100%;
-        background-color: rgb(97, 67, 55);
-        background-color: rgb(58,41,37);
-    }
+.TopDescription .BackGroundBar {
+    position: absolute;
+    top: 0;
+    height: 50%;
+    width: 100%;
+    background-color: rgb(97, 67, 55);
+    background-color: rgb(58,41,37);
+}
 
 .TopDescription .Description {
     position: absolute;
@@ -141,8 +144,7 @@
 
 .Description .Text {
     margin: auto;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    padding: 1%;
     padding-left: 6%;
     padding-right: 6%;
     border-radius: 999px;
@@ -191,6 +193,10 @@
     background-repeat: no-repeat;
 }
 
+.Item {
+    cursor: pointer;
+}
+
 .ItemSlot .Item {
     position: absolute;
     height: 94%;
@@ -198,53 +204,61 @@
     padding: 3%;
 }
 
+.InventorySlot .Item {
+    position: absolute;
+    height: 94%;
+    width: 94%;
+    padding: 3%;
+    background-color: inherit;
+    border-radius: inherit;
+}
+
 .Item img {
     height: 100%;
     width: 100%;
 }
 
-#Helmet {
+.Helmet {
     background-image: url("../../img/Game/EQ/helmet.svg");
 }
 
-#Ring1 {
+.Ring1 {
     background-image: url("../../img/Game/EQ/rings.svg");
 }
 
-#Ring2 {
+.Ring2 {
     background-image: url("../../img/Game/EQ/rings.svg");
 }
 
-#Neckles {
+.Neckles {
     background-image: url("../../img/Game/EQ/necklace.svg");
 }
 
-#Gloves {
+.Gloves {
     background-image: url("../../img/Game/EQ/gloves.svg");
 }
 
-#Armour {
+.Armour {
     background-image: url("../../img/Game/EQ/armour.svg");
 }
 
-#Bracelet {
+.Bracelet {
     background-image: url("../../img/Game/EQ/bracelet.svg");
 }
 
-#FirstHand {
-    background-image: url("../../img/Game/EQ/weapon.svg");
-    -webkit-transform: rotate(180deg);
+.FirstHand {
+    background-image: url("../../img/Game/EQ/weapon2.png");
 }
 
-#Trousers {
+.Trousers {
     background-image: url("../../img/Game/EQ/trousers.svg");
 }
 
-#SecondHand {
+.SecondHand {
     background-image: url("../../img/Game/EQ/shield.svg");
 }
 
-#Shoes {
+.Shoes {
     background-image: url("../../img/Game/EQ/shoe.svg");
 }
 
@@ -335,7 +349,6 @@
 .VerticalMiddle img {
     width: 100%;
     height: 100%;
-    display: inline;
     margin-right: 4%;
 }
 
@@ -343,4 +356,93 @@
     width: 20%;
     height: 20%;
     margin-right: 4%;
+}
+
+.ItemSlotHolder.SlotActive {
+    animation: activeItemBGR 3s infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.ItemSlotHolder.SlotToPut {
+    cursor: pointer;
+}
+    /*.ItemSlotHolder.SlotToPut:hover {
+        animation: possibleItemBGR 3s infinite;
+        animation-timing-function: ease-in-out;
+    }*/
+
+    .ItemSlotHolder.SlotToPut .ItemSlot:hover {
+        background-image: url("../../img/Game/EQ/drop.svg");
+        background-size:50%;
+        background-position:center;
+        background-repeat:no-repeat;
+    }
+
+.InventorySlotHolder.SlotWearing {
+    cursor: pointer;
+    animation: possibleItemBGR 3s infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.InventorySlotHolder.SlotActive {
+    animation: activeItemBGR 3s infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.ItemSlotHolder.SlotActive .ItemInspector {
+    visibility:visible;
+}
+.InventorySlotHolder.SlotActive .ItemInspector {
+    visibility: visible;
+}
+.InventorySlotHolder.SlotWearing .ItemInspector {
+    visibility: visible;
+}
+
+.ItemInspector {
+    opacity:0.8;
+    visibility: hidden;
+    position: absolute;
+    height: 35%;
+    width: 35%;
+    bottom: 0;
+    right: 0;
+    background-image: url("../../img/Game/EQ/inspect.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80%;
+    border-radius: calc(100% * 5 / 35);
+    border: solid thin;
+}
+    .ItemInspector:hover {
+        background-image: url("../../img/Game/EQ/inspect_white.svg");
+        border-color:white;
+    }
+
+
+@keyframes activeItemBGR {
+    0% {
+        background-color: rgb(58,41,37);
+    }
+
+    50% {
+        background-color: indianred;
+    }
+
+    100% {
+        background-color: rgb(58,41,37);
+    }
+}
+@keyframes possibleItemBGR {
+    0% {
+        background-color: rgb(58,41,37);
+    }
+
+    50% {
+        background-color: cornflowerblue;
+    }
+
+    100% {
+        background-color: rgb(58,41,37);
+    }
 }

@@ -1,6 +1,6 @@
 import { IMessage, IMessageTranslator } from './MessageMenager';
 
-import { ILocationResult } from './data/gameTYPES';
+import { IEquipmentResult, ILocationResult,  } from './data/gameTYPES';
 
 // -------------------- APP status
 export interface IAppStatus {
@@ -12,7 +12,6 @@ export interface IAppStatus {
     messagesTranslators: IMessageTranslator[];
     dialog: React.ReactNode;
     activeHero: IHero | null;
-    heroLocation: ILocationResult | null;
     actionToken: IActionToken | null;
 }
 
@@ -47,6 +46,10 @@ export interface IHero extends ICharacterBrief {
     sl: number;
     slmax: number;
     exp: number;
+    equipment: IEquipmentResult;
+    location: ILocationResult;
+    status: number;
+    statusData: any;
 }
 
 export enum Orders {

@@ -1,19 +1,17 @@
 import * as React from 'react';
 
 import { MoneyToGems } from '../../data/gameCALC';
-import { CharacterAttributes, IEquipmentResult,  } from '../../data/gameTYPES';
+import { IEquipmentResult, IItemResult, } from '../../data/gameTYPES';
 
-import { ClickAwayListener, Fade, Paper, Popper, } from '@material-ui/core';
+import { IActiveItem } from '../Equipment';
 
 
-export class Backpack extends React.Component<{ equipment: IEquipmentResult }, { anchorEl: any, popperOpen: boolean, activeElement: number | null }>{
+export class Backpack extends React.Component<{ equipment: IEquipmentResult, itemDetails: (e: IEquipmentResult, i: IItemResult, s: number) => void, activeItem: IActiveItem | null, makeActiveFun: (e:any,i: IActiveItem) => void }, {}>{
     constructor(props: any) {
         super(props);
         // --------- bindings
         this.GenGoldStatus = this.GenGoldStatus.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-        this.handleClickAway = this.handleClickAway.bind(this);
-        this.ItemDescription = this.ItemDescription.bind(this);
+        this.showItemDescription = this.showItemDescription.bind(this);
 
         this.state = {
             activeElement: null,
@@ -31,62 +29,41 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult }, {
                 <div className="Gold">{this.GenGoldStatus(this.props.equipment.money)}</div>
 
                 <div className="ItemContainer">
-
                     {this.props.equipment.backpack.map((e, key) => {
                         if (e !== null) {
-                            const onClickFun = (event: any) => {
-                                this.handleClick(event, key);
+                            const element = this.props.equipment.knownItems.find(f => f.itemID === e);
+                            if (element === undefined) {
+                                throw Error("Unknown item in inventory");
                             }
+                            const onClickFun = (event: any) => {
+                                this.props.makeActiveFun(event, {
+                                    activeItem: "Backpack" + key,
+                                    activeType: element.itemType,
+                                });
+                            };
+                            const onClickFunDetails = () => {
+                                this.showItemDescription(key);
+                            };
                             const image = require('../../img/Game/Items/' + e + '.png');
-                            return (<div className="ItemSlotHolder" key={key}>
-                                <div className="ItemSlot">
-                                    <div className="Item" onClick={onClickFun}>
+                            let additional = "";
+                            if (this.props.activeItem !== null) {
+                                if (this.props.activeItem.activeItem === "Backpack" + key) {
+                                    additional = " SlotActive";
+                                }
+                            }
+                            return (<div className={"ItemSlotHolder" + additional} key={key} >
+                                <div className="ItemSlot" onClick={onClickFun}>
+                                    <div className="Item">
                                         <img src={String(image)} />
+                                        <div className="ItemInspector" onClick={onClickFunDetails}/>
                                     </div>
                                 </div>
                             </div>);
                         } else {
-                            return (<div className="ItemSlotHolder" key={key}><div className="ItemSlot" /></div>);
+                            return (<div className={(this.props.activeItem !== null) ? "ItemSlotHolder SlotToPut" : "ItemSlotHolder"} key={key}><div className="ItemSlot" /></div>);
                         }
                     })}
-                    <Popper
-                        open={this.state.popperOpen}
-                        anchorEl={this.state.anchorEl}
-                        style={{ zIndex: 1 }}
-                        placement='bottom'
-                        disablePortal={false}
-                        modifiers={{
-                            // arrow: {
-                            //    element: this.state.anchorEl,
-                            //    enabled: true,
-                            // },
-                            flip: {
-                                enabled: true,
-                            },
-
-                            preventOverflow: {
-                                boundariesElement: 'scrollParent',
-                                enabled: true,
-                            },
-                        }}
-                        transition={true}
-                    >
-                        {({ TransitionProps }) => (
-                            <Fade {...TransitionProps} timeout={150}>
-                                <ClickAwayListener onClickAway={this.handleClickAway}>
-                                    <Paper>
-                                        {(this.state.activeElement === null) ? <span /> :
-                                            this.ItemDescription(this.state.activeElement)
-                                        }
-
-                                    </Paper>
-                                </ClickAwayListener>
-                            </Fade>
-                        )}
-                    </Popper>
-
                 </div>
-
             </div>
         </div>);
     }
@@ -103,15 +80,7 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult }, {
         }
         return res.reverse();
     }
-
-    private handleClick(event: any, id: number): void {
-        const { currentTarget } = event;
-        this.setState({ popperOpen: true, anchorEl: currentTarget as HTMLElement, activeElement: id });
-    }
-    private handleClickAway(): void {
-        this.setState({ popperOpen: false, anchorEl: null, activeElement: null });
-    }
-    private ItemDescription(id: number): JSX.Element {
+    private showItemDescription(id: number) {
         const element = this.props.equipment.backpack[id];
         if (element === null) {
             throw Error("Unknown Item!");
@@ -120,25 +89,6 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult }, {
         if (data === undefined) {
             throw Error("Unknown Item!");
         }
-        const toshow = [];
-        for (let i = 0; i < 8; i++) {
-            if (data.attributes[i] > 0) {
-                toshow.push({ description: CharacterAttributes[i], count: data.attributes[i] });
-            }
-        }
-        return (<div>
-            <div>
-                {data.name}
-            </div>
-            <div>
-                {data.itemType}
-            </div>
-            <div>
-                {(data.primaryAttr === data.secondaryAttr) ? data.primaryAttr : data.primaryAttr + " - " + data.secondaryAttr}
-            </div>
-            <div>
-                {toshow.map((e, i) => (<div key={i}>{e.description.name} : {e.count}</div>))}
-            </div>
-        </div>)
+        this.props.itemDetails(this.props.equipment, data, 0);
     }
 }

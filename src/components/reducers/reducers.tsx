@@ -1,4 +1,4 @@
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOAD_LOCATION, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING,  } from '../actions/actionTypes';
+import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING,  } from '../actions/actionTypes';
 
 import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData,   } from '../TYPES';
 
@@ -7,7 +7,6 @@ const initialState: IAppStatus = {
     actionToken: null,
     activeHero: null,
     dialog: undefined,
-    heroLocation: null,
     isLoged: false,
     isWaiting: false,
     messages: [],
@@ -58,9 +57,6 @@ function shatteredApp(state = initialState, action: any) {
             return Object.assign({}, state, { activeHero: data4.hero, actionToken:data4.actionToken});
         case END_GAME:
             return Object.assign({}, state, { activeHero: null, actionToken:null });
-
-        case LOAD_LOCATION:
-            return Object.assign({}, state, { heroLocation: pass.payload });
 
         case START_WAITING:
             return Object.assign({}, state, { isWaiting: true });

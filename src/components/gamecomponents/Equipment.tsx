@@ -1,10 +1,6 @@
 import * as React from 'react';
 
 import '../css/gamecomponents/Equipment.css';
-// import { IActionToken, IUserToken, } from '../TYPES';
-
-// import { IConnectionData, IConnectionFunctions, } from '../data/connectionConf';
-import { IEquipmentResult } from '../data/gameTYPES';
 
 import { EquipmentScene } from './scenes/EquipmentScene';
 
@@ -13,28 +9,29 @@ import { Statistics } from './presentational/Statistics';
 
 import { IHero } from '../TYPES';
 
+import { IConnectionData } from '../data/connectionConf';
+import { IEquipmentResult, IItemResult, ItemTypes } from '../data/gameTYPES';
+
+import { Inventory } from './presentational/Inventory';
+import { ItemDescription } from './presentational/ItemDescription';
+
 // -------------------
 
 
 
 
-export class Equipment extends React.Component<{ visible: boolean, hero: IHero /* ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken */ }, {}>{
-    // private connData: IConnectionData;
+export class Equipment extends React.Component<{ visible: boolean, hero: IHero, ConnData: IConnectionData,  }, {active: IActiveItem|null}>{
     private heroScene: Phaser.Game;
     constructor(props: any) {
         super(props);
         // --------- bindings
+        this.showItemDialog = this.showItemDialog.bind(this);
+        this.handleActivateItem = this.handleActivateItem.bind(this);
+        this.handleDisactivateItem = this.handleDisactivateItem.bind(this);
 
-        /* this.connData = {
-            actionToken: this.props.actionToken,
-            closeDialog: this.props.ConnFuns.closeDialog,
-            closeMessage: this.props.ConnFuns.closeMessage,
-            closeWaiting: this.props.ConnFuns.closeMessage,
-            popDialog: this.props.ConnFuns.popDialog,
-            popMessage: this.props.ConnFuns.popMessage,
-            popWaiting: this.props.ConnFuns.popWaiting,
-            userToken: this.props.userToken,
-        } */
+        this.state = {
+            active: null,
+        }
     }
     public componentWillUnmount() {
         if (this.heroScene !== null) {
@@ -68,34 +65,32 @@ export class Equipment extends React.Component<{ visible: boolean, hero: IHero /
         }
     }
     public render() {
-        const data = '{"knownItems":[{"itemID":1,"itemType":0,"name":"Simple Knife","attributes":[0,0,2,0,0,0,0,0],"lvl":1,"primaryAttr":3,"secondaryAttr":5},{"itemID":2,"itemType":1,"name":"Wollen Cap","attributes":[0,1,0,0,0,0,0,0],"lvl":1,"primaryAttr":2,"secondaryAttr":2}],"backpack":[1,null,null,null,null,null,null,null,null,null,2,2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"backpackSize":30,"firstHand":1,"secondHand":null,"armour":null,"trousers":null,"shoes":null,"gloves":null,"ring1":null,"ring2":null,"neckles":null,"bracelet":null,"money":0}';
-        const eq = JSON.parse(data) as IEquipmentResult;
-        return (<div id="Equipment" className={(this.props.visible) ? "Active" : "InActive"}>
-            <Backpack equipment={eq} />
+        return (<div id="Equipment" className={(this.props.visible) ? "Active" : "InActive"} onClick={this.handleDisactivateItem}>
+            <Backpack equipment={this.props.hero.equipment} itemDetails={this.showItemDialog} activeItem={this.state.active} makeActiveFun={this.handleActivateItem}/>
             <div className="HeroModel">
                 <div className="TopField">
                     <Statistics hero={this.props.hero} />
                 </div>
                 <div className="BottomField">
                     <div className="HeroDisplay" id="HeroDisplay" />
-                    <div className="Inventory">
-                        <div className="InventorySlotHolder Hidden" />
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Helmet" /></div>
-                        <div className="InventorySlotHolder Hidden" />
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Ring1" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Neckles" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Ring2" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Gloves" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Armour" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Bracelet" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="FirstHand" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Trousers" /></div>
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="SecondHand" /></div>
-                        <div className="InventorySlotHolder Hidden" />
-                        <div className="InventorySlotHolder"><div className="InventorySlot" id="Shoes" /></div>
-                    </div>
+                    <Inventory equipment={this.props.hero.equipment} itemDetails={this.showItemDialog} activeItem={this.state.active} makeActiveFun={this.handleActivateItem}/>
                 </div>
             </div>
         </div>);
     }
+    private showItemDialog(equipment: IEquipmentResult, item: IItemResult, status: number) {
+        this.props.ConnData.popDialog(<ItemDescription equipment={equipment} item={item} isOn={status === 1} ConnData={this.props.ConnData}/>);
+    }
+    private handleActivateItem(event: any, activeItem: IActiveItem) {
+        event.stopPropagation();
+        this.setState({ active: activeItem });
+    }
+    private handleDisactivateItem() {
+        this.setState({ active: null });
+    }
+}
+
+export interface IActiveItem {
+    activeItem: string;
+    activeType: ItemTypes;
 }
