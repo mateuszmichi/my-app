@@ -1,9 +1,7 @@
 import { IAction, IActionToken, ICharacterBrief, IHero, ILoadHeroData,  ILoginData, IUser, IUserToken,    } from '../TYPES';
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOAD_LOCATION, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING,   } from './actionTypes';
+import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING,   } from './actionTypes';
 
 import { IMessage, IMessageTranslator } from '../MessageMenager';
-
-import { ILocationResult } from '../data/gameTYPES';
 
 export function Log_In(loadedUser:IUser, receivedToken:IUserToken) :IAction {
     return {
@@ -72,12 +70,6 @@ export function End_Game(): IAction {
     return {
         payload: null,
         type: END_GAME,
-    }
-}
-export function Load_Location(location: ILocationResult): IAction {
-    return {
-        payload: location,
-        type: LOAD_LOCATION,
     }
 }
 

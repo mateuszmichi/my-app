@@ -5,14 +5,19 @@ import '../css/gamecomponents/MainWindow.css';
 import LowerBar from './LowerBar';
 
 import { IHero, } from '../TYPES';
+
+import { Equipment } from './Equipment';
 import { GameComponent } from './GameComponent';
+
+import { IConnectionData } from '../data/connectionConf';
+
 
 
 // ------------- images
 
 // import backpackSrc from '../img/Game/Menu/backpack.png';
 
-class MainWindow extends React.Component<{ character: IHero, CurrentPosition: number }, {height: number, width:number}> {
+class MainWindow extends React.Component<{ CurrentPosition: number, character: IHero, ConnData: IConnectionData  }, {height: number, width:number}> {
     private CallbackFun: any;
     private onResizeFun: VoidFunction;
     constructor(props: any) {
@@ -48,7 +53,8 @@ class MainWindow extends React.Component<{ character: IHero, CurrentPosition: nu
             <div className="MainWindow">
                 <div className="GameElement">
                     <div className="GameDisplayComponent" ref={this.CallbackFun} id="GameDisplayArea">
-                        <GameComponent height={this.state.height} width={this.state.width}/>
+                        <GameComponent visible={0 === this.props.CurrentPosition} height={this.state.height} width={this.state.width} ConnData={this.props.ConnData} hero={this.props.character}/>
+                        <Equipment visible={1 === this.props.CurrentPosition} hero={this.props.character} ConnData={this.props.ConnData}/>
                     </div>
                 </div>
                 <LowerBar character={this.props.character} />

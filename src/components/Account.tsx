@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from "react-redux";
 import { Redirect } from 'react-router';
 
-import { Close_Dialog, Close_Messages, End_Waiting, Load_Location, Log_Out, Pop_Dialog, Pop_Messages, Start_Game, Start_Waiting } from './actions/actionCreators';
+import { Close_Dialog, Close_Messages, End_Waiting, Log_Out, Pop_Dialog, Pop_Messages, Start_Game, Start_Waiting } from './actions/actionCreators';
 import { IMessage, IMessageTranslator } from './MessageMenager';
 
 import { IConnectionFunctions, ServerConnect } from './data/connectionConf';
@@ -10,8 +10,6 @@ import { IConnectionFunctions, ServerConnect } from './data/connectionConf';
 import './css/Account.css';
 
 import { IActionToken, IAppStatus, IHero, IPassedData, IUser,  IUserToken,   } from './TYPES';
-
-import { ILocationResult } from './data/gameTYPES';
 
 import Cookies from 'universal-cookie';
 
@@ -29,7 +27,7 @@ import RemoveCharacterDialog from './presentational/dialogs/RemoveCharacterDialo
 const cookies = new Cookies();
 
 
-class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserToken, logoutFun: VoidFunction, locationFun: (location: ILocationResult) => void ,startFun: (hero: IHero, actionToken: IActionToken) => void, ConnFuns: IConnectionFunctions }, { isGame: boolean }>{
+class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserToken, logoutFun: VoidFunction, startFun: (hero: IHero, actionToken: IActionToken) => void, ConnFuns: IConnectionFunctions }, { isGame: boolean }>{
     constructor(props: any) {
         super(props);
         // -------binding
@@ -88,10 +86,6 @@ class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserTo
         const succFun = (res: any) => {
             const received = res.data;
             this.props.startFun(received.hero, received.actiontoken);
-            const loc = received.location;
-            if (loc !== undefined) {
-                this.props.locationFun(loc as ILocationResult);
-            }
             this.setState({ isGame: true });
         };
         const failFun = (error: any) => {
@@ -116,7 +110,6 @@ const mapDispatchToProps = (dispatch: any) => {
             popMessage: (messages: IMessage[], translators: IMessageTranslator[]) => dispatch(Pop_Messages(messages, translators)),
             popWaiting: () => dispatch(Start_Waiting()),
         } as IConnectionFunctions,
-        locationFun: (location: ILocationResult) => dispatch(Load_Location(location)),
         logoutFun: () => dispatch(Log_Out()),
         startFun: (hero: IHero, actionToken: IActionToken) => dispatch(Start_Game(hero,actionToken)),        
     };
