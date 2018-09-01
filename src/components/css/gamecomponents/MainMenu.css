@@ -26,15 +26,18 @@
 }
     .MainMenu .MainMenuButton:hover {
         background-color: rgb(197, 159, 95);
-        background-color: rgb(255, 234, 198);
-        background-color: rgb(237, 205, 151);
-        color: snow;
-        color:#333333;
+        background-color: rgb(181, 146, 87);
+        /*background-color: rgb(237, 205, 151);*/
+        color: #333333;
     }
-.MainMenu .MainButtons {
-    /*display: table-row;*/
-    flex-grow:1;
-}
+    .MainMenu .MainMenuButton.MainMenuActive {
+        background-color: rgb(237, 205, 151);
+        color: #333333;
+    }
+    .MainMenu .MainButtons {
+        /*display: table-row;*/
+        flex-grow: 1;
+    }
 .MainMenu .ExitButtons {
     /*height: 13%;*/
     display:flex;

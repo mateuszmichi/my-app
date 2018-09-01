@@ -42,10 +42,11 @@ export class TravelScene extends Phaser.Scene {
         this.ConnData = ConnData;
         // ----- bindings
         this.endTravel = this.endTravel.bind(this);
+
         this.travelData = travel;
         this.endDate = new Date(this.travelData.endTime);
         this.startDate = new Date(this.travelData.startTime);
-        this.TimeToTravel = (this.endDate.getTime() - Date.now()) / 1000;
+        this.TimeToTravel = (this.endDate.getTime() - this.startDate.getTime()) / 1000;
         if (this.TimeToTravel < 1) {
             this.TimeToTravel = 1;
         }
@@ -68,6 +69,7 @@ export class TravelScene extends Phaser.Scene {
         this.ClockContainer = gencont.Container;
         this.ClockContainer.x = (this.dimentions.width - gencont.Width) / 2;
         this.ClockContainer.y = (this.dimentions.height / 2 - gencont.Height);
+        this.ClockContainer.alpha = 0;
 
         this.tweens.add({
             alpha: 1,
@@ -75,15 +77,6 @@ export class TravelScene extends Phaser.Scene {
             targets: [this.Background, this.ClockContainer],
         });
         this.events.once('JourneyCompleted', this.endTravel);
-
-        // this.tweens.add({
-        //    alpha: 0,
-        //    completeDelay: 100,
-        //    delay: (this.TimeToTravel - 1) * 1000,
-        //    duration: 1000,
-        //    onComplete: this.endTravel,
-        //    targets: [background, this.ClockContainer],
-        // });
     }
     public update(time: number) {
         this.ProgressBar.clear();

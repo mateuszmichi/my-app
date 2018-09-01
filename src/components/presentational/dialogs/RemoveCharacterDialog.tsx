@@ -101,7 +101,7 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
                     color="primary"
                     onClick={this.props.ConnFuns.closeDialog}
                 >
-                    Abord</Button>
+                    Abort</Button>
             </div>
         </div>);
     }

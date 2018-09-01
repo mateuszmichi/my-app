@@ -239,6 +239,7 @@ export class LocalMapScene extends Phaser.Scene {
         const locationname = this.add.text(0, 0, mapnode.name, { color: '#ffffff', align: 'center', fontSize: 14, fontStyle: 'bold' });
         const time = this.add.text(0, 0, ["Travel time", TravelTimeToString(traveltime)], { color: '#222222', align: 'center', fontSize: 12 });
         const DescWidth = Math.max(locationname.displayWidth, time.displayWidth, Settings.Description.ButtonExtend) + 2 * Settings.Description.MainPadding;
+        const buttonFill = this.add.graphics({ fillStyle: { color: 0x4F628E } });
 
         locationname.setOrigin(0.5, 0);
         locationname.x = DescWidth / 2;
@@ -248,6 +249,8 @@ export class LocalMapScene extends Phaser.Scene {
         const buttonsToAdd = new Collections.LinkedList<Phaser.GameObjects.Container>();
         if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
             const travelbutton = this.CreateDescriptionButton("TravelImg", "Travel", null);
+            buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetween, DescWidth, travelbutton.height);
+
             travelbutton.button.x = (DescWidth - travelbutton.width) / 2;
             travelbutton.button.y = DescHeight + Settings.Description.DistanceBetween;
             DescHeight = travelbutton.button.y + travelbutton.height;
@@ -266,6 +269,8 @@ export class LocalMapScene extends Phaser.Scene {
             LocationTypes[LocType].options.forEach((option, i) => {
                 // TODO onclick
                 const travelbutton = this.CreateDescriptionButton(LocationOptionsImg[option].name + "Img", LocationOptionsImg[option].buttonDesc, null);
+                buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetween, DescWidth, travelbutton.height);
+
                 travelbutton.button.x = (DescWidth - travelbutton.width) / 2;
                 travelbutton.button.y = DescHeight + Settings.Description.DistanceBetween;
                 DescHeight = travelbutton.button.y + travelbutton.height;
@@ -285,6 +290,8 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.currentdesc.add(graph);
         this.currentdesc.add(locationname);
+        this.currentdesc.add(buttonFill);
+
         if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
             this.currentdesc.add(time);
         } else {

@@ -4,7 +4,7 @@ import '../css/gamecomponents/LowerBar.css';
 
 import { IHero, Orders } from '../TYPES';
 
-import { ExpToLevel } from '../data/gameCALC';
+import { ExpToLevel, HeroGenStatistics, HeroMaxHP, HeroMaxSL } from '../data/gameCALC';
 
 // ------------- images
 
@@ -13,6 +13,7 @@ class LowerBar extends React.Component<{ character: IHero }, {}> {
         super(props);
     }
     public render() {
+        const Stats = HeroGenStatistics(this.props.character);
         return (
             <div className="LowerBar">
                 <div className="StatusData">
@@ -26,9 +27,9 @@ class LowerBar extends React.Component<{ character: IHero }, {}> {
                         <LevelBar lvl={this.props.character.level} exp={this.props.character.exp} />
                     </div>
                 </div>
-                <StatusBars HP={this.props.character.hp} HPmax={this.props.character.hpmax} isHP={true} />
+                <StatusBars HP={this.props.character.hp} HPmax={HeroMaxHP(this.props.character.hpmax,Stats.Attributes)} isHP={true} />
 
-                <StatusBars HP={this.props.character.sl} HPmax={this.props.character.slmax} isHP={false} />
+                <StatusBars HP={this.props.character.sl} HPmax={HeroMaxSL(this.props.character.slmax, Stats.Attributes)} isHP={false} />
 
             </div>
         );

@@ -1,14 +1,16 @@
 import * as React from 'react';
 
-import { IEquipmentResult, IItemResult, } from '../../data/gameTYPES';
+import { IItemResult, } from '../../data/gameTYPES';
 
 import { AcceptItemSchema, IInventorySlot } from '../../data/gameCALC';
 
 import { IActiveItem } from '../Equipment';
 
+import { IHero } from '../../TYPES';
 
 
-export class Inventory extends React.Component<{ equipment: IEquipmentResult, itemDetails: (e: IEquipmentResult, i: IItemResult, s: number) => void, activeItem: IActiveItem | null, makeActiveFun: (e: any, i: IActiveItem) => void }, {}>{
+
+export class Inventory extends React.Component<{ hero: IHero, itemDetails: (h: IHero, i: IItemResult, s: number) => void, activeItem: IActiveItem | null, makeActiveFun: (e: any, i: IActiveItem | null, t: string) => void }, {}>{
     private inventoryArr: IInventorySlot[];
     constructor(props: any) {
         super(props);
@@ -19,7 +21,7 @@ export class Inventory extends React.Component<{ equipment: IEquipmentResult, it
         this.inventoryArr = [];
     }
     public render() {
-        this.inventoryArr = AcceptItemSchema(this.props.equipment);
+        this.inventoryArr = AcceptItemSchema(this.props.hero.equipment);
 
         return (<div className="Inventory">
             <div className="InventorySlotHolder Hidden" />
@@ -48,10 +50,13 @@ export class Inventory extends React.Component<{ equipment: IEquipmentResult, it
             }
         }
         if (slot.item === null) {
-            return (<div className={"InventorySlotHolder" + additional}><div className={"InventorySlot " + slot.name} /></div>);
+            const onClickEmpty = (event: any) => {
+                this.props.makeActiveFun(event, null, "Inventory" + key);
+            };
+            return (<div className={"InventorySlotHolder" + additional}><div className={"InventorySlot " + slot.name} onClick={onClickEmpty} /></div>);
         }
         else {
-            const element = this.props.equipment.knownItems.find(f => f.itemID === slot.item);
+            const element = this.props.hero.equipment.knownItems.find(f => f.itemID === slot.item);
             if (element === undefined) {
                 throw Error("Unknown item in inventory");
             }
@@ -59,7 +64,7 @@ export class Inventory extends React.Component<{ equipment: IEquipmentResult, it
                 this.props.makeActiveFun(event, {
                     activeItem: "Inventory" + key,
                     activeType: element.itemType,
-                });
+                }, "Inventory" + key);
             };
             const onClickFunDetails = () => {
                 this.showItemDescription(element.itemID);
@@ -75,17 +80,17 @@ export class Inventory extends React.Component<{ equipment: IEquipmentResult, it
                     <div className={"InventorySlot " + slot.name}>
                         <div className="Item" onClick={onClickFun}>
                             <img src={String(image)} />
-                            <div className="ItemInspector" onClick={onClickFunDetails} />
+                            <div className="ItemInspector" onClick={onClickFunDetails}><div>Details</div></div>
                         </div>
                     </div>
                 </div>);
         }
     }
     private showItemDescription(itemid: number) {
-        const data = this.props.equipment.knownItems.find(e => e.itemID === itemid);
+        const data = this.props.hero.equipment.knownItems.find(e => e.itemID === itemid);
         if (data === undefined) {
             throw Error("Unknown Item!");
         }
-        this.props.itemDetails(this.props.equipment, data, 1);
+        this.props.itemDetails(this.props.hero, data, 1);
     }
 }

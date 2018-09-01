@@ -383,4 +383,12 @@ export const ItemTypeDescription: string[] = [
     "Secondary Weapon",
     "Shield",
 ];
-// add uniques
+
+export interface IEquipmentModifyResult {
+    added: IEquipmentModification[];
+    removed: IEquipmentModification[];
+}
+export interface IEquipmentModification {
+    target: string;
+    itemID: number|null;
+}

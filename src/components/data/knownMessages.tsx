@@ -43,7 +43,16 @@ export const MessageSecurityErr: IMessageTranslator =
         name: "securityErr",
         title: "Security warning",
         type: MessageType.ERROR,
-    };
+};
+export const MessageChangeEqErr: IMessageTranslator =
+{
+    actions: [],
+    images: [],
+    ispopup: true,
+    name: "changeEqErr",
+    title: "Failed to change equipment",
+    type: MessageType.ERROR,
+};
 export const MessageCreateUserSucc: IMessageTranslator =
     {
         actions: [],
@@ -102,5 +111,5 @@ export const MessagesForLogin = [
 ];
 
 export const MessagesAll = [MessageLoginErr, MessageNameErr, MessageServerErr,
-    MessageSecurityErr, MessageCreateUserSucc, MessageCreateHeroSucc, MessageRemoveHeroSucc,
+    MessageSecurityErr, MessageChangeEqErr ,MessageCreateUserSucc, MessageCreateHeroSucc, MessageRemoveHeroSucc,
     MessageTimeoutErr, MessageRemoveAccountSucc];

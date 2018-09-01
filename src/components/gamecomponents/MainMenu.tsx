@@ -32,7 +32,7 @@ const buttons: IMenuButton[] = [
     }
 ];
 
-class MainMenu extends React.Component<{ changePosition: (i: number) => void, logFun: VoidFunction }, {}> {
+class MainMenu extends React.Component<{CurrentPosition: number, changePosition: (i: number) => void, logFun: VoidFunction }, {}> {
     private buttons = buttons;
     constructor(props: any) {
         super(props);
@@ -59,7 +59,7 @@ class MainMenu extends React.Component<{ changePosition: (i: number) => void, lo
             this.props.changePosition(key);
         }
         return (<div key={key} onClick={onclickFun}>
-            <div className="MainMenuButton">
+            <div className={(this.props.CurrentPosition === key) ? "MainMenuButton MainMenuActive" :"MainMenuButton" }>
                 <img src={button.image} />
                 <span>{button.description}</span>
             </div>

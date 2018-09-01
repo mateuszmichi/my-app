@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import * as Phaser from 'phaser';
 
-import { MyGame } from './MyGame';
+import { MyGame } from './scenes/MyGame';
 
 import { IHero } from '../TYPES';
 
@@ -29,9 +29,9 @@ export class GameComponent extends React.Component<{visible: boolean, height: nu
                     element.removeChild(element.firstChild);
                 }
                 // this.game.resize(dim * 16, dim * 9);
-                this.game = new MyGame(dim, this.props.ConnData, this.props.hero.location);
+                this.game = new MyGame(dim, this.props.ConnData, this.props.hero);
             } else {
-                this.game = new MyGame(dim, this.props.ConnData, this.props.hero.location);
+                this.game = new MyGame(dim, this.props.ConnData, this.props.hero);
             }
         }
     }
