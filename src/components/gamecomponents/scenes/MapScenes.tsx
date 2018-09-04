@@ -1,7 +1,7 @@
 import * as Collections from 'typescript-collections';
 
 import * as Phaser from 'phaser';
-import { IGraph, ILocationResult, IMainNode, INode, ITravelResult, LocationOptionsImg, LocationTypes,  } from '../../data/gameTYPES';
+import { IGraph, ILocationResult, IMainNode, INode, ITravelResult, LocationOptionsImg, LocationTypes, } from '../../data/gameTYPES';
 
 import { ChildNodeRange, TravelTime, TravelTimeToString, VectorInGlobal, } from '../../data/gameCALC';
 import { IMessage } from '../../MessageMenager';
@@ -16,7 +16,6 @@ import target from '../../img/Game/Locations/target.svg';
 
 // ------------------ constants
 import { IConnectionData, ServerConnect } from '../../data/connectionConf';
-// import { IConnectionData,  } from '../../data/connectionConf';
 
 // ----------- settings
 const Settings = {
@@ -25,7 +24,9 @@ const Settings = {
         ButtonExtend: 50,
         ButtonSize: 40,
         DistanceBetween: 3,
+        DistanceBetweenButtons: 1,
         MainPadding: 10,
+        MinWidth: 90,
         TopPadding: 5,
     },
     MainNodeRadiusScale: 1.3,
@@ -74,6 +75,7 @@ export class LocalMapScene extends Phaser.Scene {
         this.DataHandling = this.DataHandling.bind(this);
         this.loadLocationImage = this.loadLocationImage.bind(this);
         this.AdjustElementsPosition = this.AdjustElementsPosition.bind(this);
+        this.setElementActive = this.setElementActive.bind(this);
 
         this.toMove = new LinkedList<ItoMove>();
 
@@ -104,7 +106,7 @@ export class LocalMapScene extends Phaser.Scene {
         const border = this.add.graphics({ fillStyle: { color: 0x5e3408 }, lineStyle: { width: 3, color: 0x5e3408 } });
         border.fillRect(0, 0, this.dimentions.width, this.dimentions.height);
 
-        this.background = this.add.sprite(Settings.MapBorder, Settings.MapBorder, "LocalMapBGR"+this.data.values.LocationID);
+        this.background = this.add.sprite(Settings.MapBorder, Settings.MapBorder, "LocalMapBGR" + this.data.values.LocationID);
         this.background.setOrigin(0, 0);
 
         this.targetNode = this.add.sprite(0, 0, "Target");
@@ -232,73 +234,86 @@ export class LocalMapScene extends Phaser.Scene {
     }
     private showDescription(mapnode: IMainNode, distance: number) {
         const traveltime = TravelTime(distance, this.data.values.TravelScale as number);
-
         this.currentdesc.removeAll();
 
         const graph = this.add.graphics({ fillStyle: { color: 0xffffff }, lineStyle: { width: 2, color: 0x333333 } });
         const locationname = this.add.text(0, 0, mapnode.name, { color: '#ffffff', align: 'center', fontSize: 14, fontStyle: 'bold' });
         const time = this.add.text(0, 0, ["Travel time", TravelTimeToString(traveltime)], { color: '#222222', align: 'center', fontSize: 12 });
-        const DescWidth = Math.max(locationname.displayWidth, time.displayWidth, Settings.Description.ButtonExtend) + 2 * Settings.Description.MainPadding;
-        const buttonFill = this.add.graphics({ fillStyle: { color: 0x4F628E } });
+        let DescWidth = Math.max(locationname.displayWidth, Settings.Description.ButtonExtend, Settings.Description.MinWidth);
+
+        const buttonsToAdd = new Collections.LinkedList<InteractiveButton>();
+        if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
+            const travelbutton = this.CreateDescriptionButton("TravelImg", "Travel", null);
+            if (Math.max(time.displayWidth, travelbutton.Width) > DescWidth) {
+                DescWidth = Math.max(time.displayWidth, travelbutton.Width);
+            }
+            travelbutton.Button.on("pointerdown", () => {
+                this.TravelTo(mapnode.nodeID, traveltime);
+            });
+            buttonsToAdd.add(travelbutton);
+        } else {
+            const LocType = mapnode.locationType;
+            LocationTypes[LocType].options.forEach((option, i) => {
+                // TODO onclick
+                const travelbutton = this.CreateDescriptionButton(LocationOptionsImg[option].name + "Img", LocationOptionsImg[option].buttonDesc, null);
+                if (travelbutton.Width > DescWidth) {
+                    DescWidth = travelbutton.Width;
+                }
+                buttonsToAdd.add(travelbutton);
+            });
+        }
+        DescWidth += 2 * Settings.Description.MainPadding;
+        // 4F628E
+        const buttonFill = this.add.graphics({ fillStyle: { color: 0xA8B3CC } });
 
         locationname.setOrigin(0.5, 0);
         locationname.x = DescWidth / 2;
         locationname.y = Settings.Description.TopPadding;
         let DescHeight = locationname.y + locationname.displayHeight + Settings.Description.TopPadding;
 
-        const buttonsToAdd = new Collections.LinkedList<Phaser.GameObjects.Container>();
+        this.currentdesc.add(graph);
+        this.currentdesc.add(locationname);
+        this.currentdesc.add(buttonFill);
+
+        const arr = buttonsToAdd.toArray();
+        arr.forEach((e,i) => {
+            buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetweenButtons, DescWidth, e.Height);
+
+            e.Button.x = (DescWidth - e.Width) / 2;
+            e.Button.y = DescHeight + Settings.Description.DistanceBetweenButtons;
+            DescHeight = e.Button.y + e.Height;
+
+            e.Button.setSize(e.Width, e.Height);
+            e.Button.setInteractive(new Phaser.Geom.Rectangle(e.Width/2,e.Height/2,e.Width,e.Height), Phaser.Geom.Rectangle.Contains);
+            e.Button.on("pointerover", () => {
+                this.setHover();
+                this.setElementActive(i,arr,buttonFill,DescWidth);
+            });
+            e.Button.on("pointerout", () => {
+                this.setHoverEnd();
+                this.setElementActive(-1, arr, buttonFill, DescWidth);
+            });
+
+            this.currentdesc.add(e.Button);
+        });
+
         if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
-            const travelbutton = this.CreateDescriptionButton("TravelImg", "Travel", null);
-            buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetween, DescWidth, travelbutton.height);
-
-            travelbutton.button.x = (DescWidth - travelbutton.width) / 2;
-            travelbutton.button.y = DescHeight + Settings.Description.DistanceBetween;
-            DescHeight = travelbutton.button.y + travelbutton.height;
-
             time.setOrigin(0.5, 0);
             time.x = DescWidth / 2;
             time.y = DescHeight + Settings.Description.DistanceBetween;
             DescHeight = time.y + time.displayHeight;
-            travelbutton.InteractiveObj.on("pointerdown", () => {
-                this.TravelTo(mapnode.nodeID, traveltime);
-            });
-
-            buttonsToAdd.add(travelbutton.button);
+            this.currentdesc.add(time);
         } else {
-            const LocType = mapnode.locationType;
-            LocationTypes[LocType].options.forEach((option, i) => {
-                // TODO onclick
-                const travelbutton = this.CreateDescriptionButton(LocationOptionsImg[option].name + "Img", LocationOptionsImg[option].buttonDesc, null);
-                buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetween, DescWidth, travelbutton.height);
-
-                travelbutton.button.x = (DescWidth - travelbutton.width) / 2;
-                travelbutton.button.y = DescHeight + Settings.Description.DistanceBetween;
-                DescHeight = travelbutton.button.y + travelbutton.height;
-
-                buttonsToAdd.add(travelbutton.button);
-            });
+            time.destroy();
         }
-
         const radius = 5;
         graph.fillRoundedRect(0, 0, DescWidth, DescHeight + Settings.Description.TopPadding, radius);
         graph.fillStyle(0x2E4172);
         graph.fillRoundedRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding, radius);
         graph.fillRect(0, locationname.y + locationname.displayHeight + Settings.Description.TopPadding - radius, DescWidth, radius);
         graph.fillStyle(0x4F628E);
-        // button around
-        // graph.strokeRoundedRect(0, 0, locationname.displayWidth + 20, esttime.y + esttime.displayHeight + 10, 5);
 
-        this.currentdesc.add(graph);
-        this.currentdesc.add(locationname);
-        this.currentdesc.add(buttonFill);
-
-        if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
-            this.currentdesc.add(time);
-        } else {
-            time.destroy();
-        }
         const nodes = this.data.values.Nodes as INode[];
-        buttonsToAdd.forEach(e => { this.currentdesc.add(e); });
         this.currentdesc.x = nodes[mapnode.nodeID].x + 5;
         this.currentdesc.y = nodes[mapnode.nodeID].y + 5;
     }
@@ -390,7 +405,7 @@ export class LocalMapScene extends Phaser.Scene {
         this.pathdrawer.clear();
         const AstarRes = this.graph.Astar((this.data.values.CurrentPosition as number), mainnode.nodeID);
         this.pathdrawer.beginPath();
-        this.pathdrawer.moveTo(nodes[AstarRes.nodes[0]].x,nodes[AstarRes.nodes[0]].y);
+        this.pathdrawer.moveTo(nodes[AstarRes.nodes[0]].x, nodes[AstarRes.nodes[0]].y);
         for (let aa = 1; aa < AstarRes.nodes.length; aa++) {
             this.pathdrawer.lineTo(nodes[AstarRes.nodes[aa]].x, nodes[AstarRes.nodes[aa]].y);
         }
@@ -423,8 +438,6 @@ export class LocalMapScene extends Phaser.Scene {
     }
     // TODO onclick type
     private CreateDescriptionButton(texture: string, text: string, onclick: any) {
-        const bgrcolor = 0x4F628E;
-
         const travelbutton = this.add.image(0, 0, texture);
         travelbutton.displayHeight = Settings.Description.ButtonSize;
         travelbutton.displayWidth = Settings.Description.ButtonSize;
@@ -434,31 +447,21 @@ export class LocalMapScene extends Phaser.Scene {
         const ButtonsPadding = (Settings.Description.ButtonExtend - Settings.Description.ButtonSize) / 2;
         const Width = Math.max(travelbutton.displayWidth, traveltext.displayWidth) + 2 * ButtonsPadding;
 
-        const graphics = this.add.graphics({ fillStyle: { color: bgrcolor } });
-
         travelbutton.setOrigin(0.5, 0);
         travelbutton.x = Width / 2;
         travelbutton.y = ButtonsPadding;
-        const hitscalex = travelbutton.width / Settings.Description.ButtonSize;
-        const hitscaley = travelbutton.height / Settings.Description.ButtonSize;
 
         traveltext.setOrigin(0.5, 0);
         traveltext.x = Width / 2;
         traveltext.y = travelbutton.y + travelbutton.displayHeight + Settings.Description.DistanceBetween;
-
-        const hitarea = new Phaser.Geom.Rectangle(- ButtonsPadding * hitscalex, - ButtonsPadding * hitscaley, Width * hitscalex, (traveltext.y + traveltext.displayHeight + ButtonsPadding) * hitscaley);
-        travelbutton.setInteractive(hitarea, Phaser.Geom.Rectangle.Contains);
-        travelbutton.on("pointerover", this.setHover);
-        travelbutton.on("pointerout", this.setHoverEnd);
-
-        graphics.fillRoundedRect(0, 0, Width, traveltext.y + traveltext.displayHeight + ButtonsPadding, 4);
+        const Height = traveltext.y + traveltext.displayHeight + ButtonsPadding
 
         return {
+            Button: this.add.container(0, 0, [travelbutton, traveltext]),
+            Height,
             InteractiveObj: travelbutton,
-            button: this.add.container(0, 0, [graphics, travelbutton, traveltext,]),
-            height: traveltext.y + traveltext.displayHeight + ButtonsPadding,
-            width: Width,
-        };
+            Width,
+        } as InteractiveButton;
     }
     private SetTargetNode(index: number) {
         const node = this.data.values.Nodes[index] as INode;
@@ -558,7 +561,15 @@ export class LocalMapScene extends Phaser.Scene {
             const img = require('../../img/Game/Locations/Location' + LocationID + '.png');
             this.load.image({ key: "LocalMapBGR" + LocationID, url: img, });
             this.load.start();
-        }    
+        }
+    }
+
+    private setElementActive(key: number, List: InteractiveButton[], graphics: Phaser.GameObjects.Graphics, width:number) {
+        graphics.clear();
+        List.forEach((e, i) => {
+            graphics.fillStyle((i !== key) ? 0xA8B3CC : 0x4F628E);
+            graphics.fillRect(0, e.Button.y, width, e.Height);
+        });
     }
 }
 
@@ -568,4 +579,11 @@ interface ItoMove {
     initialy: number;
     sprite: Phaser.GameObjects.Sprite;
     mask: Phaser.GameObjects.Graphics | null;
+}
+
+interface InteractiveButton {
+    InteractiveObj: Phaser.GameObjects.Image,
+    Button: Phaser.GameObjects.Container,
+    Height: number;
+    Width: number;
 }

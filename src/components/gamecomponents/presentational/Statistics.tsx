@@ -11,6 +11,11 @@ import * as mentalSrc from '../../img/Game/EQ/mental.svg';
 import * as physicalSrc from '../../img/Game/EQ/physical.svg';
 import * as presentationSrc from '../../img/Game/EQ/presentation.svg';
 
+import * as attackSrc from '../../img/Game/EQ/attack.svg';
+import * as defenseSrc from '../../img/Game/EQ/defense.svg';
+import * as healthSrc from '../../img/Game/EQ/health.svg';
+import * as stormlightSrc from '../../img/Game/EQ/stormlight.svg';
+
 
 
 
@@ -57,10 +62,10 @@ export class Statistics extends React.Component<{ hero: IHero }, {}>{
                         <div className="inlineDiv VerticalMiddle"><img src={String(presentationSrc)} /></div>
                         <div className="inlineDiv">
                             <div className="StatisticsGroup Physical">
-                                <div className="stat"><div>Attack</div><div>{Stats.AttackMin}-{Stats.AttackMax}</div></div>
-                                <div className="stat"><div>Armour</div><div>{Stats.Armour}</div></div>
-                                <div className="stat"><div>Health</div><div>{this.props.hero.hp}/{HeroMaxHP(this.props.hero.hpmax,Stats.Attributes)}</div></div>
-                                <div className="stat"><div>StormLight</div><div>{this.props.hero.sl}/{HeroMaxSL(this.props.hero.slmax, Stats.Attributes)}</div></div>
+                                <div className="stat"><div><img src={attackSrc} /></div><div>{Stats.AttackMin}-{Stats.AttackMax}</div></div>
+                                <div className="stat"><div><img src={defenseSrc} /></div><div>{Stats.Armour}</div></div>
+                                <div className="stat"><div><img src={healthSrc} /></div><div>{this.props.hero.hp}/{HeroMaxHP(this.props.hero.hpmax,Stats.Attributes)}</div></div>
+                                <div className="stat"><div><img src={stormlightSrc} /></div><div>{this.props.hero.sl}/{HeroMaxSL(this.props.hero.slmax, Stats.Attributes)}</div></div>
                             </div>
                         </div>
                     </div>

@@ -11,7 +11,10 @@ import '../css/PopupDisplay.css';
 
 import IAppStatus from '../TYPES';
 
-import { Close_Dialog, Close_Messages,  } from '../actions/actionCreators';
+import { Close_Dialog, Close_Messages, } from '../actions/actionCreators';
+
+import { disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
+// const enableBodyScroll = bodyScrollLock.enableBodyScroll;
 
 class ConnectedPopupDisplay extends React.Component<{ dialog: React.ReactNode, messages: IMessage[], additionalTranslators: IMessageTranslator[], closemessfun: VoidFunction, closedialogFun:VoidFunction},
     { messagesToDisplay: IMessageConverted[], messagesToExecute: IMessageConverted[] }> {
@@ -33,7 +36,7 @@ class ConnectedPopupDisplay extends React.Component<{ dialog: React.ReactNode, m
     public render() {
 
         return (
-            <div className={(this.state.messagesToDisplay.length === 0 && this.props.dialog === undefined) ? "popupClosed" : "popupVisible"} >
+            <div id="PopupDisplay" className={(this.state.messagesToDisplay.length === 0 && this.props.dialog === undefined) ? "popupClosed" : "popupVisible"} >
                 <div className="dialogContainer">
                     {this.props.dialog}
                 </div>
@@ -53,7 +56,6 @@ class ConnectedPopupDisplay extends React.Component<{ dialog: React.ReactNode, m
     }
 
     public componentWillReceiveProps(nextProps: any): void {
-
         this.KnownMessages = MessagesAll;
         this.KnownMessages.push(...nextProps.additionalTranslators);
         // TODO
@@ -64,6 +66,12 @@ class ConnectedPopupDisplay extends React.Component<{ dialog: React.ReactNode, m
             messagesToDisplay: val.toShow,
             messagesToExecute: val.toExec,
         });
+        const targetElement = document.querySelector("#PopupDisplay");
+        if (val.toShow.length > 0 || ((nextProps.dialog !== null) && (nextProps.dialog !== undefined))) {
+            disableBodyScroll(targetElement, null);
+        } else {
+            enableBodyScroll(targetElement);
+        }
     }
 }
 // ----------- connect to store

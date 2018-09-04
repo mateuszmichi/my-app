@@ -1,0 +1,53 @@
+.ContentField .Header {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+    .ContentField .Header .ProjectName {
+        color: #801515;
+        font-style: italic;
+    }
+
+.ContentField .ProjectDescription {
+    line-height: 24px;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    position: relative;
+    text-justify: auto;
+    text-align: justify;
+}
+
+    .ContentField .ProjectDescription img {
+        border-radius: 10px;
+        width: 250px;
+        max-width: 50%;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+        .ContentField .ProjectDescription img:first-child {
+            float: left;
+        }
+#Sanderson {
+    float: right;
+    width: 150px;
+    max-width: 30%;
+    margin: 0;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+.ContentField .LinkFromText {
+    text-decoration: none;
+    padding-bottom: 3px;
+    color: rgb(11, 74, 188);
+    border-color:white;
+    transition: color 0.5s ease-in-out;
+    transition: border-color 0.5s ease-in-out;
+}
+    .ContentField .LinkFromText:hover {
+        color: rgb(100,149,237);
+        padding-bottom: 1px;
+        border-bottom: solid 2px rgb(100,149,237);
+    }

@@ -1,7 +1,8 @@
-.popupClosed{
-    display:none;
-    visibility:hidden;
+.popupClosed {
+    display: none;
+    visibility: hidden;
 }
+
 .popupVisible {
     height: 100%;
     width: 100%;
@@ -10,11 +11,16 @@
     background-color: none;
     background-color: rgba(150,150,150,0.3);
 }
+
 .popupContainer {
     position: fixed;
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
-    top: 0;
+    overflow: auto;
+    display: flex;
+    align-content: center;
     /* Firefox */
     display: -moz-box;
     -moz-box-pack: center;
@@ -30,11 +36,20 @@
     justify-content: center;
     align-items: center;
 }
+
+    .popupContainer div {
+        margin: auto;
+    }
+
 .dialogContainer {
     position: fixed;
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
-    top: 0;
+    overflow: auto;
+    display: flex;
+    align-content: center;
     /* Firefox */
     display: -moz-box;
     -moz-box-pack: center;
@@ -50,10 +65,12 @@
     justify-content: center;
     align-items: center;
 }
+
 .PopupBackground {
     background-color: rgb(170,170,170);
     background-color: rgba(170,170,170,0.3);
 }
+
 .dialog {
     background-color: white;
     max-width: 800px;
@@ -61,8 +78,10 @@
     max-height: 100%;
     display: flex;
     flex-direction: column;
-    border-radius:5px;
+    border-radius: 5px;
+    margin: auto;
 }
+
 .dialogBottom {
     text-align: right;
     padding: 10px;

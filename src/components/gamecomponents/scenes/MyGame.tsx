@@ -22,7 +22,6 @@ export class MyGame extends Phaser.Game {
             width: size * 16,
         });
         // bindings
-        this.handleDBcutDate = this.handleDBcutDate.bind(this);
 
         this.ConnData = conData;
         this.scene.add("MapScene", new LocalMapScene({ height: size * 9, width: size * 16 }, hero.location, this.ConnData), true);
@@ -31,19 +30,16 @@ export class MyGame extends Phaser.Game {
                 break;
             case 1:
                 const travelData = hero.statusData as ITravelResult;
-                // need to change time to localtimezone
-                travelData.endTime = this.handleDBcutDate(travelData.endTime);
-                travelData.startTime = this.handleDBcutDate(travelData.startTime);
                 this.scene.pause("MapScene");
                 this.scene.add("TravelScene", new TravelScene({ height: size * 9, width: size * 16 }, travelData, this.ConnData), true);
                 break;
         }
     }
+}
 
-    private handleDBcutDate(time: Date) {
-        const propDate = new Date(time);
-        const offset = propDate.getTimezoneOffset();
-        const modyfy = new Date(propDate.getTime() - 60000 * offset);
-        return modyfy;
-    }
+export function handleDBcutDate(time: Date) {
+    const propDate = new Date(time);
+    const offset = propDate.getTimezoneOffset();
+    const modyfy = new Date(propDate.getTime() - 60000 * offset);
+    return modyfy;
 }

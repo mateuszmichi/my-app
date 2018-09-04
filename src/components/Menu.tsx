@@ -6,6 +6,7 @@ import * as logoSrc from './img/MainPage/logo.png';
 
 import AccountBalance from '@material-ui/icons/AccountBalance';
 import Book from '@material-ui/icons/Book';
+import Gamepad from '@material-ui/icons/Gamepad';
 import HomeIcon from '@material-ui/icons/Home';
 
 import {
@@ -28,7 +29,7 @@ class TopMenu extends React.Component {
                             </div>
                         </div>
                     </Link></div>
-                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/about">
+                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/project">
                         <div className="menuButton">
                             <div className="inlineDiv">
                                 <AccountBalance className="svgInMenu" />
@@ -38,7 +39,17 @@ class TopMenu extends React.Component {
                             </div>
                         </div>
                     </Link></div>
-                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/history">
+                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/developed">
+                        <div className="menuButton">
+                            <div className="inlineDiv">
+                                <Gamepad className="svgInMenu" />
+                            </div>
+                            <div className="inlineDiv">
+                                <span>FEATURES</span>
+                            </div>
+                        </div>
+                    </Link></div>
+                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/roshar">
                         <div className="menuButton">
                             <div className="inlineDiv">
                                 <Book className="svgInMenu" />

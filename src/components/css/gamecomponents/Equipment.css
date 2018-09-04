@@ -332,6 +332,12 @@
 .Statistics .stat div {
     display: table-cell;
 }
+    .Statistics .stat div img {
+        height: 1em;
+        width: 1em;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
 
     .Statistics .stat div:first-child {
         text-align: left;

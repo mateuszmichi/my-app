@@ -179,7 +179,7 @@ class ConnectedRegistry extends React.Component<{ ConnFuns: IConnectionFunctions
             username: this.state.inputs.login.text,
         };
         const succFun = (res: any) => {
-            this.props.ConnFuns.popMessage([{ title: "createUserSucc", description: "Created new account! You can login now.", } as IMessage], this.KnownMessages);
+            this.props.ConnFuns.popMessage([{ title: "createUserSucc", description: "Created new account! Invitational email has been sent to passed previously email. You can login now.", } as IMessage], this.KnownMessages);
         };
         const failFun = (error: any) => {
             if (error.response === undefined) {

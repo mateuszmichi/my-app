@@ -250,12 +250,12 @@ export interface ILocationResult {
 
 export const LocationOptionsImg: ILocationOptionType[] = [
     {
-        buttonDesc: "Global\nMap",
+        buttonDesc: "Global Map",
         image: String(require('../img/Game/Locations/world.svg')),
         name: "ToGlobal",
     },
     {
-        buttonDesc: "Local\nMap",
+        buttonDesc: "Local Map",
         image: String(require('../img/Game/Locations/plains.svg')),
         name: "ToLocal",
     },
