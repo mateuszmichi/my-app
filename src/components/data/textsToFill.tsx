@@ -36,7 +36,19 @@ import * as knightsSrc from '../img/AboutProject/Surgebinders.jpg';
 import * as whoissandersonSrc from '../img/AboutProject/whoissanderson.jpg';
 import * as windrunnersSrc from '../img/AboutProject/windrunners.jpg';
 
-
+import * as aspnetSrc from '../img/AboutProject/technologies/Asp.Net-Core.jpg';
+import * as css3Src from '../img/AboutProject/technologies/css3_logo.png';
+import * as entityframeworkSrc from '../img/AboutProject/technologies/EF.png';
+// import * as jsSrc from '../img/AboutProject/technologies/jses6.jpeg';
+import * as materialUISrc from '../img/AboutProject/technologies/Material-UI.png';
+import * as sqlSrc from '../img/AboutProject/technologies/mssql.png';
+import * as phaserSrc from '../img/AboutProject/technologies/phaser.png';
+import * as reactrouterSrc from '../img/AboutProject/technologies/react-router.svg';
+import * as reactSrc from '../img/AboutProject/technologies/React.svg';
+import * as reduxSrc from '../img/AboutProject/technologies/redux.png';
+import * as styledSrc from '../img/AboutProject/technologies/styled-components.png';
+import * as typescriptSrc from '../img/AboutProject/technologies/ts.png';
+import * as webpackSrc from '../img/AboutProject/technologies/webpack.png';
 
 
 export const AboutProject = [
@@ -189,78 +201,261 @@ export const TODOS: IToDo[] = [
 export const RosharCarts: IRosharCart[] = [
     {
         brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        description: (<div>
+            <p>Roshar is home to a diverse and unique ecology containing dramatic megafauna and fascinating symbiotic relationships
+        between creatures and Splinters of Investiture. The most dramatic of these is the relationship between humans and self-aware spren,
+        which is the basis for the magic of Surgebinding.</p>
+            <p>During main plot of Stormlight Archive book's Roshar contains of multi kingsdoms, f.e.
+        Alethkar, Jah Keved, Herdaz, Azir, Shinovar and more and more. Each of the kingdoms has it own culture and peoples.</p>
+        </div>),
         graphics: String(rosharSrc),
         title: "Roshar",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "\"Spren are those ideas - the ideas of collective human experience - somehow come alive.\"",
+        description: (<div><p>
+            Spren are creatures of nature. With the exception of Shinovar, where there are no spren, they have a common presence all over
+            Roshar and tend to be ignored, or remain unseen. Spren are not fully understood. They take different shapes and forms,
+            appearing around certain events, ideas, or abnormalities.
+        </p><p>
+                Spren come in many different varieties, each associated with and named for their own phenomenon. Most spren are non-sentient,
+                however, some could become sentient and there are some that already are, for example Kaladin's honorspren.
+            </p></div>),
         graphics: String(sprensSrc),
         title: "Sprens",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "The Knights Radiant, commonly known as Radiants, were a military organization of ten consecrated orders, centered at Urithiru on Roshar.",
+        description: (<div><p>The Radiants were divided into ten Orders, each of which directly corresponds with one of the Heralds.
+            Each Order had two Surges associated with it, and each Surge was used by two different Orders.
+            The Knights Radiant used Shardblades and Shardplate, which were etched with glyphs and glowed a different color
+            according to the Order of which they were a member.</p>
+            <p> Each Radiant was bonded to a spren, and that spren determined the powers and Order to which the Radiant belonged.</p></div>),
         graphics: String(knightsSrc),
         title: "Knights Radiant",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "A highstorm is a fierce weather system that traverses the entire continent of Roshar from east to west, starting at the Origin.",
+        description: (<div><p>A highstorm can last for hours, and the brutality of these storms has shaped much of the ecosystem of Roshar,
+            with the most eastern of lands having the hardiest of creatures and plants. </p>
+            <p>While highstorms have meteorological significance,
+                they also provide Stormlight,
+            an energy which can be stored within gemstones and power a range of devices and magical abilities.</p></div>),
         graphics: String(stormSrc),
         title: "Highstorm",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "Stormlight is a radiant energy given off by highstorms that can be stored in gemstones and then later used by Surgebinders.",
+        description: (<div><p>Stormlight is a source of light and power and is used to power the technology of Roshar.</p>
+            <p> What is more important,
+            stormlight is used by all Surgebinders to perform certain feats, which are akin to those performed by the Knights Radiant,
+            which had ten Orders. Each Order possessed different abilities. However, Stormlight can be used by any Surgebinder to
+            <b> increase battle reflexes, reactivity, speed, and strength</b>.</p></div>),
         graphics: String(stormlightSrc),
         title: "Stormlight",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "A gemstone is a mineral, with applications in many aspects of life on Roshar.",
+        description: (<div><p>Though mining efforts do indeed result in the acquisition of gemstones on Roshar, the harvesting of gemhearts
+            - which grow within greatshells - produces another significant source. Larger species of greatshell, like chasmfiends,
+            produce gemhearts of great size</p>
+            <p>Gemstones are used in spheres, which are the primary currency of Roshar. Their <b>ability to absorb Stormlight</b> make them
+                a source of magical potency necessary for certain types of magic, such as Soulcasting, powering fabrials replicating
+                types of Surgebinding, and as common sources of illumination. An infused gemstone can also trap a spren.</p></div>),
         graphics: String(gemsSrc),
         title: "Gemstones",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "The Shattered Plains are located in the Frostlands on the borders of the Unclaimed Hills, Alethkar and New Natanan.",
+        description: (<div><p>The Plains appear as a broken, jagged mosaic of uneven and variously sized plateaus separated by a labyrinth of sheer chasms and crevasses ranging twenty to thirty feet in width.
+                Some chasms were so deep that they disappeared into darkness.</p>
+            <p>The Shattered Plains are heavily contested in two ways: The first is between the Parshendi and the Alethi,
+                who fight due to the Vengeance Pact after the Parshendi took responsibility for the assassination of the former king of
+                Alethkar, Gavilar Kholin.
+                </p><p>The second is between the armies of the individual Highprinces, who contest over the gemhearts
+        from chrysalises, as well as for the opportunity to possibly gain Shardplate and Shardblades from Parshendi Shardbearers.
+            </p></div>),
         graphics: String(plainsSrc),
         title: "Shattered Plains",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "The Parshendi are clever, accomplished warriors. They are other species that lives on Roshar side by humans.",
+        description: (<div><p>The Parshendi learned to change their forms. They need a highstorm in order to change forms and such a change involves bonding with spren.
+            The change can affect their appearance, physical abilities and mental faculties.</p>
+            <p>The Parshendi, as observed by Alethi warriors, have black or white skin marbled with red and very muscular builds, especially in the legs, the strength
+                of which allows them to leap the chasms of the Shattered Plains.</p>
+            <p>Individual Parshendi are capable of seeking the Old Magic and receiving a boon and a curse from the Nightwatcher.
+            </p></div>),
         graphics: String(parshendiSrc),
         title: "Parshendi",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "A Shardblade is a powerful weapon capable of slicing rock and severing souls.",
+        description: (<div><p>No two Shardblades are the same, but all Shardblades cut easily through most inanimate matter,
+            so long as the Blade is kept in motion. They do not cut living flesh; instead the metal fuzzes as it passes through,
+            killing without leaving a mark or spilling blood.</p>
+            <p>A Shardblade is summoned by the intent of the Shardbearer, willing it into existence, typically dropping into his/her hand extended to the side.
+                The process of summoning takes exactly ten heartbeats.</p><p>
+                Shardbearers are soul-bound to their Blades until death, or until their Blades are willingly relinquished.</p></div>),
         graphics: String(sharedbladeSrc),
         title: "Shardblades",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "Shardplate is magically-enhanced, stormlight-powered plate armor that offers great protection and massively enhances the wearer's strength, speed and dexterity.",
+        description: (<div><p>Shardplate is forged from an unknown metal, and is composed of interlocking plates covering the wearer's entire
+            body. Shardplate is heavy, often requiring assistance to don. Typically, attendants apply the armor from the feet up due to
+            its weight. However, once on, the armor grants the wearer enhanced strength, enabling Shardbearers to easily bear the weight.</p>
+            <p>Shardplate protects its bearer far more than traditional, non-Plate armor. Swords glance off the armor with little more than
+                a scratch, arrows are all but completely ineffective except when shot through the eyeslit of the helm, and the Plate can
+                withstand many hits from hammers and maces before showing signs of damage.</p></div>),
         graphics: String(sharedplateSrc),
         title: "Shardplates",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Roshar",
+        brief: "\"Life before death, strength before weakness, journey before destination.\"",
+        description: (<div><p>Windrunners are one of the ten orders of Knights Radiant. They share Surges with the orders of Bondsmiths (Adhesion) and Skybreakers (Gravitation).
+        </p><p>The Windrunners' Nahel bond is with honorspren, who are inclined toward truth and justice.</p>
+        </div>),
         graphics: String(windrunnersSrc),
         title: "Windrunners",
     },
     {
-        brief: "Roshar is the name of the world, system, and the main continent on the world where the The Stormlight Archive takes place.",
-        description: "Find out more...",
+        brief: "Roshar is a fascinating place to visit!",
+        description: (<div><p>More information about <b>The Stormlight Archive</b> can be found at:</p>
+            <div style={{ textAlign: "center" }}>
+                <a target="_blank" rel="noopener noreferrer" href="http://stormlightarchive.wikia.com/wiki/Stormlight_Archive_Wiki">Stormlight Archive Wiki</a><br />
+                <a target="_blank" rel="noopener noreferrer" href="http://17thshard.com">17th Shard</a><br />
+                <a target="_blank" rel="noopener noreferrer" href="https://brandonsanderson.com/">Bandon Sanderson's Page</a>
+            </div>
+        </div>),
         graphics: String(whoissandersonSrc),
         title: "Find out more...",
     },
 ];
 
+export const TechnologiesList: ITechnologiesGroup[] = [
+    {
+        description: "Front-end",
+        technologies: [
+            {
+                background: "rgb(34, 34, 34)",
+                color: "rgb(97,218,251)",
+                displayName: true,
+                graphics: String(reactSrc),
+                target: "Components and containers generation. Main structure of the application.",
+                title: "React"
+            },
+            {
+                background: "white",
+                color: "inherit",
+                displayName: true,
+                graphics: String(reactrouterSrc),
+                target: "Handling routing. Creating Single Page Application (SPA).",
+                title: "React Router"
+            },
+            {
+                background: "white",
+                color: "inherit",
+                displayName: true,
+                graphics: String(reduxSrc),
+                target: "State container for JS apps. Storing application status for global usage.",
+                title: "Redux"
+            },
+            {
+                background: "rgb(0,122,204)",
+                color: "white",
+                displayName: true,
+                graphics: String(typescriptSrc),
+                target: "All front-end files written in TS.",
+                title: "TypeScript"
+            },
+        ],
+    } as ITechnologiesGroup,
+    {
+        description: "Styles + UI",
+        technologies: [
+            {
+                background: "white",
+                color: "black",
+                displayName: true,
+                graphics: String(css3Src),
+                target: "Providing cross-components CSS classes. Animations.",
+                title: "CSS3"
+            },
+            {
+                background: "rgb(33,150,243)",
+                color: "white",
+                displayName: true,
+                graphics: String(materialUISrc),
+                target: "Applied for aesthetic look. A few UI features.",
+                title: "Material-UI"
+            },
+            {
+                background: "white",
+                color: "inherit",
+                displayName: false,
+                graphics: String(styledSrc),
+                target: "Tested on a few components.",
+                title: "styled components"
+            },
+        ],
+    } as ITechnologiesGroup,
+    {
+        description: "Back-end",
+        technologies: [
+            {
+                background: "rgb(12,44,101)",
+                color: "white",
+                displayName: true,
+                graphics: String(aspnetSrc),
+                target: "Back-end game API based on MVC Controllers.",
+                title: "ASP.NET Core"
+            },
+            {
+                background: "white",
+                color: "inherit",
+                displayName: false,
+                graphics: String(entityframeworkSrc),
+                target: "Communication with database using .NET objects.",
+                title: "Entity Framework"
+            },
+        ],
+    } as ITechnologiesGroup,
+    {
+        description: "Database",
+        technologies: [
+            {
+                background: "white",
+                color: "inherit",
+                displayName: false,
+                graphics: String(sqlSrc),
+                target: "Storage of all passed and generated data for game.",
+                title: "Microsoft SQL Server"
+            },
+        ],
+    },
+    {
+        description: "Other",
+        technologies: [
+            {
+                background: "white",
+                color: "inherit",
+                displayName: true,
+                graphics: String(webpackSrc),
+                target: "Bundling all types of files in the project.",
+                title: "webpack"
+            },
+            {
+                background: "white",
+                color: "inherit",
+                displayName: true,
+                graphics: String(phaserSrc),
+                target: "Generation of the map and equipment interface.",
+                title: "Phaser 3"
+            },
+        ],
+    } as ITechnologiesGroup,
+];
 // -------------- interfaces
 
 export interface IToExpand {
@@ -275,5 +470,17 @@ export interface IRosharCart {
     title: string;
     graphics: string;
     brief: string;
+    description: JSX.Element;
+}
+export interface ITechnology {
+    background: string | number;
+    color: string;
+    displayName: boolean;
+    title: string;
+    graphics: string;
+    target: string;
+}
+export interface ITechnologiesGroup {
     description: string;
+    technologies: ITechnology[];
 }
