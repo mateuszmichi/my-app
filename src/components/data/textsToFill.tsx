@@ -8,33 +8,33 @@ import {
 import * as sandersonSrc from '../img/AboutProject/sanderson.png';
 import * as webdesingSrc from '../img/AboutProject/webdesign.jpg';
 
-import * as map1Src from '../img/AboutProject/map_1.png';
-import * as map2Src from '../img/AboutProject/map_2.png';
-import * as map3Src from '../img/AboutProject/map_3.png';
-import * as map4Src from '../img/AboutProject/map_4.png';
+import * as map1Src from '../img/AboutProject/features/map_1.png';
+import * as map2Src from '../img/AboutProject/features/map_2.png';
+import * as map3Src from '../img/AboutProject/features/map_3.png';
+import * as map4Src from '../img/AboutProject/features/map_4.png';
 
-import * as travelSrc from '../img/AboutProject/travel.png';
+import * as travelSrc from '../img/AboutProject/features/travel.png';
 
-import * as eq1Src from '../img/AboutProject/equipment_1.png';
-import * as eq2Src from '../img/AboutProject/equipment_2.png';
-import * as eq3Src from '../img/AboutProject/equipment_3.png';
+import * as eq1Src from '../img/AboutProject/features/equipment_1.png';
+import * as eq2Src from '../img/AboutProject/features/equipment_2.png';
+import * as eq3Src from '../img/AboutProject/features/equipment_3.png';
 
-import * as account1Src from '../img/AboutProject/account_1.png';
-import * as account2Src from '../img/AboutProject/account_2.png';
-import * as account3Src from '../img/AboutProject/account_3.png';
+import * as account1Src from '../img/AboutProject/features/account_1.png';
+import * as account2Src from '../img/AboutProject/features/account_2.png';
+import * as account3Src from '../img/AboutProject/features/account_3.png';
 
-import * as gemsSrc from '../img/AboutProject/gems.jpg';
-import * as stormSrc from '../img/AboutProject/Highstorm.png';
-import * as rosharSrc from '../img/AboutProject/Map_roshar_small.jpg';
-import * as parshendiSrc from '../img/AboutProject/parshendi.jpg';
-import * as sharedbladeSrc from '../img/AboutProject/shardblade.jpg';
-import * as sharedplateSrc from '../img/AboutProject/shardplate.jpg';
-import * as plainsSrc from '../img/AboutProject/shatteredplains.jpg';
-import * as sprensSrc from '../img/AboutProject/sprens.jpg';
-import * as stormlightSrc from '../img/AboutProject/stormlight.jpg';
-import * as knightsSrc from '../img/AboutProject/Surgebinders.jpg';
-import * as whoissandersonSrc from '../img/AboutProject/whoissanderson.jpg';
-import * as windrunnersSrc from '../img/AboutProject/windrunners.jpg';
+import * as gemsSrc from '../img/AboutProject/roshar/gems.jpg';
+import * as stormSrc from '../img/AboutProject/roshar/Highstorm.png';
+import * as rosharSrc from '../img/AboutProject/roshar/Map_roshar_small.jpg';
+import * as parshendiSrc from '../img/AboutProject/roshar/parshendi.jpg';
+import * as sharedbladeSrc from '../img/AboutProject/roshar/shardblade.jpg';
+import * as sharedplateSrc from '../img/AboutProject/roshar/shardplate.jpg';
+import * as plainsSrc from '../img/AboutProject/roshar/shatteredplains.jpg';
+import * as sprensSrc from '../img/AboutProject/roshar/sprens.jpg';
+import * as stormlightSrc from '../img/AboutProject/roshar/stormlight.jpg';
+import * as knightsSrc from '../img/AboutProject/roshar/Surgebinders.jpg';
+import * as whoissandersonSrc from '../img/AboutProject/roshar/whoissanderson.jpg';
+import * as windrunnersSrc from '../img/AboutProject/roshar/windrunners.jpg';
 
 import * as aspnetSrc from '../img/AboutProject/technologies/Asp.Net-Core.jpg';
 import * as css3Src from '../img/AboutProject/technologies/css3_logo.png';
@@ -50,6 +50,8 @@ import * as styledSrc from '../img/AboutProject/technologies/styled-components.p
 import * as typescriptSrc from '../img/AboutProject/technologies/ts.png';
 import * as webpackSrc from '../img/AboutProject/technologies/webpack.png';
 
+import * as matchgeoSrc from '../img/AboutProject/construction.svg';
+import * as shatteredSrc from '../img/AboutProject/shash_white.png';
 
 export const AboutProject = [
     <img key={0} src={String(webdesingSrc)} />
@@ -63,7 +65,7 @@ export const AboutProject = [
     ,
     <p key={2}>
         Within a few years, the technologies used in the development of websites have dynamically changed. For this reason, the current project
-        has been built from scratch. All of the important technologies and libraries have been placed in <Link className="LinkFromText" to="/technologies">TECHNOLOGIES</Link>.
+        has been built from scratch. All of the important technologies and libraries have been placed in <Link className="LinkFromText" to="/technology">TECHNOLOGIES</Link>.
         </p>
     ,
     <img id="Sanderson" key={3} src={String(sandersonSrc)} />
@@ -273,7 +275,7 @@ export const RosharCarts: IRosharCart[] = [
                 who fight due to the Vengeance Pact after the Parshendi took responsibility for the assassination of the former king of
                 Alethkar, Gavilar Kholin.
                 </p><p>The second is between the armies of the individual Highprinces, who contest over the gemhearts
-        from chrysalises, as well as for the opportunity to possibly gain Shardplate and Shardblades from Parshendi Shardbearers.
+    from chrysalises, as well as for the opportunity to possibly gain Shardplate and Shardblades from Parshendi Shardbearers.
             </p></div>),
         graphics: String(plainsSrc),
         title: "Shattered Plains",
@@ -456,6 +458,25 @@ export const TechnologiesList: ITechnologiesGroup[] = [
         ],
     } as ITechnologiesGroup,
 ];
+
+export const ProjectsList: IProject[] = [
+    {
+        background: "rgb(197, 159, 95)",
+        color:"white",
+        description: "A website game which takes place on Roshar - world created in The Stormlight Archive series. \
+                        Created to present usage of front and back end technologies.",
+        image: String(shatteredSrc),
+        title: "SHATTERED PLAINS",
+    },
+    {
+        background: "cornflowerblue",
+        color: "inherit",
+        description: "A programme that is matching primitives to complicated cloud of points in .STL format. It is dedicated to \
+        aid process of topological optimization provided by ANSYS. Used algorithms are under construction.",
+        image: String(matchgeoSrc),
+        title: "MATCHGEO",
+    },
+];
 // -------------- interfaces
 
 export interface IToExpand {
@@ -483,4 +504,11 @@ export interface ITechnology {
 export interface ITechnologiesGroup {
     description: string;
     technologies: ITechnology[];
+}
+export interface IProject {
+    background: string|number;
+    color: string;
+    image: string;
+    title: string;
+    description: string;
 }

@@ -3,6 +3,7 @@ import {IMessage, IMessageTranslator, MessageType, } from '../MessageMenager';
 // ------------------ images import
 import * as newuserSrc from '../img/MainPage/add-user.png';
 import * as disconnSrc from '../img/MainPage/disconnect.png';
+import * as mailSrc from '../img/MainPage/mail.png';
 import * as riskSrc from '../img/MainPage/risk-skull.png';
 
 import * as warriorSrc from '../img/Account/warrioriconbig.png';
@@ -100,7 +101,16 @@ export const MessageRemoveAccountSucc: IMessageTranslator =
         name: "removeAccountSucc",
         title: "Account has been removed",
         type: MessageType.SUCCESS,
-    };
+};
+export const MessageSentEmailSucc: IMessageTranslator =
+{
+    actions: [],
+    images: [String(mailSrc)],
+    ispopup: true,
+    name: "sendEmailSucc",
+    title: "Email has been sent",
+    type: MessageType.SUCCESS,
+};
 
 // ---------------- export groups
 
@@ -112,4 +122,4 @@ export const MessagesForLogin = [
 
 export const MessagesAll = [MessageLoginErr, MessageNameErr, MessageServerErr,
     MessageSecurityErr, MessageChangeEqErr ,MessageCreateUserSucc, MessageCreateHeroSucc, MessageRemoveHeroSucc,
-    MessageTimeoutErr, MessageRemoveAccountSucc];
+    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc];

@@ -29,7 +29,7 @@ class TopMenu extends React.Component {
                             </div>
                         </div>
                     </Link></div>
-                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/project">
+                    <div className="itemContainer linkContainer"><Link className="menuLink" to="/aboutproject">
                         <div className="menuButton">
                             <div className="inlineDiv">
                                 <AccountBalance className="svgInMenu" />
