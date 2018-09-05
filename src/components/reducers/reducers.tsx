@@ -1,6 +1,8 @@
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING,  } from '../actions/actionTypes';
+import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT } from '../actions/actionTypes';
 
-import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData,   } from '../TYPES';
+import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData, } from '../TYPES';
+
+import { IEquipmentModifyResult } from '../data/gameTYPES';
 
 
 const initialState: IAppStatus = {
@@ -62,6 +64,104 @@ function shatteredApp(state = initialState, action: any) {
             return Object.assign({}, state, { isWaiting: true });
         case END_WAITING:
             return Object.assign({}, state, { isWaiting: false });
+
+        case UPDATE_EQUIPMENT:
+            const data5 = pass.payload as IEquipmentModifyResult;
+            if (state.activeHero === null) {
+                return state;
+            }
+            const eqCopy = Object.assign({}, state.activeHero.equipment);
+            data5.removed.forEach(e => {
+                if (e.target.startsWith("Backpack")) {
+                    const nub = parseInt(e.target.substring(8),10);
+                    eqCopy.backpack[nub] = null;
+                }
+                if (e.target.startsWith("Inventory")) {
+                    const nub = parseInt(e.target.substring(9),10);
+                    switch (nub) {
+                        case 0:
+                            eqCopy.helmet = null;
+                            break;
+                        case 1:
+                            eqCopy.ring1 = null;
+                            break;
+                        case 2:
+                            eqCopy.neckles = null;
+                            break;
+                        case 3:
+                            eqCopy.ring2 = null;
+                            break;
+                        case 4:
+                            eqCopy.gloves = null;
+                            break;
+                        case 5:
+                            eqCopy.armour = null;
+                            break;
+                        case 6:
+                            eqCopy.bracelet = null;
+                            break;
+                        case 7:
+                            eqCopy.firstHand = null;
+                            break;
+                        case 8:
+                            eqCopy.trousers = null;
+                            break;
+                        case 9:
+                            eqCopy.secondHand = null;
+                            break;
+                        case 10:
+                            eqCopy.shoes = null;
+                            break;
+                    }
+                }
+            });
+            data5.added.forEach(e => {
+                if (e.target.startsWith("Backpack")) {
+                    const nub = parseInt(e.target.substring(8),10);
+                    eqCopy.backpack[nub] = e.itemID;
+                }
+                if (e.target.startsWith("Inventory")) {
+                    const nub = parseInt(e.target.substring(9),10);
+                    switch (nub) {
+                        case 0:
+                            eqCopy.helmet = e.itemID;
+                            break;
+                        case 1:
+                            eqCopy.ring1 = e.itemID;
+                            break;
+                        case 2:
+                            eqCopy.neckles = e.itemID;
+                            break;
+                        case 3:
+                            eqCopy.ring2 = e.itemID;
+                            break;
+                        case 4:
+                            eqCopy.gloves = e.itemID;
+                            break;
+                        case 5:
+                            eqCopy.armour = e.itemID;
+                            break;
+                        case 6:
+                            eqCopy.bracelet = e.itemID;
+                            break;
+                        case 7:
+                            eqCopy.firstHand = e.itemID;
+                            break;
+                        case 8:
+                            eqCopy.trousers = e.itemID;
+                            break;
+                        case 9:
+                            eqCopy.secondHand = e.itemID;
+                            break;
+                        case 10:
+                            eqCopy.shoes = e.itemID;
+                            break;
+                    }
+                }
+            });
+            let heroCopy = Object.assign({}, state.activeHero);
+            heroCopy = Object.assign(heroCopy, { equipment: eqCopy });
+            return Object.assign({}, state, { activeHero: heroCopy });
 
         default: return state;
     }

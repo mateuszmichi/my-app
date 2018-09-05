@@ -1,5 +1,9 @@
 import { IEquipmentResult, IItemResult, ItemTypes } from "./gameTYPES";
 
+import { IHero } from "../TYPES";
+
+// game mechanics
+
 export function ExpToLevel(level: number): number {
     if (level <= 10) {
         return 10 * (level * level - level);
@@ -35,6 +39,54 @@ export function MoneyToGems(money: number): string[] {
     return res;
 }
 
+export function HeroMaxHP(baseHP: number, finalAttr: number[]) {
+    return baseHP + Math.ceil(finalAttr[1] / 2);
+}
+export function HeroMaxSL(baseSL: number, finalAttr: number[]) {
+    return Math.ceil(baseSL * (1 + finalAttr[4] / 100));
+}
+export function HeroGenStatistics(hero: IHero) {
+    const ActiveItems: IItemResult[] = [];
+    const itemsOn = [
+        hero.equipment.armour,
+        hero.equipment.bracelet,
+        hero.equipment.firstHand,
+        hero.equipment.gloves,
+        hero.equipment.helmet,
+        hero.equipment.neckles,
+        hero.equipment.ring1,
+        hero.equipment.ring2,
+        hero.equipment.secondHand,
+        hero.equipment.shoes,
+        hero.equipment.trousers
+    ];
+    itemsOn.forEach(e => {
+        if (e !== null) {
+            const element = hero.equipment.knownItems.find(f => f.itemID === e);
+            if (element !== undefined) {
+                ActiveItems.push(element);
+            }
+        }
+    });
+    const attr = [...hero.attributes];
+    let attMin = 0;
+    let attMax = 0;
+    let armour = 0;
+    ActiveItems.forEach(e => {
+        for (let i = 0; i < 8; i++) {
+            attr[i] += e.attributes[i];
+        }
+        attMin += e.dmgMin;
+        attMax += e.dmgMax;
+        armour += e.armour;
+    });
+    return {
+        Armour: armour,
+        AttackMax: attMax,
+        AttackMin: attMin,
+        Attributes: attr,
+    }
+}
 
 // ------ vector functions
 
@@ -63,7 +115,7 @@ export class Vector {
     public Angle(): number {
         return Math.atan2(this.y, this.x);
     }
-    
+
 }
 
 export function VectorInGlobal(angle: number, localV: Vector): Vector {
@@ -83,7 +135,7 @@ export function ChildNodeRange(count: number, betweenangle: number, radius: numb
 
 
 // ------- travel functions
-export function TravelTime(distance: number, mapscale:number, velocity = 18) {
+export function TravelTime(distance: number, mapscale: number, velocity = 18) {
     return (distance * mapscale / velocity / 100 * 3.6);
 }
 export function TravelTimeToString(seconds: number) {
@@ -117,7 +169,7 @@ export function CompererItems(item: IItemResult, Equipment: IEquipmentResult, is
         }
     } else {
         const schema = AcceptItemSchema(Equipment);
-        const items: Array<{ item: IItemResult | null, name: string, background: string }> = [];
+        const items: Array<{ item: IItemResult | null, name: string, background: string, num:number }> = [];
         schema.forEach(e => {
             if (e.acceptType.findIndex(f => f === item.itemType) !== -1) {
                 if (e.item !== null) {
@@ -125,9 +177,9 @@ export function CompererItems(item: IItemResult, Equipment: IEquipmentResult, is
                     if (element === undefined) {
                         throw Error("Not passing SQL data correctly!!!");
                     }
-                    items.push({ item: element, name: e.name, background:e.background });
+                    items.push({ item: element, name: e.name, background: e.background, num: e.num });
                 } else {
-                    items.push({ item: null, name: e.name, background: e.background});
+                    items.push({ item: null, name: e.name, background: e.background, num: e.num });
                 }
             }
         });
@@ -144,70 +196,82 @@ export function AcceptItemSchema(Equipment: IEquipmentResult) {
             background: String(require("../img/Game/EQ/helmet.svg")),
             item: Equipment.helmet,
             name: "Helmet",
+            num: 0,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.RING],
             background: String(require("../img/Game/EQ/rings.svg")),
             item: Equipment.ring1,
             name: "Ring1",
+            num: 1,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.NECKLES],
             background: String(require("../img/Game/EQ/necklace.svg")),
             item: Equipment.neckles,
             name: "Neckles",
+            num: 2,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.RING],
             background: String(require("../img/Game/EQ/rings.svg")),
             item: Equipment.ring2,
             name: "Ring2",
+            num: 3,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.GLOVES],
             background: String(require("../img/Game/EQ/gloves.svg")),
             item: Equipment.gloves,
             name: "Gloves",
+            num: 4,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.ARMOUR],
             background: String(require("../img/Game/EQ/armour.svg")),
             item: Equipment.armour,
             name: "Armour",
+            num: 5,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.BRACELET],
             background: String(require("../img/Game/EQ/bracelet.svg")),
             item: Equipment.bracelet,
             name: "Bracelet",
+            num: 6,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.SINGLEHAND_WEAPON, ItemTypes.DOUBLEHAND_WEAPON, ItemTypes.SECONDARY_WEAPON],
             background: String(require("../img/Game/EQ/weapon2.png")),
             item: Equipment.firstHand,
             name: "FirstHand",
+            num: 7,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.TROUSERS],
             background: String(require("../img/Game/EQ/trousers.svg")),
             item: Equipment.trousers,
             name: "Trousers",
+            num: 8,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.SHIELD, ItemTypes.SECONDARY_WEAPON],
             background: String(require("../img/Game/EQ/shield.svg")),
             item: Equipment.secondHand,
             name: "SecondHand",
+            num: 9,
         } as IInventorySlot,
         {
             acceptType: [ItemTypes.SHOES],
             background: String(require("../img/Game/EQ/shoe.svg")),
             item: Equipment.shoes,
             name: "Shoes",
+            num: 10,
         } as IInventorySlot,
     ]);
 }
 export interface IInventorySlot {
+    num: number;
     name: string;
     background: string;
     acceptType: ItemTypes[];

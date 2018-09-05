@@ -90,11 +90,18 @@
             border-radius: 4px;
             cursor: pointer;
             padding: 4px;
+            margin:2px;
             /*padding-top: 8px;
             padding-bottom: 8px;*/
         }
         .ItemDescription .ItemAttributes .Options .OptionsRow button:hover {
             color:white;
+        }
+        .ItemDescription .ItemAttributes .Options .OptionsRow button:disabled{
+            background-color:snow;
+            color:grey;
+            border-color:grey;
+            cursor:not-allowed;
         }
 
     .ItemDescription .ItemName {
@@ -117,7 +124,9 @@
         padding-right: 10px;
         font-size: small;
     }
-
+    .ItemDescription .ItemLevel.Negative {
+        color:darkred;
+    }
 
     .ItemDescription .ItemAttributes .Attribute:first-child .AttributeRow {
         text-align: center;
@@ -132,3 +141,48 @@
         text-align:right;
         width:100%;
     }
+    .ItemDescription .RemovePart {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        padding: 4px;
+        padding-left: 6px;
+        padding-right: 0px;
+    }
+#RemoveItemButton {
+    cursor:pointer;
+}
+#RemoveItemButton:hover {
+    color:cornflowerblue;
+}
+.ItemDescription .RemovePart {
+    background-color:white;
+}
+.ItemDescription .RemovePart img {
+    cursor: pointer;
+    height: 18.4px;
+    width: 18.4px;
+    padding: 2px;
+    margin-right: 2px;
+    border-radius: 4px;
+}
+    .ItemDescription .RemovePart img:hover {
+        background-color: lightgray;
+    }
+    .ItemDescription .RemovePart .ConfirmPart div:first-child {
+        margin-left: 4px;
+        margin-right: 4px;
+        font-size:small;
+    }
+    .ItemDescription .RemovePart .ConfirmPart {
+        position: relative;
+        overflow: hidden;
+    }
+        .ItemDescription .RemovePart .Visible {
+            display: initial;
+            width:150px;
+        }
+        .ItemDescription .RemovePart .Invisible {
+            display: none;
+            width: 0;
+        }

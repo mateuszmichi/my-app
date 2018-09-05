@@ -3,9 +3,11 @@ import * as React from 'react';
 import '../../css/gamecomponents/ItemDescription.css';
 
 import { CompererItems } from '../../data/gameCALC';
-import { CharacterAttributes, IEquipmentResult, IItemResult, ItemTypeDescription, } from '../../data/gameTYPES';
+import { CharacterAttributes, IItemResult, ItemTypeDescription, } from '../../data/gameTYPES';
+import { IHero } from '../../TYPES';
 
-import { Button, ClickAwayListener, Divider,  } from '@material-ui/core';
+import { Button, ClickAwayListener, Divider, } from '@material-ui/core';
+import DeleteTwoToneIcon from '@material-ui/icons/DeleteTwoTone';
 
 import { IConnectionData } from '../../data/connectionConf';
 
@@ -14,21 +16,30 @@ import * as defenceSrc from '../../img/Game/EQ/shield.svg';
 
 import * as attackSrc from '../../img/Game/EQ/weapon2.png';
 
+import * as noSrc from '../../img/Login/invalid.png';
+import * as yesSrc from '../../img/Login/valid.png';
 
 
 
-
-export class ItemDescription extends React.Component<{ item: IItemResult, equipment: IEquipmentResult, isOn: boolean, ConnData: IConnectionData }, {}>{
+export class ItemDescription extends React.Component<{ item: IItemResult, hero: IHero, isOn: boolean, ConnData: IConnectionData, equipFun: (event: any, target: string) => void },
+    { toConfirm: boolean }>{
     constructor(props: any) {
         super(props);
         this.NumberToComperer = this.NumberToComperer.bind(this);
         this.showStat = this.showStat.bind(this);
         this.showDmgStat = this.showDmgStat.bind(this);
         this.showPossiblePlacement = this.showPossiblePlacement.bind(this);
+        this.handleTrashClick = this.handleTrashClick.bind(this);
+        this.dismissTrashClick = this.dismissTrashClick.bind(this);
+        this.removeItem = this.removeItem.bind(this);
+
+        this.state = {
+            toConfirm: false,
+        }
     }
 
     public render() {
-        const options = CompererItems(this.props.item, this.props.equipment, this.props.isOn);
+        const options = CompererItems(this.props.item, this.props.hero.equipment, this.props.isOn);
 
         const toshow = [];
         for (let i = 0; i < 8; i++) {
@@ -94,7 +105,7 @@ export class ItemDescription extends React.Component<{ item: IItemResult, equipm
                         <div className="ItemType">
                             {ItemTypeDescription[this.props.item.itemType]}
                         </div>
-                        <div className="ItemLevel">
+                        <div className={(this.props.item.lvl > this.props.hero.level) ? "ItemLevel Negative" : "ItemLevel"}>
                             Lvl {this.props.item.lvl}
                         </div>
                     </div>
@@ -124,7 +135,18 @@ export class ItemDescription extends React.Component<{ item: IItemResult, equipm
 
                         <div className="Options">
                             <div className="OptionsRow" /><div className="OptionsRow" />
-                            {options.wearing.map((e, i) => (<div className="OptionsRow" key={i}><button>Equip</button></div>))}
+                            {options.wearing.map((e, i) => {
+                                const fun = (event: any) => {
+                                    this.props.equipFun(event, "Inventory" + e.num);
+                                    this.props.ConnData.closeDialog();
+                                }
+                                return (<div className="OptionsRow" key={i}>
+                                    <button disabled={this.props.item.lvl > this.props.hero.level} onClick={fun}>
+                                        Equip
+                                        </button>
+                                </div>)
+                            })
+                            }
                         </div>
                     </div>
                     <Divider />
@@ -134,6 +156,14 @@ export class ItemDescription extends React.Component<{ item: IItemResult, equipm
                         onClick={this.props.ConnData.closeDialog}
                     >
                         Back</Button></div>
+                    <div className="RemovePart">
+                        <div id="RemoveItemButton" className="inlineDiv" onClick={this.handleTrashClick}><DeleteTwoToneIcon /></div>
+                        <div className={(this.state.toConfirm) ? "inlineDiv ConfirmPart Visible" : "inlineDiv ConfirmPart Invisible"}>
+                            <div className="inlineDiv">Confirm</div>
+                            <div className="inlineDiv" onClick={this.removeItem}><img src={yesSrc} /></div>
+                            <div className="inlineDiv" onClick={this.dismissTrashClick}><img src={noSrc} /></div>
+                        </div>
+                    </div>
                 </div>
             </ClickAwayListener>)
     }
@@ -168,12 +198,16 @@ export class ItemDescription extends React.Component<{ item: IItemResult, equipm
     }
     private showPossiblePlacement(e: { item: IItemResult | null, name: string, background: string }) {
         return (<div className="PossiblePlacement"><div className="PossiblePlacementSlot"><img src={e.background} /></div></div>);
-        // if (e.item !== null) {
-        //    const req = String(require('../../img/Game/Items/' + e.item.itemID + '.png'));
-        //    return (<div className="PossiblePlacement"><img src={req} /></div>)
-        // } else {
-        //    return <div className={"PossiblePlacement " + e.name} />
-        // }
+    }
+    private handleTrashClick() {
+        this.setState((p, n) => ({ toConfirm: !p.toConfirm }));
+    }
+    private dismissTrashClick() {
+        this.setState({ toConfirm: false });
+    }
+    private removeItem(event: any) {
+        this.props.equipFun(event, "Trash");
+        this.props.ConnData.closeDialog();
     }
 }
 

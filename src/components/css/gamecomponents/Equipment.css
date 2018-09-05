@@ -332,6 +332,12 @@
 .Statistics .stat div {
     display: table-cell;
 }
+    .Statistics .stat div img {
+        height: 1em;
+        width: 1em;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
 
     .Statistics .stat div:first-child {
         text-align: left;
@@ -395,33 +401,33 @@
 .InventorySlotHolder.SlotActive .ItemInspector {
     visibility: visible;
 }
-.InventorySlotHolder.SlotWearing .ItemInspector {
-    visibility: visible;
-}
 
 .ItemInspector {
-    opacity:0.8;
+    opacity: 0.8;
     visibility: hidden;
     position: absolute;
-    height: 35%;
-    width: 35%;
-    bottom: 0;
-    right: 0;
-    background-image: url("../../img/Game/EQ/inspect.svg");
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    /*background-image: url("../../img/Game/EQ/inspect.svg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 80%;
-    border-radius: calc(100% * 5 / 35);
-    border: solid thin;
+    background-size: 80%;*/
+    background-color:rgba(255,255,255,0.3);
+    border-radius: 5%;
+    display:flex;
+    align-content:center;
 }
-    .ItemInspector:hover {
-        background-image: url("../../img/Game/EQ/inspect_white.svg");
-        border-color:white;
+    .ItemInspector div{
+        margin:auto;
+        font-weight:bold;
     }
-
-
-@keyframes activeItemBGR {
-    0% {
+    .ItemInspector:hover {
+        color:white;
+    }
+    @keyframes activeItemBGR {
+        0% {
         background-color: rgb(58,41,37);
     }
 

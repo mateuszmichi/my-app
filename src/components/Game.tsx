@@ -32,7 +32,7 @@ class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnection
             actionToken: this.props.actionToken,
             closeDialog: this.props.ConnFuns.closeDialog,
             closeMessage: this.props.ConnFuns.closeMessage,
-            closeWaiting: this.props.ConnFuns.closeMessage,
+            closeWaiting: this.props.ConnFuns.closeWaiting,
             popDialog: this.props.ConnFuns.popDialog,
             popMessage: this.props.ConnFuns.popMessage,
             popWaiting: this.props.ConnFuns.popWaiting,
@@ -61,7 +61,7 @@ class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnection
                             <MainWindow character={this.props.hero} ConnData={this.connData} CurrentPosition={this.state.CurrentPosition}/>
                         </Grid>
                         <Grid item={true} xs={1}>
-                            <MainMenu changePosition={this.handleChangePosition} logFun={this.handleLogout}/>
+                            <MainMenu CurrentPosition={this.state.CurrentPosition} changePosition={this.handleChangePosition} logFun={this.handleLogout}/>
                         </Grid>
                     </Grid>
                 </div>

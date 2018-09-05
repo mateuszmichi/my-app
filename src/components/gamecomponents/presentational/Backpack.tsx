@@ -1,12 +1,14 @@
 import * as React from 'react';
 
 import { MoneyToGems } from '../../data/gameCALC';
-import { IEquipmentResult, IItemResult, } from '../../data/gameTYPES';
+import { IItemResult, } from '../../data/gameTYPES';
 
 import { IActiveItem } from '../Equipment';
 
+import { IHero } from '../../TYPES';
 
-export class Backpack extends React.Component<{ equipment: IEquipmentResult, itemDetails: (e: IEquipmentResult, i: IItemResult, s: number) => void, activeItem: IActiveItem | null, makeActiveFun: (e:any,i: IActiveItem) => void }, {}>{
+
+export class Backpack extends React.Component<{ hero: IHero, itemDetails: (h: IHero, i: IItemResult, s: number) => void, activeItem: IActiveItem | null, makeActiveFun: (e:any,i: IActiveItem|null, t:string) => void }, {}>{
     constructor(props: any) {
         super(props);
         // --------- bindings
@@ -26,12 +28,12 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult, ite
                     <div className="BackGroundBar" />
                     <div className="Description"><div className="Text">EQUIPMENT</div></div>
                 </div>
-                <div className="Gold">{this.GenGoldStatus(this.props.equipment.money)}</div>
+                <div className="Gold">{this.GenGoldStatus(this.props.hero.equipment.money)}</div>
 
                 <div className="ItemContainer">
-                    {this.props.equipment.backpack.map((e, key) => {
+                    {this.props.hero.equipment.backpack.map((e, key) => {
                         if (e !== null) {
-                            const element = this.props.equipment.knownItems.find(f => f.itemID === e);
+                            const element = this.props.hero.equipment.knownItems.find(f => f.itemID === e);
                             if (element === undefined) {
                                 throw Error("Unknown item in inventory");
                             }
@@ -39,7 +41,7 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult, ite
                                 this.props.makeActiveFun(event, {
                                     activeItem: "Backpack" + key,
                                     activeType: element.itemType,
-                                });
+                                }, "Backpack" + key);
                             };
                             const onClickFunDetails = () => {
                                 this.showItemDescription(key);
@@ -55,12 +57,15 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult, ite
                                 <div className="ItemSlot" onClick={onClickFun}>
                                     <div className="Item">
                                         <img src={String(image)} />
-                                        <div className="ItemInspector" onClick={onClickFunDetails}/>
+                                        <div className="ItemInspector" onClick={onClickFunDetails}><div>Details</div></div>
                                     </div>
                                 </div>
                             </div>);
                         } else {
-                            return (<div className={(this.props.activeItem !== null) ? "ItemSlotHolder SlotToPut" : "ItemSlotHolder"} key={key}><div className="ItemSlot" /></div>);
+                            const onClickEmpty = (event: any) => {
+                                this.props.makeActiveFun(event, null, "Backpack" + key);
+                            };
+                            return (<div className={(this.props.activeItem !== null) ? "ItemSlotHolder SlotToPut" : "ItemSlotHolder"} key={key}><div className="ItemSlot" onClick={onClickEmpty}/></div>);
                         }
                     })}
                 </div>
@@ -70,7 +75,7 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult, ite
     private GenGoldStatus(gold: number): JSX.Element[] {
         const res: JSX.Element[] = [];
         const pickures: string[] = [];
-        const values = MoneyToGems(this.props.equipment.money);
+        const values = MoneyToGems(this.props.hero.equipment.money);
         for (let i = 0; i < 3; i++) {
             pickures.push(String(require('../../img/Game/EQ/gem' + i + ".svg")));
         }
@@ -81,14 +86,14 @@ export class Backpack extends React.Component<{ equipment: IEquipmentResult, ite
         return res.reverse();
     }
     private showItemDescription(id: number) {
-        const element = this.props.equipment.backpack[id];
+        const element = this.props.hero.equipment.backpack[id];
         if (element === null) {
             throw Error("Unknown Item!");
         }
-        const data = this.props.equipment.knownItems.find(e => e.itemID === element);
+        const data = this.props.hero.equipment.knownItems.find(e => e.itemID === element);
         if (data === undefined) {
             throw Error("Unknown Item!");
         }
-        this.props.itemDetails(this.props.equipment, data, 0);
+        this.props.itemDetails(this.props.hero, data, 0);
     }
 }

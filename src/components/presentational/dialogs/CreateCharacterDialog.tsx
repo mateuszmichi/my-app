@@ -301,7 +301,7 @@ class ConnectedCreateCharacterDialog extends React.Component<{ closedialogFun: V
                     color="primary"
                     onClick={this.props.closedialogFun}
                 >
-                    Abord</Button>
+                    Abort</Button>
             </div>
         </div>);
     }

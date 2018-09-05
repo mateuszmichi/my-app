@@ -129,7 +129,7 @@ class ConnectedChangePasswordDialog extends React.Component<{ userToken: IUserTo
                     color="primary"
                     onClick={this.props.ConnFuns.closeDialog}
                 >
-                    Abord</Button>
+                    Abort</Button>
             </div>
         </div>);
     }

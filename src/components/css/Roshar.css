@@ -1,0 +1,52 @@
+.CartContext {
+    margin: auto;
+    width: 60%;
+    max-width: 1160px;
+    min-width: 300px;
+    height: 100%;
+    min-height: 100%;
+    text-align:center;
+    padding-top:10px;
+    padding-bottom:30px;
+}
+    .CartContext .Cart {
+        cursor:pointer;
+        overflow: hidden;
+        display: inline-block;
+        position: relative;
+        width: 200px;
+        height: 217px;
+        margin: 10px;
+        background-color: white;
+        border-radius: 10px;
+        -webkit-box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.2);
+        -moz-box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.2);
+        box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.2);
+    }
+.Cart .ImagePlace {
+    height:125px;
+    background-position:center;
+    background-size:cover;
+}
+.Cart .ImageTitle {
+    display:flex;
+    height:50px;
+    padding:5px;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    color:#222222;
+    align-content:center;
+}
+    .Cart .ImageTitle div{
+        margin:auto;
+    }
+    .Cart .ButtonPlace {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+    }
+    .Cart .ButtonPlace button {
+        width:100%;
+    }

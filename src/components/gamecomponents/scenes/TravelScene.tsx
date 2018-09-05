@@ -8,6 +8,7 @@ import { LocalMapScene } from './MapScenes';
 
 import { IMessage } from '../../MessageMenager';
 import { IPassedGameData } from '../../TYPES';
+import { handleDBcutDate } from './MyGame';
 
 
 const Settings = {
@@ -19,7 +20,8 @@ const Settings = {
     TravelDisplay: {
         ArrowWidth: 20,
         Border: 10,
-        ButtonSize: 40,
+        ButtonPadding: 3,
+        ButtonSize: 30,
     }
 }
 
@@ -29,6 +31,7 @@ export class TravelScene extends Phaser.Scene {
     private travelData: ITravelResult;
     private startDate: Date;
     private endDate: Date;
+    private reverseDate: Date | null;
 
     private Background: Phaser.GameObjects.Image;
     private TextTime: Phaser.GameObjects.Text;
@@ -36,19 +39,31 @@ export class TravelScene extends Phaser.Scene {
     private ProgressBar: Phaser.GameObjects.Graphics;
     private ClockContainer: Phaser.GameObjects.Container;
 
+    private ProgressBarWidth: number;
+
     constructor(dim: { height: number, width: number }, travel: ITravelResult, ConnData: IConnectionData) {
         super({ key: "TravelScene", });
         this.dimentions = dim;
         this.ConnData = ConnData;
         // ----- bindings
         this.endTravel = this.endTravel.bind(this);
+        this.CreateButton = this.CreateButton.bind(this);
+        this.setHover = this.setHover.bind(this);
+        this.setHoverEnd = this.setHoverEnd.bind(this);
+        this.setElementActive = this.setElementActive.bind(this);
+        this.ReverseTravel = this.ReverseTravel.bind(this);
+
         this.travelData = travel;
-        this.endDate = new Date(this.travelData.endTime);
-        this.startDate = new Date(this.travelData.startTime);
-        this.TimeToTravel = (this.endDate.getTime() - Date.now()) / 1000;
+        this.endDate = new Date(handleDBcutDate(this.travelData.endTime));
+        this.startDate = new Date(handleDBcutDate(this.travelData.startTime));
+
+        this.reverseDate = (this.travelData.isReverse) ? (new Date(handleDBcutDate(this.travelData.reverseTime))) : null;
+
+        this.TimeToTravel = (this.endDate.getTime() - this.startDate.getTime()) / 1000;
         if (this.TimeToTravel < 1) {
             this.TimeToTravel = 1;
         }
+        this.ProgressBarWidth = Settings.ProgressBar.MainWidth;
     }
 
     public preload() {
@@ -57,43 +72,61 @@ export class TravelScene extends Phaser.Scene {
 
         const fromto = require('../../img/Game/Locations/from-to.svg');
         this.load.svg("FromTo", String(fromto));
+
+        const reverse = require('../../img/Game/Locations/back.svg');
+        this.load.svg("Reverse", String(reverse));
     }
     public create() {
+        this.data.set("Travel", this.travelData);
+        this.data.events.on("changedata_Travel", () => {
+            this.travelData = this.data.values.Travel as ITravelResult;
+            this.reverseDate = (this.travelData.isReverse) ? (new Date(handleDBcutDate(this.travelData.reverseTime))) : null;
+            this.ClockContainer.destroy();
+            const genC = this.genContainer();
+            this.ClockContainer = genC.Container;
+            this.ClockContainer.x = (this.dimentions.width - genC.Width) / 2;
+            this.ClockContainer.y = (this.dimentions.height / 2 - genC.Height);
+            this.setHoverEnd();
+        });
+
         this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "Background");
         const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
-        this.Background.setScale(scale, scale);
+        // adjust to edges
+        this.Background.setScale(scale * 1.01, scale * 1.01);
         this.Background.alpha = 0;
 
         const gencont = this.genContainer();
         this.ClockContainer = gencont.Container;
         this.ClockContainer.x = (this.dimentions.width - gencont.Width) / 2;
         this.ClockContainer.y = (this.dimentions.height / 2 - gencont.Height);
+        this.ClockContainer.alpha = 0;
 
         this.tweens.add({
             alpha: 1,
-            duration: 1000,
+            duration: 500,
             targets: [this.Background, this.ClockContainer],
         });
         this.events.once('JourneyCompleted', this.endTravel);
-
-        // this.tweens.add({
-        //    alpha: 0,
-        //    completeDelay: 100,
-        //    delay: (this.TimeToTravel - 1) * 1000,
-        //    duration: 1000,
-        //    onComplete: this.endTravel,
-        //    targets: [background, this.ClockContainer],
-        // });
     }
     public update(time: number) {
         this.ProgressBar.clear();
-        let progress = (Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
-        if (progress >= 1) {
-            progress = 1;
-            this.events.emit('JourneyCompleted');
+        if (this.travelData.isReverse && this.reverseDate!==null) {
+            let progress = (2 * this.reverseDate.getTime() - Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
+            if (progress <= 0) {
+                progress = 0;
+                this.events.emit('JourneyCompleted');
+            }
+            this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, 3);
+            this.TextTime.setText(TravelTimeToString(this.TimeToTravel * (progress)));
+        } else {
+            let progress = (Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
+            if (progress >= 1) {
+                progress = 1;
+                this.events.emit('JourneyCompleted');
+            }
+            this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, 3);
+            this.TextTime.setText(TravelTimeToString(this.TimeToTravel * (1 - progress)));
         }
-        this.ProgressBar.fillRoundedRect(0, 0, Settings.ProgressBar.MainWidth * progress, Settings.ProgressBar.MainHeight, 3);
-        this.TextTime.setText(TravelTimeToString(this.TimeToTravel * (1 - progress)));
     }
     private endTravel() {
         const passed: IPassedGameData<number | null> = {
@@ -124,36 +157,110 @@ export class TravelScene extends Phaser.Scene {
         };
         ServerConnect(`/api/HerosLocationsLoad`, passed, succFun, failFun, this.ConnData.popWaiting, this.ConnData.closeWaiting);
     }
+    private ReverseTravel() {
+        const passed: IPassedGameData<number | null> = {
+            ActionToken: this.ConnData.actionToken,
+            Data: null,
+            UserToken: this.ConnData.userToken,
+        };
+        const succFun = (res: any) => {
+            this.data.set("Travel", res.data.travel);
+        };
+        const failFun = (error: any) => {
+            if (error.response === undefined) {
+                this.ConnData.popMessage([{ title: "serverErr", description: "I've got bad feelings about this...", } as IMessage], []);
+            } else {
+                this.ConnData.popMessage([{ title: error.response.data.type, description: error.response.data.description } as IMessage], []);
+            }
+        };
+        ServerConnect(`/api/TravelingsReverse`, passed, succFun, failFun, this.ConnData.popWaiting, this.ConnData.closeWaiting);
+    }
+
+
     private genContainer() {
-        const Width = Settings.ProgressBar.MainWidth + Settings.ProgressBar.Border * 2;
-        let Height = 0;
-        const FromText = this.add.text(0, 0, ["From", this.travelData.startName], { align: 'center', fontStyle: 'bold', color: "#222222" });
-        const ToText = this.add.text(0, 0, ["To", this.travelData.targetName], { align: 'center', fontStyle: 'bold', color: "#222222" });
-        Height = Math.max(FromText.displayHeight, ToText.displayHeight) + 2 * Settings.ProgressBar.Border + 2 * Settings.TravelDisplay.Border + Settings.ProgressBar.MainHeight;
+
+        let Height = Settings.TravelDisplay.Border;
+        const FromDesc = this.add.text(0, 0, "Start:", { align: 'center', fontStyle: 'bold', color: "#222222", fontSize: "12px" });
+        const FromText = this.add.text(0, 0, this.travelData.startName, { align: 'left', fontStyle: 'bold', color: "#111111" });
+        const ToDesc = this.add.text(0, 0, "Destination:", { align: 'center', fontStyle: 'bold', color: "#222222", fontSize: "12px" });
+        const ToText = this.add.text(0, 0, this.travelData.targetName, { align: 'right', fontStyle: 'bold', color: "#111111" });
+
+        const Arrow = this.add.image(0, 0, "FromTo");
+        Arrow.setScale(Settings.TravelDisplay.ArrowWidth / Arrow.width);
+        if (this.travelData.isReverse) {
+            Arrow.setAngle(180);
+        }
+
+        if (2 * Math.max(FromText.displayWidth, ToText.displayWidth) + Arrow.displayWidth > this.ProgressBarWidth) {
+            this.ProgressBarWidth = 2 * Math.max(FromText.displayWidth, ToText.displayWidth) + Arrow.displayWidth;
+        }
+        const Width = this.ProgressBarWidth + Settings.ProgressBar.Border * 2;
+        const TextMiddleX = (Width - Arrow.displayWidth) / 4;
+
         const bgr = this.add.graphics({ fillStyle: { color: 0xffffff, alpha: 0.8 } });
-        bgr.fillRoundedRect(0, 0, Width, Height, 4);
+
+        FromDesc.setOrigin(0.5, 0);
+        FromDesc.x = TextMiddleX;
+        FromDesc.y = Height;
+        ToDesc.setOrigin(0.5, 0);
+        ToDesc.x = Width - TextMiddleX;
+        ToDesc.y = Height;
+        Height = FromDesc.y + FromDesc.displayHeight + 5;
+
+        FromText.setOrigin(0.5, 0);
+        FromText.x = TextMiddleX;
+        FromText.y = Height;
+        ToText.setOrigin(0.5, 0);
+        ToText.x = Width - TextMiddleX;
+        ToText.y = Height;
+        Height = FromText.y + Math.max(FromText.displayHeight, ToText.displayHeight) + 15;
+
+        Arrow.setOrigin(0.5, 0.5);
+        Arrow.x = Width / 2;
+        // TODO
+        Arrow.y = Height / 2;
+
+        const buttonBackground = this.add.graphics({ fillStyle: { color: (this.travelData.isReverse) ? 0xD3D3D3 : 0xA8B3CC } });
+
+        const backStuff = this.CreateButton("Reverse", "Go back", 30);
+        buttonBackground.fillRoundedRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height, 3);
+
+        const buttonsArray: InteractiveButton[] = [backStuff];
+        const backButton = backStuff.Button;
+        backButton.alpha = 0.8
+        backButton.setSize(backStuff.Width, backStuff.Height);
+        backButton.x = (Width - backStuff.Width) / 2;
+        backButton.y = Height;
+        if (!this.travelData.isReverse) {
+            backButton.setInteractive(new Phaser.Geom.Rectangle(backStuff.Width / 2, backStuff.Height / 2, backStuff.Width, backStuff.Height), Phaser.Geom.Rectangle.Contains);
+            backButton.on("pointerover", () => {
+                this.setHover();
+                this.setElementActive(0, buttonsArray, buttonBackground, backStuff.Width);
+            });
+            backButton.on("pointerout", () => {
+                this.setHoverEnd();
+                this.setElementActive(-1, buttonsArray, buttonBackground, backStuff.Width);
+            });
+            backButton.on("pointerdown", this.ReverseTravel);
+        }
+
+        Height = backButton.y + backStuff.Height + 5;
+
+        Height += Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border;
 
         const prog = this.add.graphics({ fillStyle: { color: 0x162955 } });
-        prog.fillRoundedRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Settings.ProgressBar.MainWidth + 2 * Settings.ProgressBar.Border, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border, 4);
+        prog.fillRoundedRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border, 4);
         this.ProgressBar = this.add.graphics({ fillStyle: { color: 0x7887AB } });
         this.ProgressBar.x = Settings.ProgressBar.Border;
         this.ProgressBar.y = Height - Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight;
-
         this.TextTime = this.add.text(Width / 2, Height - Settings.ProgressBar.MainHeight / 2 - Settings.ProgressBar.Border, TravelTimeToString(this.TimeToTravel), { color: "white", align: "center" });
         this.TextTime.setOrigin(0.5, 0.5);
 
-        FromText.setOrigin(0, 0);
-        FromText.x = Settings.TravelDisplay.Border;
-        FromText.y = Settings.TravelDisplay.Border;
-        ToText.setOrigin(1, 0);
-        ToText.x = Width - Settings.TravelDisplay.Border;
-        ToText.y = Settings.TravelDisplay.Border;
+        bgr.fillRoundedRect(0, 0, Width, Height, 4);
 
-        const Arrow = this.add.image(Width / 2, Settings.TravelDisplay.Border, "FromTo");
-        Arrow.setOrigin(0.5, 0);
-        Arrow.setScale(Settings.TravelDisplay.ArrowWidth / Arrow.width);
 
-        const cont = this.add.container(0, 0, [bgr, prog, this.ProgressBar, this.TextTime, FromText, ToText, Arrow]);
+
+        const cont = this.add.container(0, 0, [bgr, prog, this.ProgressBar, this.TextTime, FromDesc, ToDesc, FromText, ToText, Arrow, buttonBackground, backButton]);
 
         return {
             Container: cont,
@@ -161,4 +268,56 @@ export class TravelScene extends Phaser.Scene {
             Width,
         }
     }
+    private CreateButton(texture: string, text: string, imageSize = Settings.TravelDisplay.ButtonSize) {
+        const painting = this.add.image(0, 0, texture);
+        painting.displayHeight = imageSize;
+        painting.displayWidth = imageSize;
+
+        const textDisp = this.add.text(0, 0, text, { color: "#ffffff", fontSize: 12, fontStyle: 'bold', align: 'center' });
+
+        const Width = Math.max(Settings.TravelDisplay.ButtonSize, textDisp.displayWidth) + 2 * Settings.TravelDisplay.ButtonPadding;
+
+        painting.setOrigin(0.5, 0.5);
+        painting.x = Width / 2;
+        painting.y = Settings.TravelDisplay.ButtonPadding + Settings.TravelDisplay.ButtonSize / 2;
+        let Height = 2 * Settings.TravelDisplay.ButtonPadding + Settings.TravelDisplay.ButtonSize;
+
+        textDisp.setOrigin(0.5, 0);
+        textDisp.x = Width / 2;
+        textDisp.y = Height;
+        Height = textDisp.y + textDisp.displayHeight + Settings.TravelDisplay.ButtonPadding;
+
+        return {
+            Button: this.add.container(0, 0, [painting, textDisp]),
+            Height,
+            InteractiveObj: painting,
+            Width,
+        } as InteractiveButton;
+    }
+    private setHover() {
+        const element = document.getElementById("Game")
+        if (element !== null) {
+            element.style.cursor = "pointer";
+        }
+    }
+    private setHoverEnd() {
+        const element = document.getElementById("Game")
+        if (element !== null) {
+            element.style.cursor = "default";
+        }
+    }
+    private setElementActive(key: number, List: InteractiveButton[], graphics: Phaser.GameObjects.Graphics, width: number) {
+        graphics.clear();
+        List.forEach((e, i) => {
+            graphics.fillStyle((i !== key) ? 0xA8B3CC : 0x4F628E);
+            graphics.fillRoundedRect(e.Button.x, e.Button.y, width, e.Height, 3);
+        });
+    }
+}
+
+interface InteractiveButton {
+    InteractiveObj: Phaser.GameObjects.Image,
+    Button: Phaser.GameObjects.Container,
+    Height: number;
+    Width: number;
 }

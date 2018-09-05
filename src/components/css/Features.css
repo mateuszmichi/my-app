@@ -1,0 +1,65 @@
+.ContentField .GameElements {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+    .ContentField .GameElements .GameElement {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .ContentField .GameElements .TextDiv {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+        .ContentField .GameElements .TextDiv .Warning {
+            color: darkred;
+            font-size: small;
+            font-style: italic;
+        }
+
+.ContentField .Description {
+    width: 100%;
+}
+
+    .ContentField .Description .ImageContainer {
+        text-align: center;
+    }
+
+    .ContentField .Description .DescriptionDetails {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        line-height: 22px;
+        text-justify: auto;
+        text-align: justify;
+    }
+
+.ImageContainer img {
+    margin: 2px;
+    margin-left: 6px;
+    margin-right: 6px;
+    -webkit-box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.3);
+}
+
+    .ImageContainer img.ImageSmall {
+        width: calc(25%);
+    }
+
+    .ImageContainer img.ImageMedium {
+        width: calc(40%);
+    }
+    .ImageContainer img.ImageBig {
+        width: calc(75%);
+    }
+
+.ContentField .TodoElements {
+    display:table;
+    margin:auto;
+    max-width:100%;
+}
+.TodoElements svg {
+    color:green;
+}
