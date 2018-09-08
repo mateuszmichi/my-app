@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mateuszmichi.github.io/",
   "dependencies": {
     "@material-ui/core": "^1.4.1",
     "@material-ui/icons": "^2.0.0",
@@ -9,6 +10,7 @@
     "@types/react-redux": "^6.0.4",
     "@types/react-router-dom": "^4.3.0",
     "body-scroll-lock": "^2.5.7",
+    "gh-pages": "^1.2.0",
     "phaser": "^3.11.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
@@ -23,6 +25,8 @@
     "universal-cookie": "^2.2.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",

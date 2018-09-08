@@ -45,7 +45,7 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
         }
     }
     public componentWillUnmount() {
-        if (this.heroScene !== null) {
+        if (this.heroScene !== undefined) {
             this.heroScene.destroy(true);
         }
     }

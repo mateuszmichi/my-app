@@ -94,7 +94,7 @@ class Credits extends React.Component<{}, {}> {
                                     <InfoDiv>
                                         <div><b>Author</b></div>
                                         <div><i>{e.author}</i></div>
-                                        <div><a href="{e.source}">Source</a></div>
+                                        <div><a href={e.source}>Source</a></div>
                                     </InfoDiv>
 
                                 </PictureContainer>

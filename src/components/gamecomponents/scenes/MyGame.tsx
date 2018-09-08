@@ -36,10 +36,3 @@ export class MyGame extends Phaser.Game {
         }
     }
 }
-
-export function handleDBcutDate(time: Date) {
-    const propDate = new Date(time);
-    const offset = propDate.getTimezoneOffset();
-    const modyfy = new Date(propDate.getTime() - 60000 * offset);
-    return modyfy;
-}

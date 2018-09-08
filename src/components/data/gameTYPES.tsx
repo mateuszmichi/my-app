@@ -318,10 +318,10 @@ export const LocationTypes: ILocationType[] = [
 export interface ITravelResult {
     startName: string;
     targetName: string;
-    startTime: Date;
-    endTime: Date;
+    currentDuration: number;
+    fullDuration: number;
     isReverse: boolean;
-    reverseTime: Date;
+    reverseDuration: number|null;
 }
 
 // ---------------- equipement

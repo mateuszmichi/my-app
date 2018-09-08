@@ -8,8 +8,12 @@ import { IHero, } from '../TYPES';
 
 import { Equipment } from './Equipment';
 import { GameComponent } from './GameComponent';
+import { Quests } from './Quests';
+import { Skills } from './Skills';
 
 import { IConnectionData } from '../data/connectionConf';
+
+
 
 
 
@@ -54,7 +58,9 @@ class MainWindow extends React.Component<{ CurrentPosition: number, character: I
                 <div className="GameElement">
                     <div className="GameDisplayComponent" ref={this.CallbackFun} id="GameDisplayArea">
                         <GameComponent visible={0 === this.props.CurrentPosition} height={this.state.height} width={this.state.width} ConnData={this.props.ConnData} hero={this.props.character}/>
-                        <Equipment visible={1 === this.props.CurrentPosition} hero={this.props.character} ConnData={this.props.ConnData}/>
+                        <Equipment visible={1 === this.props.CurrentPosition} hero={this.props.character} ConnData={this.props.ConnData} />
+                        <Skills visible={2 === this.props.CurrentPosition} hero={this.props.character} ConnData={this.props.ConnData} />
+                        <Quests visible={3 === this.props.CurrentPosition} hero={this.props.character} ConnData={this.props.ConnData} />
                     </div>
                 </div>
                 <LowerBar character={this.props.character} />

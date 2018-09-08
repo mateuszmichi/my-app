@@ -121,7 +121,7 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
         };
     }
     public componentWillMount() {
-        document.title = "Projects";
+        document.title = "Shattered Plains - Contact";
     }
     public componentWillUnmount() {
         document.title = "Shattered Plains";

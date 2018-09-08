@@ -55,6 +55,7 @@ export class LocalMapScene extends Phaser.Scene {
     private targetNode: Phaser.GameObjects.Sprite;
     private locationName: Phaser.GameObjects.Text;
     private locationNameBGR: Phaser.GameObjects.Graphics;
+    private border: Phaser.GameObjects.Graphics;
 
     private toMove: LinkedList<ItoMove>;
 
@@ -76,6 +77,7 @@ export class LocalMapScene extends Phaser.Scene {
         this.loadLocationImage = this.loadLocationImage.bind(this);
         this.AdjustElementsPosition = this.AdjustElementsPosition.bind(this);
         this.setElementActive = this.setElementActive.bind(this);
+        this.resize = this.resize.bind(this);
 
         this.toMove = new LinkedList<ItoMove>();
 
@@ -101,10 +103,12 @@ export class LocalMapScene extends Phaser.Scene {
         this.graphnodes = [];
     }
     public create() {
+        this.cameras.resize(this.dimentions.width, this.dimentions.height);
+        this.events.on('resize', this.resize, this); 
         this.DataHandling();
 
-        const border = this.add.graphics({ fillStyle: { color: 0x5e3408 }, lineStyle: { width: 3, color: 0x5e3408 } });
-        border.fillRect(0, 0, this.dimentions.width, this.dimentions.height);
+        this.border = this.add.graphics({ fillStyle: { color: 0x5e3408 }, lineStyle: { width: 3, color: 0x5e3408 } });
+        this.border.fillRect(0, 0, this.dimentions.width, this.dimentions.height);
 
         this.background = this.add.sprite(Settings.MapBorder, Settings.MapBorder, "LocalMapBGR" + this.data.values.LocationID);
         this.background.setOrigin(0, 0);
@@ -170,6 +174,17 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.graph = new IGraph(this.location.nodes, this.location.edges, this.HeurDist);
         this.resetPath();
+    }
+
+    public resize(width: number, height: number) {
+        if (width === undefined) { width = this.sys.game.config.width as number; }
+        if (height === undefined) { height = this.sys.game.config.height as number; }
+
+        this.cameras.resize(width, height);
+        this.dimentions = { height, width };
+
+        this.border.clear();
+        this.border.fillRect(0, 0, this.dimentions.width, this.dimentions.height);
     }
 
     private NewCoordinate(dragX: number, dragY: number): { x: number, y: number } {
@@ -498,6 +513,7 @@ export class LocalMapScene extends Phaser.Scene {
         const succFun = (res: any) => {
             const received = res.data;
             const travel = received.travel as ITravelResult;
+            // alert(JSON.stringify(travel));
             this.resetPath();
             this.scene.pause("MapScene");
             this.scene.add("TravelScene", new TravelScene(this.dimentions, travel, this.connData), true);
@@ -571,6 +587,8 @@ export class LocalMapScene extends Phaser.Scene {
             graphics.fillRect(0, e.Button.y, width, e.Height);
         });
     }
+
+    
 }
 
 
