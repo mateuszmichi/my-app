@@ -220,6 +220,7 @@ export interface IEdge {
 // ----------------- locationTypes
 export interface ILocationType {
     image: string;
+    isURI: boolean;
     name: string;
     options: LOCATION_OPTIONS[];
 }
@@ -227,6 +228,7 @@ export interface ILocationOptionType {
     buttonDesc: string;
     name: string;
     image: string;
+    isURI: boolean;
 }
 
 export interface INode {
@@ -239,6 +241,7 @@ export interface IMainNode {
     name: string;
 }
 export interface ILocationResult {
+    locationGlobalType: number;
     locationName: string;
     currentLocation: number;
     nodes: INode[];
@@ -251,27 +254,32 @@ export interface ILocationResult {
 export const LocationOptionsImg: ILocationOptionType[] = [
     {
         buttonDesc: "Global Map",
-        image: String(require('../img/Game/Locations/world.svg')),
+        image: String(require('../img/Game/Locations/Interface/world.png')),
+        isURI: false,
         name: "ToGlobal",
     },
     {
         buttonDesc: "Local Map",
-        image: String(require('../img/Game/Locations/plains.svg')),
+        image: String(require('../img/Game/Locations/Interface/plains.png')),
+        isURI: false,
         name: "ToLocal",
     },
     {
         buttonDesc: "Instance",
-        image: String(require('../img/Game/Locations/location.svg')),
+        image: String(require('../img/Game/Locations/Interface/location.png')),
+        isURI: false,
         name: "ToInstance",
     },
     {
         buttonDesc: "Shopping",
-        image: String(require('../img/Game/Locations/stall.svg')),
+        image: String(require('../img/Game/Locations/Interface/stall.png')),
+        isURI: true,
         name: "ToShop",
     },
     {
         buttonDesc: "Rest",
-        image: String(require('../img/Game/Locations/camping.svg')),
+        image: String(require('../img/Game/Locations/Interface/camping.png')),
+        isURI: true,
         name: "ToRest",
     },
 ];
@@ -288,40 +296,61 @@ export enum LOCATIONS {
     UNKNOWN,
     LANDLOCATION,
     GLOBALLOCATION,
+    SAFELOCATION,
+    LOCALLOCATION,
 }
 
 export const LocationTypes: ILocationType[] = [
     {
-        image: String(require('../img/Game/Locations/mystery.svg')),
+        image: String(require('../img/Game/Locations/Interface/mystery.png')),
+        isURI: true,
         name: "Unknown",
         options: [
         ],
     },
     {
-        image: String(require('../img/Game/Locations/plains.svg')),
+        image: String(require('../img/Game/Locations/Interface/plains.png')),
+        isURI: false,
         name: "LandLocation",
         options: [
             LOCATION_OPTIONS.TOINSTANCE,
         ],
     },
     {
-        image: String(require('../img/Game/Locations/roadsign.svg')),
+        image: String(require('../img/Game/Locations/Interface/roadsign.png')),
+        isURI: true,
         name: "GlobalLocation",
         options: [
             LOCATION_OPTIONS.TOGLOBAL,
             LOCATION_OPTIONS.TOREST,
         ],
-    }
+    },
+    {
+        image: String(require('../img/Game/Locations/Interface/field.png')),
+        isURI: false,
+        name: "SafeLocation",
+        options: [
+            LOCATION_OPTIONS.TOREST,
+        ],
+    },
+    {
+        image: String(require('../img/Game/Locations/Interface/field.png')),
+        isURI: false,
+        name: "LocalLocation",
+        options: [
+            LOCATION_OPTIONS.TOLOCAL,
+        ],
+    },
 ]
 
 // ---------------- travel
 export interface ITravelResult {
     startName: string;
     targetName: string;
-    startTime: Date;
-    endTime: Date;
+    currentDuration: number;
+    fullDuration: number;
     isReverse: boolean;
-    reverseTime: Date;
+    reverseDuration: number|null;
 }
 
 // ---------------- equipement

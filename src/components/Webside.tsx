@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import Contact from './presentational/Contact';
+import Credits from './presentational/Credits';
 import Features from './presentational/Features';
 import Project from './presentational/Project';
 import Projects from './presentational/Projects';
@@ -35,6 +36,7 @@ class Website extends React.Component {
                     <Route path="/technology" component={Technologies} />
                     <Route path="/myprojects" component={Projects} />
                     <Route path="/contact" component={Contact} />
+                    <Route path="/credits" component={Credits}/>
                 </div>
                 <Footbar />
             </div>

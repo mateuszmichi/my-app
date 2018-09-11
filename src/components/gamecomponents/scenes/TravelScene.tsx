@@ -8,7 +8,6 @@ import { LocalMapScene } from './MapScenes';
 
 import { IMessage } from '../../MessageMenager';
 import { IPassedGameData } from '../../TYPES';
-import { handleDBcutDate } from './MyGame';
 
 
 const Settings = {
@@ -52,12 +51,15 @@ export class TravelScene extends Phaser.Scene {
         this.setHoverEnd = this.setHoverEnd.bind(this);
         this.setElementActive = this.setElementActive.bind(this);
         this.ReverseTravel = this.ReverseTravel.bind(this);
+        this.resize = this.resize.bind(this);
 
         this.travelData = travel;
-        this.endDate = new Date(handleDBcutDate(this.travelData.endTime));
-        this.startDate = new Date(handleDBcutDate(this.travelData.startTime));
+        const now = Date.now();
+        this.endDate = new Date(now + this.travelData.fullDuration - this.travelData.currentDuration);
+        this.startDate = new Date(now - this.travelData.currentDuration);
+        this.reverseDate = (this.travelData.isReverse && this.travelData.reverseDuration !== null) ? (new Date(now - this.travelData.currentDuration + this.travelData.reverseDuration)) : null;
 
-        this.reverseDate = (this.travelData.isReverse) ? (new Date(handleDBcutDate(this.travelData.reverseTime))) : null;
+        
 
         this.TimeToTravel = (this.endDate.getTime() - this.startDate.getTime()) / 1000;
         if (this.TimeToTravel < 1) {
@@ -67,20 +69,29 @@ export class TravelScene extends Phaser.Scene {
     }
 
     public preload() {
-        const background = require('../../img/Game/Locations/TravelBGR2.png');
-        this.load.image("Background", String(background));
+        const background = require('../../img/Game/Locations/Interface/TravelBGR2.png');
+        this.load.image("TravelBackground", String(background));
 
-        const fromto = require('../../img/Game/Locations/from-to.svg');
-        this.load.svg("FromTo", String(fromto));
+        const fromto = require('../../img/Game/Locations/Interface/from-to.png');
+        // this.load.image("FromTo", String(fromto));
+        this.textures.addBase64("FromTo", String(fromto));
 
-        const reverse = require('../../img/Game/Locations/back.svg');
-        this.load.svg("Reverse", String(reverse));
+        const reverse = require('../../img/Game/Locations/Interface/back.png');
+        // this.load.image("Reverse", String(reverse));
+        this.textures.addBase64("Reverse", String(reverse));
     }
     public create() {
+        this.cameras.resize(this.dimentions.width, this.dimentions.height);
+        this.events.on('resize', this.resize, this); 
         this.data.set("Travel", this.travelData);
         this.data.events.on("changedata_Travel", () => {
             this.travelData = this.data.values.Travel as ITravelResult;
-            this.reverseDate = (this.travelData.isReverse) ? (new Date(handleDBcutDate(this.travelData.reverseTime))) : null;
+
+            const now = Date.now();
+            this.endDate = new Date(now + this.travelData.fullDuration - this.travelData.currentDuration);
+            this.startDate = new Date(now - this.travelData.currentDuration);
+            this.reverseDate = (this.travelData.isReverse && this.travelData.reverseDuration !== null) ? (new Date(now - this.travelData.currentDuration + this.travelData.reverseDuration)) : null;
+
             this.ClockContainer.destroy();
             const genC = this.genContainer();
             this.ClockContainer = genC.Container;
@@ -89,7 +100,7 @@ export class TravelScene extends Phaser.Scene {
             this.setHoverEnd();
         });
 
-        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "Background");
+        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "TravelBackground");
         const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
         // adjust to edges
         this.Background.setScale(scale * 1.01, scale * 1.01);
@@ -110,23 +121,31 @@ export class TravelScene extends Phaser.Scene {
     }
     public update(time: number) {
         this.ProgressBar.clear();
+        let progress = 0;
         if (this.travelData.isReverse && this.reverseDate!==null) {
-            let progress = (2 * this.reverseDate.getTime() - Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
+            progress = (2 * this.reverseDate.getTime() - Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
             if (progress <= 0) {
                 progress = 0;
                 this.events.emit('JourneyCompleted');
             }
-            this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, 3);
+            if (progress > 1) {
+                progress = 1;
+            }
             this.TextTime.setText(TravelTimeToString(this.TimeToTravel * (progress)));
         } else {
-            let progress = (Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
+            progress = (Date.now() - this.startDate.getTime()) / (this.endDate.getTime() - this.startDate.getTime());
             if (progress >= 1) {
                 progress = 1;
                 this.events.emit('JourneyCompleted');
             }
-            this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, 3);
+            if (progress < 0) {
+                progress = 0;
+            }
             this.TextTime.setText(TravelTimeToString(this.TimeToTravel * (1 - progress)));
         }
+        // const radius = Math.min(3, this.ProgressBarWidth * progress / 2);
+        // this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, radius);
+        this.ProgressBar.fillRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight);
     }
     private endTravel() {
         const passed: IPassedGameData<number | null> = {
@@ -164,6 +183,7 @@ export class TravelScene extends Phaser.Scene {
             UserToken: this.ConnData.userToken,
         };
         const succFun = (res: any) => {
+            // alert(JSON.stringify(res.data.travel));
             this.data.set("Travel", res.data.travel);
         };
         const failFun = (error: any) => {
@@ -223,7 +243,8 @@ export class TravelScene extends Phaser.Scene {
         const buttonBackground = this.add.graphics({ fillStyle: { color: (this.travelData.isReverse) ? 0xD3D3D3 : 0xA8B3CC } });
 
         const backStuff = this.CreateButton("Reverse", "Go back", 30);
-        buttonBackground.fillRoundedRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height, 3);
+        // buttonBackground.fillRoundedRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height, 3);
+        buttonBackground.fillRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height);
 
         const buttonsArray: InteractiveButton[] = [backStuff];
         const backButton = backStuff.Button;
@@ -249,14 +270,16 @@ export class TravelScene extends Phaser.Scene {
         Height += Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border;
 
         const prog = this.add.graphics({ fillStyle: { color: 0x162955 } });
-        prog.fillRoundedRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border, 4);
+        // prog.fillRoundedRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border, 4);
+        prog.fillRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border);
         this.ProgressBar = this.add.graphics({ fillStyle: { color: 0x7887AB } });
         this.ProgressBar.x = Settings.ProgressBar.Border;
         this.ProgressBar.y = Height - Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight;
         this.TextTime = this.add.text(Width / 2, Height - Settings.ProgressBar.MainHeight / 2 - Settings.ProgressBar.Border, TravelTimeToString(this.TimeToTravel), { color: "white", align: "center" });
         this.TextTime.setOrigin(0.5, 0.5);
 
-        bgr.fillRoundedRect(0, 0, Width, Height, 4);
+        // bgr.fillRoundedRect(0, 0, Width, Height, 4);
+        bgr.fillRect(0, 0, Width, Height);
 
 
 
@@ -310,8 +333,31 @@ export class TravelScene extends Phaser.Scene {
         graphics.clear();
         List.forEach((e, i) => {
             graphics.fillStyle((i !== key) ? 0xA8B3CC : 0x4F628E);
-            graphics.fillRoundedRect(e.Button.x, e.Button.y, width, e.Height, 3);
+            // graphics.fillRoundedRect(e.Button.x, e.Button.y, width, e.Height, 3);
+            graphics.fillRect(e.Button.x, e.Button.y, width, e.Height);
         });
+    }
+    private resize(width: number, height: number) {
+        if (width === undefined) { width = this.sys.game.config.width as number; }
+        if (height === undefined) { height = this.sys.game.config.height as number; }
+
+        this.cameras.resize(width, height);
+        this.dimentions = { height, width };
+
+        this.Background.x = width / 2;
+        this.Background.y = height / 2;
+        const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
+        // adjust to edges
+        this.Background.setScale(scale * 1.01, scale * 1.01);
+
+        this.ClockContainer.destroy();
+        const genC = this.genContainer();
+        this.ClockContainer = genC.Container;
+        this.ClockContainer.x = (this.dimentions.width - genC.Width) / 2;
+        this.ClockContainer.y = (this.dimentions.height / 2 - genC.Height);
+
+        const map = this.scene.get("MapScene") as LocalMapScene;
+        map.resize(this.dimentions.width, this.dimentions.height);
     }
 }
 

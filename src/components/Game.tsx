@@ -12,14 +12,14 @@ import { Grid } from '@material-ui/core';
 import MainMenu from './gamecomponents/MainMenu';
 import MainWindow from './gamecomponents/MainWindow';
 
-import { Close_Dialog, Close_Messages, End_Game, End_Waiting, Pop_Dialog, Pop_Messages, Start_Waiting, } from './actions/actionCreators';
+import { Close_Dialog, Close_Messages, End_Game, End_Waiting, Pop_Dialog, Pop_Messages, Start_Waiting, Update_Hero_Hp, } from './actions/actionCreators';
 import { IActionToken, IAppStatus, IHero, IUserToken,  } from './TYPES';
 
 import { IConnectionData, IConnectionFunctions,  } from './data/connectionConf';
 import { IMessage, IMessageTranslator } from './MessageMenager';
 
 
-class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken, logFun: any }, { CurrentPosition: number, isEnd: boolean }> {
+class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken, logFun: any, HeroUpdates: IHeroUpdates}, { CurrentPosition: number, isEnd: boolean }> {
     private connData: IConnectionData;
 
     constructor(props: any) {
@@ -58,7 +58,7 @@ class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnection
                 <div className="GameDisplay">
                     <Grid container={true} className="GameMax">
                         <Grid item={true} xs={11}>
-                            <MainWindow character={this.props.hero} ConnData={this.connData} CurrentPosition={this.state.CurrentPosition}/>
+                            <MainWindow character={this.props.hero} ConnData={this.connData} HeroUpdates={this.props.HeroUpdates} logFun={this.handleLogout} CurrentPosition={this.state.CurrentPosition}/>
                         </Grid>
                         <Grid item={true} xs={1}>
                             <MainMenu CurrentPosition={this.state.CurrentPosition} changePosition={this.handleChangePosition} logFun={this.handleLogout}/>
@@ -70,8 +70,8 @@ class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnection
     }
 
     private handleLogout() {
-        this.props.logFun();
         this.setState({ isEnd: true });
+        this.props.logFun();
     }
     private handleChangePosition(id: number) {
         this.setState({ CurrentPosition: id });
@@ -90,6 +90,9 @@ const mapDispatchToProps = (dispatch: any) => {
             popMessage: (messages: IMessage[], translators: IMessageTranslator[]) => dispatch(Pop_Messages(messages, translators)),
             popWaiting: () => dispatch(Start_Waiting()),
         } as IConnectionFunctions,
+        HeroUpdates: {
+            UpdateHP: (hp:number) => dispatch(Update_Hero_Hp(hp)),
+        } as IHeroUpdates,
         logFun: () => dispatch(End_Game()),
     };
 };
@@ -100,8 +103,11 @@ const mapStateToProps = (state: any) => {
 
 const Game = connect(mapStateToProps, mapDispatchToProps)(ConnectedGame);
 
-// -------------------------- interfaces used only in Login
+// -------------------------- interfaces
 
+export interface IHeroUpdates {
+    UpdateHP: (hp: number) => void;
+}
 
 // ========================================
 

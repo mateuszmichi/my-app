@@ -21,8 +21,32 @@ import * as mailSrc from '../img/AboutProject/mail.png';
 import ValidationImg from '../presentational/ValidationImg';
 
 // ---------- data
+const EmailBox = styled.button`
+cursor: pointer;
+padding: 5px;
+border-radius: 5px;
+border: none;
+margin-top:5px;
+background-color: cornflowerblue;
+color: white;
+&:hover{
+    background-color: #303f9f;
+}
+`;
+const EmailSpan = styled.div`
+font-weight:bold;
+padding: 5px;
+margin-top:5px;
+`;
+const AdditionalContact = styled.div`
+font-size:0.8rem;
+color:cornflowerblue;
+text-align:center;
+margin-top:20px;
+margin-bottom:20px;
+`
 const ContactDisplay = styled.div`
-width: 60%;
+width: 60%;11
 min-width: 320px;
 max-width: 660px;
 margin: auto;
@@ -55,7 +79,7 @@ input[type=submit] {
 }
 `;
 
-class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions }, { inputs: IMailForm, validation: boolean }> {
+class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions }, { inputs: IMailForm, validation: boolean, showEmail:boolean }> {
     private KnownMessages: IMessageTranslator[];
 
     constructor(props: any) {
@@ -67,6 +91,7 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
         this.validate_Content = this.validate_Content.bind(this);
         this.validate_Email = this.validate_Email.bind(this);
         this.validate_Subject = this.validate_Subject.bind(this);
+        this.showEmail = this.showEmail.bind(this);
 
 
         this.KnownMessages = [
@@ -91,11 +116,12 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
                 from: { isValid: -1, text: '', validation: this.validate_Email, description: [] },
                 subject: { isValid: -1, text: '', validation: this.validate_Subject, description: [] },
             },
+            showEmail: false,
             validation: false,
         };
     }
     public componentWillMount() {
-        document.title = "Projects";
+        document.title = "Shattered Plains - Contact";
     }
     public componentWillUnmount() {
         document.title = "Shattered Plains";
@@ -113,13 +139,17 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
                         <div>
                             {this.renderInput("text", "from", "Your email address")}
                             {this.renderInput("text", "subject", "Subject")}
-                            {this.renderInput("text", "content", "Content of email",true)}
-                            <div style={{textAlign:"center"}}>
+                            {this.renderInput("text", "content", "Content of email", true)}
+                            <div style={{ textAlign: "center" }}>
                                 <input type="submit" value="Send" disabled={!(this.state.inputs.content.isValid === 0 && this.state.inputs.from.isValid === 0
                                     && this.state.inputs.subject.isValid === 0)} />
                             </div>
                         </div>
                     </form>
+                    <AdditionalContact>
+                        If there are problems with SMTP Client, or you want to write directly to this author, use email:<br />
+                        {(this.state.showEmail) ? <EmailSpan>mateuszmichalewski1@gmail.com</EmailSpan> : <EmailBox onClick={this.showEmail}>Show Me</EmailBox>} 
+                    </AdditionalContact>
                 </ContactDisplay>
             </div>
         );
@@ -240,7 +270,7 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
     }
     private validate_Content(login: IStringValidation): boolean {
         login.description = [];
-        const reg = [/^.{5,30}$/];
+        const reg = [/^.{5,300}$/];
         const desc = ["Between 5 to 300 characters."];
         let result = true;
         for (let i = 0; i < reg.length; i++) {
@@ -251,6 +281,9 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
         }
         login.isValid = (result) ? 0 : 1;
         return result;
+    }
+    private showEmail() {
+        this.setState({ showEmail: true });
     }
 }
 

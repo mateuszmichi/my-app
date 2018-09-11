@@ -1,6 +1,7 @@
 import axios from 'axios';
-// export const localhost = 'https://shatteredplainsapp.azurewebsites.net';
-export const localhost = `http://localhost:5000`;
+// export const localhost = 'https://shatteredplains.azurewebsites.net';
+// export const localhost = 'http://shatteredplains-001-site1.btempurl.com';
+ export const localhost = `http://localhost:5000`;
 
 import { IActionToken, IUserToken } from '../TYPES';
 

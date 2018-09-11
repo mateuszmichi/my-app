@@ -17,3 +17,5 @@ export const START_WAITING = "START_WAITING";
 export const END_WAITING = "END_WAITING";
 
 export const UPDATE_EQUIPMENT = "UPDATE_EQUIPMENT";
+
+export const UPDATE_HERO_HP = "UPDATE_HERO_HP";
