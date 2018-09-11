@@ -11,9 +11,6 @@ import { LinkedList } from 'typescript-collections';
 
 import { TravelScene } from './TravelScene';
 
-// ------------------ images
-import target from '../../img/Game/Locations/target.svg';
-
 // ------------------ constants
 import { IConnectionData, ServerConnect } from '../../data/connectionConf';
 import { HealingScene } from './HealingScene';
@@ -102,16 +99,26 @@ export class LocalMapScene extends Phaser.Scene {
         const img = require('../../img/Game/Locations/Location' + this.location.locationID + '.png');
         this.load.image({ key: "LocalMapBGR" + this.location.locationID, url: img, });
 
-        const travel = require('../../img/Game/Locations/travel.svg');
-        this.load.svg({ key: "TravelImg", url: String(travel) });
+        const travel = require('../../img/Game/Locations/Interface/travel.png');
+        this.load.image({ key: "TravelImg", url: String(travel) });
 
-        this.load.svg({ key: "Target", url: String(target) });
+        const target = require('../../img/Game/Locations/Interface/target.png');
+        this.load.image({ key: "Target", url: String(target) });
 
         LocationTypes.forEach(e => {
-            this.load.svg({ key: e.name + "Img", url: e.image });
+            if (!e.isURI) {
+                this.load.image({ key: e.name + "Img", url: e.image });
+            } else {
+                this.textures.addBase64(e.name + "Img", e.image);
+            }
+            
         });
         LocationOptionsImg.forEach(e => {
-            this.load.svg({ key: e.name + "Img", url: e.image });
+            if (!e.isURI) {
+                this.load.image({ key: e.name + "Img", url: e.image });
+            } else {
+                this.textures.addBase64(e.name + "Img", e.image);
+            }
         })
 
         this.graphnodes = [];
@@ -289,11 +296,13 @@ export class LocalMapScene extends Phaser.Scene {
         } else {
             time.destroy();
         }
-        const radius = 5;
-        graph.fillRoundedRect(0, 0, DescWidth, DescHeight + Settings.Description.TopPadding, radius);
+        // const radius = 5;
+        // graph.fillRoundedRect(0, 0, DescWidth, DescHeight + Settings.Description.TopPadding, radius);
+        graph.fillRect(0, 0, DescWidth, DescHeight + Settings.Description.TopPadding);
         graph.fillStyle(0x2E4172);
-        graph.fillRoundedRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding, radius);
-        graph.fillRect(0, locationname.y + locationname.displayHeight + Settings.Description.TopPadding - radius, DescWidth, radius);
+        // graph.fillRoundedRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding, radius);
+        graph.fillRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding);
+        // graph.fillRect(0, locationname.y + locationname.displayHeight + Settings.Description.TopPadding - radius, DescWidth, radius);
         graph.fillStyle(0x4F628E);
 
         const nodes = this.data.values.Nodes as INode[];
@@ -590,7 +599,8 @@ export class LocalMapScene extends Phaser.Scene {
         this.locationNameBGR = this.add.graphics({ fillStyle: { color: 0x5e3408 } });
         this.locationName = this.add.text(this.background.displayWidth / 2, -Settings.MapBorder / 2, this.data.values.LocationName, { color: "white", fontStyle: "bold", fontSize: "18px" });
         this.locationName.setOrigin(0.5, 0);
-        this.locationNameBGR.fillRoundedRect((this.background.displayWidth - this.locationName.displayWidth - 2 * Settings.MapBorder) / 2, -Settings.MapBorder / 2, 2 * Settings.MapBorder + this.locationName.displayWidth, this.locationName.displayHeight + Settings.MapBorder / 2, 3);
+        // this.locationNameBGR.fillRoundedRect((this.background.displayWidth - this.locationName.displayWidth - 2 * Settings.MapBorder) / 2, -Settings.MapBorder / 2, 2 * Settings.MapBorder + this.locationName.displayWidth, this.locationName.displayHeight + Settings.MapBorder / 2, 3);
+        this.locationNameBGR.fillRect((this.background.displayWidth - this.locationName.displayWidth - 2 * Settings.MapBorder) / 2, -Settings.MapBorder / 2, 2 * Settings.MapBorder + this.locationName.displayWidth, this.locationName.displayHeight + Settings.MapBorder / 2);
         this.container.add([this.locationNameBGR, this.locationName]);
 
         const MainNodes = this.data.values.MainNodes as IMainNode[];
@@ -638,7 +648,7 @@ export class LocalMapScene extends Phaser.Scene {
     }
     private selectOption(option: number, optionType: LOCATION_OPTIONS) {
         // TODO list of implemented
-        alert(option + " " + optionType);
+        // alert(option + " " + optionType);
         const implemented = [LOCATION_OPTIONS.TOGLOBAL, LOCATION_OPTIONS.TOLOCAL];
         if (implemented.findIndex(e=> e === optionType) !== -1) {
             this.UseLocationAction(option);

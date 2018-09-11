@@ -69,14 +69,16 @@ export class TravelScene extends Phaser.Scene {
     }
 
     public preload() {
-        const background = require('../../img/Game/Locations/TravelBGR2.png');
+        const background = require('../../img/Game/Locations/Interface/TravelBGR2.png');
         this.load.image("TravelBackground", String(background));
 
-        const fromto = require('../../img/Game/Locations/from-to.svg');
-        this.load.svg("FromTo", String(fromto));
+        const fromto = require('../../img/Game/Locations/Interface/from-to.png');
+        // this.load.image("FromTo", String(fromto));
+        this.textures.addBase64("FromTo", String(fromto));
 
-        const reverse = require('../../img/Game/Locations/back.svg');
-        this.load.svg("Reverse", String(reverse));
+        const reverse = require('../../img/Game/Locations/Interface/back.png');
+        // this.load.image("Reverse", String(reverse));
+        this.textures.addBase64("Reverse", String(reverse));
     }
     public create() {
         this.cameras.resize(this.dimentions.width, this.dimentions.height);
@@ -141,8 +143,9 @@ export class TravelScene extends Phaser.Scene {
             }
             this.TextTime.setText(TravelTimeToString(this.TimeToTravel * (1 - progress)));
         }
-        const radius = Math.min(3, this.ProgressBarWidth * progress / 2);
-        this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, radius);
+        // const radius = Math.min(3, this.ProgressBarWidth * progress / 2);
+        // this.ProgressBar.fillRoundedRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight, radius);
+        this.ProgressBar.fillRect(0, 0, this.ProgressBarWidth * progress, Settings.ProgressBar.MainHeight);
     }
     private endTravel() {
         const passed: IPassedGameData<number | null> = {
@@ -240,7 +243,8 @@ export class TravelScene extends Phaser.Scene {
         const buttonBackground = this.add.graphics({ fillStyle: { color: (this.travelData.isReverse) ? 0xD3D3D3 : 0xA8B3CC } });
 
         const backStuff = this.CreateButton("Reverse", "Go back", 30);
-        buttonBackground.fillRoundedRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height, 3);
+        // buttonBackground.fillRoundedRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height, 3);
+        buttonBackground.fillRect((Width - backStuff.Width) / 2, Height, backStuff.Width, backStuff.Height);
 
         const buttonsArray: InteractiveButton[] = [backStuff];
         const backButton = backStuff.Button;
@@ -266,14 +270,16 @@ export class TravelScene extends Phaser.Scene {
         Height += Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border;
 
         const prog = this.add.graphics({ fillStyle: { color: 0x162955 } });
-        prog.fillRoundedRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border, 4);
+        // prog.fillRoundedRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border, 4);
+        prog.fillRect(0, Height - 2 * Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight, Width, Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border);
         this.ProgressBar = this.add.graphics({ fillStyle: { color: 0x7887AB } });
         this.ProgressBar.x = Settings.ProgressBar.Border;
         this.ProgressBar.y = Height - Settings.ProgressBar.Border - Settings.ProgressBar.MainHeight;
         this.TextTime = this.add.text(Width / 2, Height - Settings.ProgressBar.MainHeight / 2 - Settings.ProgressBar.Border, TravelTimeToString(this.TimeToTravel), { color: "white", align: "center" });
         this.TextTime.setOrigin(0.5, 0.5);
 
-        bgr.fillRoundedRect(0, 0, Width, Height, 4);
+        // bgr.fillRoundedRect(0, 0, Width, Height, 4);
+        bgr.fillRect(0, 0, Width, Height);
 
 
 
@@ -327,7 +333,8 @@ export class TravelScene extends Phaser.Scene {
         graphics.clear();
         List.forEach((e, i) => {
             graphics.fillStyle((i !== key) ? 0xA8B3CC : 0x4F628E);
-            graphics.fillRoundedRect(e.Button.x, e.Button.y, width, e.Height, 3);
+            // graphics.fillRoundedRect(e.Button.x, e.Button.y, width, e.Height, 3);
+            graphics.fillRect(e.Button.x, e.Button.y, width, e.Height);
         });
     }
     private resize(width: number, height: number) {

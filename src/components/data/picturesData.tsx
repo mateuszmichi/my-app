@@ -193,7 +193,7 @@ export const picturesData: IPictureData[] = [
     {
         author: <a href="https://www.artstation.com/otherdistortion">Roman Zawadzki</a>,
         imageName: "travelling-warrior-jay.jpg",
-        originalPath: "../img/Game/Locations/",
+        originalPath: "../img/Game/Locations/Interface/",
         source: "https://www.artstation.com/artwork/vRrgx",
     },
     {

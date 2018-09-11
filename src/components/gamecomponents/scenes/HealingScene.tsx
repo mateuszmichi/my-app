@@ -92,16 +92,18 @@ export class HealingScene extends Phaser.Scene {
     }
 
     public preload() {
-        const background = require('../../img/Game/Locations/camp.png');
+        const background = require('../../img/Game/Locations/Interface/camp.png');
         this.load.image("HealingBackground", String(background));
-        const fireplace = require('../../img/Game/Locations/fireplace.png');
+        const fireplace = require('../../img/Game/Locations/Interface/fireplace.png');
         this.load.spritesheet('fireplace', String(fireplace), { frameWidth: 245, frameHeight: 195, endFrame: 15 });
-        const healSrc = require('../../img/Game/Locations/heal.svg');
-        this.load.svg({ key: "heal", url: String(healSrc) });
-        const stopSrc = require('../../img/Game/Locations/stop.svg');
-        this.load.svg({ key: "stop", url: String(stopSrc) });
-        const mapSrc = require('../../img/Game/Menu/map.svg');
-        this.load.svg({ key: "map", url: String(mapSrc) });
+        const healSrc = require('../../img/Game/Locations/Interface/heal.png');
+        this.load.image({ key: "heal", url: String(healSrc) });
+        const stopSrc = require('../../img/Game/Locations/Interface/stop.png');
+        this.load.image({ key: "stop", url: String(stopSrc) });
+        // const mapSrc = require('../../img/Game/Menu/map.png');
+        const mapSrc = require('../../img/Game/Locations/Interface/from-to.png');
+        // this.load.image({ key: "map", url: String(mapSrc) });
+        this.textures.addBase64("map", String(mapSrc));
     }
     public create() {
         this.cameras.resize(this.dimentions.width, this.dimentions.height);
@@ -342,7 +344,8 @@ export class HealingScene extends Phaser.Scene {
         Height += this.MainScale * (2 * Settings.ProgressBar.Border + Settings.ProgressBar.MainHeight);
         // 0x8A0707  0xE1919A
         const prog = this.add.graphics({ fillStyle: { color: 0x8A0707 } });
-        prog.fillRoundedRect(0, Height - this.MainScale * (2 * Settings.ProgressBar.Border + Settings.ProgressBar.MainHeight), Width, this.MainScale * (Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border), 4);
+        // prog.fillRoundedRect(0, Height - this.MainScale * (2 * Settings.ProgressBar.Border + Settings.ProgressBar.MainHeight), Width, this.MainScale * (Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border), 4);
+        prog.fillRect(0, Height - this.MainScale * (2 * Settings.ProgressBar.Border + Settings.ProgressBar.MainHeight), Width, this.MainScale * (Settings.ProgressBar.MainHeight + 2 * Settings.ProgressBar.Border));
         this.ProgressBar = this.add.graphics({ fillStyle: { color: 0xE1919A } });
         this.ProgressBar.x = Settings.ProgressBar.Border;
         this.ProgressBar.y = Height - this.MainScale * (Settings.ProgressBar.Border + Settings.ProgressBar.MainHeight);
@@ -403,7 +406,8 @@ export class HealingScene extends Phaser.Scene {
             const notBackground = ((List[i].Active) ? 0x7585A9 : 0xD3D3D3);
             graphics.fillStyle((i !== key) ? notBackground : 0x4F628E);
             // 
-            graphics.fillRoundedRect(e.Button.x, e.Button.y, e.Width, e.Height, 3);
+            // graphics.fillRoundedRect(e.Button.x, e.Button.y, e.Width, e.Height, 3);
+            graphics.fillRect(e.Button.x, e.Button.y, e.Width, e.Height);
         });
     }
     private resize(width: number, height: number) {

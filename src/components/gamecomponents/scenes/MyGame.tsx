@@ -20,10 +20,19 @@ export class MyGame extends Phaser.Game {
     constructor(size: number, conData: IConnectionData, heroUpdates:IHeroUpdates, hero: IHero) {
         super({
             backgroundColor: 'rgb(237, 205, 151)',
+            /*fps: {
+                forceSetTimeOut: true,
+                target: 30,
+            },*/
             height: size * 9,
             parent: "Game",
-            "render.pixelArt": true,
-            type: Phaser.AUTO,
+            /*"render.antialias": false,
+            /*"render.pixelArt": true,
+            "render.preserveDrawingBuffer": true,
+            "render.powerPreference": "high-performance",
+            "render.powerPreference": "high-performance",
+            */
+            type: Phaser.CANVAS,
             width: size * 16,
         });
         // bindings
