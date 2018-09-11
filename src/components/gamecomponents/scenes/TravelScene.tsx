@@ -70,7 +70,7 @@ export class TravelScene extends Phaser.Scene {
 
     public preload() {
         const background = require('../../img/Game/Locations/TravelBGR2.png');
-        this.load.image("Background", String(background));
+        this.load.image("TravelBackground", String(background));
 
         const fromto = require('../../img/Game/Locations/from-to.svg');
         this.load.svg("FromTo", String(fromto));
@@ -98,7 +98,7 @@ export class TravelScene extends Phaser.Scene {
             this.setHoverEnd();
         });
 
-        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "Background");
+        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "TravelBackground");
         const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
         // adjust to edges
         this.Background.setScale(scale * 1.01, scale * 1.01);

@@ -16,7 +16,7 @@ import { Close_Dialog, Close_Messages, } from '../actions/actionCreators';
 import { disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
 // const enableBodyScroll = bodyScrollLock.enableBodyScroll;
 
-class ConnectedPopupDisplay extends React.Component<{ dialog: React.ReactNode, messages: IMessage[], additionalTranslators: IMessageTranslator[], closemessfun: VoidFunction, closedialogFun:VoidFunction},
+class ConnectedPopupDisplay extends React.Component<{dialog: React.ReactNode, messages: IMessage[], additionalTranslators: IMessageTranslator[], closemessfun: VoidFunction, closedialogFun:VoidFunction},
     { messagesToDisplay: IMessageConverted[], messagesToExecute: IMessageConverted[] }> {
     private KnownMessages: IMessageTranslator[];
     private MessageMenager: MessageMenager;
@@ -43,7 +43,7 @@ class ConnectedPopupDisplay extends React.Component<{ dialog: React.ReactNode, m
                 <div className={(this.state.messagesToDisplay.length > 0) ? "popupContainer" :"popupClosed"}>
                     <ClickAwayListener onClickAway={this.props.closemessfun} >
                         <div>
-                            {this.state.messagesToDisplay.map(e => this.MessageMenager.GeneratePopup(e, this.props.closemessfun))}
+                            {this.state.messagesToDisplay.map((e,i) => this.MessageMenager.GeneratePopup(e, this.props.closemessfun,i))}
                         </div>
                     </ClickAwayListener>
                 </div>

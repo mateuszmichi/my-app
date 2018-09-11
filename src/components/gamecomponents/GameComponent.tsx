@@ -8,7 +8,9 @@ import { IHero } from '../TYPES';
 
 import { IConnectionData } from '../data/connectionConf';
 
-export class GameComponent extends React.Component<{visible: boolean, height: number, width: number, hero: IHero, ConnData: IConnectionData }, {}>{
+import { IHeroUpdates } from '../Game';
+
+export class GameComponent extends React.Component<{visible: boolean, height: number, width: number, hero: IHero, ConnData: IConnectionData, HeroUpdates: IHeroUpdates }, {}>{
     private game: Phaser.Game;
     constructor(props: any) {
         super(props);
@@ -29,7 +31,7 @@ export class GameComponent extends React.Component<{visible: boolean, height: nu
         const Element = document.getElementById('Game');
         if (Element !== null) {
             const width = Element.offsetWidth;
-            this.game = new MyGame(Math.floor(width/16), this.props.ConnData, this.props.hero);
+            this.game = new MyGame(Math.floor(width/16), this.props.ConnData, this.props.HeroUpdates, this.props.hero);
         }
     }
     public componentWillUnmount() {

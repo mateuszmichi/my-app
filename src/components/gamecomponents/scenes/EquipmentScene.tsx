@@ -3,7 +3,7 @@ import * as Phaser from 'phaser';
 export class EquipmentScene extends Phaser.Scene {
     private dimentions: { height: number, width: number };
 
-    private Background: Phaser.GameObjects.Sprite;
+    private Background: Phaser.GameObjects.Image;
 
     constructor(dim: { height: number, width: number }) {
         super({ key: "EquipmentScene", });
@@ -18,7 +18,7 @@ export class EquipmentScene extends Phaser.Scene {
         this.load.image("Background", String(background));
     }
     public create() {
-        this.Background = this.add.sprite(this.dimentions.width / 2, this.dimentions.height / 2, "Background");
+        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "Background");
         this.Background.setOrigin(0.5, 0.5);
         const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
         this.Background.setScale(scale, scale);

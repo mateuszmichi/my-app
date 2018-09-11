@@ -9,12 +9,12 @@ export class MessageMenager {
         this.KnownMessages = KnownMessages;
     }
 
-    public GeneratePopup(mess: IMessageConverted, closefun:VoidFunction): JSX.Element[] {
+    public GeneratePopup(mess: IMessageConverted, closefun: VoidFunction, index: number): JSX.Element[] {
         switch (mess.translator.type) {
             case MessageType.ERROR:
-                return [<ErrorPopup key={mess.translator.name} clearFun={closefun} description={mess.message.description} title={mess.translator.title} imgs={mess.translator.images} />];
+                return [<ErrorPopup key={index} index={index} clearFun={closefun} description={mess.message.description} title={mess.translator.title} imgs={mess.translator.images} />];
             case MessageType.SUCCESS:
-                return [<SuccessPopup key={mess.translator.name} clearFun={closefun} description={mess.message.description} title={mess.translator.title} imgs={mess.translator.images} />];
+                return [<SuccessPopup key={index} index={index} clearFun={closefun} description={mess.message.description} title={mess.translator.title} imgs={mess.translator.images} />];
             default:
                 return [];
         }

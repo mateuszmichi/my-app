@@ -1,4 +1,4 @@
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT } from '../actions/actionTypes';
+import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_HP } from '../actions/actionTypes';
 
 import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData, } from '../TYPES';
 
@@ -162,6 +162,14 @@ function shatteredApp(state = initialState, action: any) {
             let heroCopy = Object.assign({}, state.activeHero);
             heroCopy = Object.assign(heroCopy, { equipment: eqCopy });
             return Object.assign({}, state, { activeHero: heroCopy });
+
+        case UPDATE_HERO_HP:
+            if (state.activeHero === null) {
+                return state;
+            }
+            let heroCopy2 = Object.assign({}, state.activeHero);
+            heroCopy2 = Object.assign(heroCopy2, { hp: pass.payload as number });
+            return Object.assign({}, state, { activeHero: heroCopy2 });
 
         default: return state;
     }

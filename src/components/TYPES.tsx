@@ -50,6 +50,8 @@ export interface IHero extends ICharacterBrief {
     location: ILocationResult;
     status: number;
     statusData: any;
+    isInvitational: boolean;
+    velocityFactor: number;
 }
 
 export enum Orders {

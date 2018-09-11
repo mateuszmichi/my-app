@@ -1,5 +1,5 @@
 import { IAction, IActionToken, ICharacterBrief, IHero, ILoadHeroData,  ILoginData, IUser, IUserToken,    } from '../TYPES';
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT,   } from './actionTypes';
+import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_HP   } from './actionTypes';
 
 import { IMessage, IMessageTranslator } from '../MessageMenager';
 
@@ -92,5 +92,12 @@ export function Update_Equipment(modification: IEquipmentModifyResult): IAction 
     return {
         payload: modification,
         type: UPDATE_EQUIPMENT,
+    }
+}
+
+export function Update_Hero_Hp(currentHP: number):IAction {
+    return {
+        payload: currentHP,
+        type: UPDATE_HERO_HP,
     }
 }

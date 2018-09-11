@@ -239,6 +239,7 @@ export interface IMainNode {
     name: string;
 }
 export interface ILocationResult {
+    locationGlobalType: number;
     locationName: string;
     currentLocation: number;
     nodes: INode[];
@@ -288,6 +289,8 @@ export enum LOCATIONS {
     UNKNOWN,
     LANDLOCATION,
     GLOBALLOCATION,
+    SAFELOCATION,
+    LOCALLOCATION,
 }
 
 export const LocationTypes: ILocationType[] = [
@@ -311,7 +314,21 @@ export const LocationTypes: ILocationType[] = [
             LOCATION_OPTIONS.TOGLOBAL,
             LOCATION_OPTIONS.TOREST,
         ],
-    }
+    },
+    {
+        image: String(require('../img/Game/Locations/field.svg')),
+        name: "SafeLocation",
+        options: [
+            LOCATION_OPTIONS.TOREST,
+        ],
+    },
+    {
+        image: String(require('../img/Game/Locations/field.svg')),
+        name: "LocalLocation",
+        options: [
+            LOCATION_OPTIONS.TOLOCAL,
+        ],
+    },
 ]
 
 // ---------------- travel

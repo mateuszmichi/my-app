@@ -118,6 +118,24 @@ export const MessageSentEmailSucc: IMessageTranslator =
     title: "Email has been sent",
     type: MessageType.SUCCESS,
 };
+export const MessageHpRestoreSucc: IMessageTranslator =
+{
+    actions: [],
+    images: [],
+    ispopup: true,
+    name: "heroHpSucc",
+    title: "No need to restore HP",
+    type: MessageType.SUCCESS,
+};
+export const MessageHeroCustomiseSucc: IMessageTranslator =
+{
+    actions: [],
+    images: [],
+    ispopup: true,
+    name: "customiseSucc",
+    title: "Customization successfull",
+    type: MessageType.SUCCESS,
+};
 
 // ---------------- export groups
 
@@ -129,4 +147,4 @@ export const MessagesForLogin = [
 
 export const MessagesAll = [MessageLoginErr, MessageNameErr, MessageServerErr,
     MessageSecurityErr, MessageChangeEqErr, MessageCreateUserSucc, MessageCreateHeroSucc, MessageRemoveHeroSucc,
-    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc];
+    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc, MessageHpRestoreSucc, MessageHeroCustomiseSucc];

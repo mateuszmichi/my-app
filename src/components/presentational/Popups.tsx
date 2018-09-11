@@ -7,13 +7,13 @@ import Divider from '@material-ui/core/Divider';
 import * as errorSrc from '../img/MainPage/error.png';
 import * as successSrc from '../img/MainPage/success.png';
 
-export class ErrorPopup extends React.Component<{ title: string, description: string, clearFun: VoidFunction, imgs: string[] }, {}>{
+export class ErrorPopup extends React.Component<{ index: number, title: string, description: string, clearFun: VoidFunction, imgs: string[] }, {}>{
     constructor(props: any) {
         super(props);
     }
     public render(): JSX.Element {
         return (
-            <div className="Popup ErrorPopup">
+            <div className="Popup ErrorPopup" key={this.props.index}>
                 <div className="PopupContent">
                     <div className="Centered"><img src={String(errorSrc)} /></div>
                     <p className="Title Centered">{this.props.title}</p>
@@ -26,13 +26,13 @@ export class ErrorPopup extends React.Component<{ title: string, description: st
         );
     }
 }
-export class SuccessPopup extends React.Component<{ title: string, description: string, clearFun: VoidFunction, imgs: string[] }, {}>{
+export class SuccessPopup extends React.Component<{ index: number, title: string, description: string, clearFun: VoidFunction, imgs: string[] }, {}>{
     constructor(props: any) {
         super(props);
     }
     public render(): JSX.Element {
         return (
-            <div className="Popup SuccessPopup">
+            <div className="Popup SuccessPopup" key={this.props.index}>
                 <div className="PopupContent">
                     <div className="Centered"><img src={String(successSrc)} /></div>
                     <p className="Title Centered">{this.props.title}</p>
