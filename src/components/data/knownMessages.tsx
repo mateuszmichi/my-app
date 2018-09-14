@@ -92,6 +92,7 @@ export const MessageTimeoutErr: IMessageTranslator =
 {
     actions: [(a: IMessage) => {
         window.location.replace("/");
+        cookies.remove("AutoCookie");
         alert("You have been loged out due to long inactiveness.")
     }],
     images: [String(disconnSrc)],

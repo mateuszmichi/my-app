@@ -1,6 +1,6 @@
 import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_HP } from '../actions/actionTypes';
 
-import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData, } from '../TYPES';
+import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData } from '../TYPES';
 
 import { IEquipmentModifyResult } from '../data/gameTYPES';
 
@@ -9,12 +9,12 @@ const initialState: IAppStatus = {
     actionToken: null,
     activeHero: null,
     dialog: undefined,
-    isLoged: false,
+    isLoged:false,
     isWaiting: false,
     messages: [],
     messagesTranslators: [],
-    user: null,
-    userToken: null,
+    user:null,
+    userToken:null,
 }
 
 function shatteredApp(state = initialState, action: any) {

@@ -230,6 +230,18 @@ export interface ILocationOptionType {
     image: string;
     isURI: boolean;
 }
+export interface IInstanceType {
+    image: string;
+    isURI: boolean;
+    name: string;
+    options: INSTANCE_OPTIONS[];
+}
+export interface IInstanceOptionType {
+    buttonDesc: string;
+    name: string;
+    image: string;
+    isURI: boolean;
+}
 
 export interface INode {
     x: number;
@@ -240,12 +252,18 @@ export interface IMainNode {
     locationType: LOCATIONS;
     name: string;
 }
-export interface ILocationResult {
+export interface IInstanceNode {
+    nodeID: number;
+    instanceType: INSTANCES;
+    level: number;
+    isCleared: boolean;
+}
+export interface ILocationResult<T> {
     locationGlobalType: number;
     locationName: string;
     currentLocation: number;
     nodes: INode[];
-    mainNodes: IMainNode[];
+    mainNodes: T[];
     edges: IEdge[];
     travelScale: number;
     locationID: number;
@@ -284,6 +302,33 @@ export const LocationOptionsImg: ILocationOptionType[] = [
     },
 ];
 
+export const InstanceOptionsImg: IInstanceOptionType[] = [
+    {
+        buttonDesc: "Back to \nLocation",
+        image: String(require('../img/Game/Locations/Interface/plains.png')),
+        isURI: false,
+        name: "ToLocalBack", 
+    },
+    {
+        buttonDesc: "Fight",
+        image: String(require('../img/Game/Locations/Interface/fight.png')),
+        isURI: false,
+        name: "ToFight",
+    },
+    {
+        buttonDesc: "Treasure",
+        image: String(require('../img/Game/Locations/Interface/treasure.png')),
+        isURI: true,
+        name: "ToTreasure",
+    },
+    {
+        buttonDesc: "Event",
+        image: String(require('../img/Game/Locations/Interface/event.png')),
+        isURI: true,
+        name: "ToEvent",
+    },
+];
+
 export enum LOCATION_OPTIONS {
     TOGLOBAL,
     TOLOCAL,
@@ -298,6 +343,18 @@ export enum LOCATIONS {
     GLOBALLOCATION,
     SAFELOCATION,
     LOCALLOCATION,
+}
+export enum INSTANCES {
+    ENTRANCE,
+    ENEMY,
+    BOSS,
+    TREASURE,
+}
+export enum INSTANCE_OPTIONS {
+    TOLOCAL,
+    TOFIGHT,
+    TOTREASURE,
+    TOEVENT,
 }
 
 export const LocationTypes: ILocationType[] = [
@@ -342,6 +399,41 @@ export const LocationTypes: ILocationType[] = [
         ],
     },
 ]
+
+export const InstanceTypes: IInstanceType[] = [
+    {
+        image: String(require('../img/Game/Locations/Interface/field.png')),
+        isURI: false,
+        name: "InstanceEntrance",
+        options: [
+            INSTANCE_OPTIONS.TOLOCAL,
+        ],
+    },
+    {
+        image: String(require('../img/Game/Locations/Interface/skull.png')),
+        isURI: true,
+        name: "InstanceEnemy",
+        options: [
+            INSTANCE_OPTIONS.TOFIGHT,
+        ],
+    },
+    {
+        image: String(require('../img/Game/Locations/Interface/boss.png')),
+        isURI: true,
+        name: "InstanceBoss",
+        options: [
+            INSTANCE_OPTIONS.TOFIGHT,
+        ],
+    },
+    {
+        image: String(require('../img/Game/Locations/Interface/treasure.png')),
+        isURI: true,
+        name: "InstanceTreasure",
+        options: [
+            INSTANCE_OPTIONS.TOTREASURE,
+        ],
+    },
+];
 
 // ---------------- travel
 export interface ITravelResult {

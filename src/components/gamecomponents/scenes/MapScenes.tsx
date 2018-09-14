@@ -1,7 +1,7 @@
 import * as Collections from 'typescript-collections';
 
 import * as Phaser from 'phaser';
-import { IGraph, ILocationResult, IMainNode, INode, ITravelResult, LOCATION_OPTIONS, LocationOptionsImg, LocationTypes,  } from '../../data/gameTYPES';
+import { IGraph, IInstanceNode, ILocationResult, IMainNode, INode, INSTANCE_OPTIONS, InstanceOptionsImg, INSTANCES, InstanceTypes,  ITravelResult, LOCATION_OPTIONS,  LocationOptionsImg, LocationTypes,    } from '../../data/gameTYPES';
 
 import { ChildNodeRange, TravelTime, TravelTimeToString, VectorInGlobal, } from '../../data/gameCALC';
 import { IMessage } from '../../MessageMenager';
@@ -38,7 +38,8 @@ const Settings = {
 
 export class LocalMapScene extends Phaser.Scene {
     private velocityFactor: number;
-    private location: ILocationResult;
+    private locationType: LOCTYPE;
+    private location: ILocationResult<IMainNode>|ILocationResult<IInstanceNode>;
     private connData: IConnectionData;
     private heroUpdates: IHeroUpdates;
 
@@ -63,6 +64,7 @@ export class LocalMapScene extends Phaser.Scene {
     private toMove: LinkedList<ItoMove>;
 
     constructor(dim: { height: number, width: number }, hero: IHero, ConnData: IConnectionData, HeroUpdates: IHeroUpdates) {
+        
         super({ key: "MapScene", });
         this.dimentions = dim;
         this.deltas = {x: 0,y: 0};
@@ -87,11 +89,21 @@ export class LocalMapScene extends Phaser.Scene {
         this.updateLocation = this.updateLocation.bind(this);
         this.selectOption = this.selectOption.bind(this);
         this.UseLocationAction = this.UseLocationAction.bind(this);
+        this.createInstanceNode = this.createInstanceNode.bind(this);
+        this.showInstanceDescription = this.showInstanceDescription.bind(this);
 
         this.toMove = new LinkedList<ItoMove>();
 
         this.velocityFactor = hero.velocityFactor;
-        this.location = hero.location;
+
+        if (hero.location.locationGlobalType === 2) {
+            this.locationType = LOCTYPE.INSTANCE;
+            this.location = hero.location as ILocationResult<IInstanceNode>;
+        } else {
+            this.locationType = LOCTYPE.NORMAL;
+            this.location = hero.location as ILocationResult<IMainNode>;
+        }
+
         this.connData = ConnData;
         this.heroUpdates = HeroUpdates;
     }
@@ -100,7 +112,8 @@ export class LocalMapScene extends Phaser.Scene {
         this.load.image({ key: "LocalMapBGR" + this.location.locationID, url: img, });
 
         const travel = require('../../img/Game/Locations/Interface/travel.png');
-        this.load.image({ key: "TravelImg", url: String(travel) });
+        // this.load.image({ key: "TravelImg", url: String(travel) });
+        this.textures.addBase64("TravelImg",String(travel));
 
         const target = require('../../img/Game/Locations/Interface/target.png');
         this.load.image({ key: "Target", url: String(target) });
@@ -119,7 +132,22 @@ export class LocalMapScene extends Phaser.Scene {
             } else {
                 this.textures.addBase64(e.name + "Img", e.image);
             }
-        })
+        });
+        InstanceTypes.forEach(e => {
+            if (!e.isURI) {
+                this.load.image({ key: e.name + "Img", url: e.image });
+            } else {
+                this.textures.addBase64(e.name + "Img", e.image);
+            }
+
+        });
+        InstanceOptionsImg.forEach(e => {
+            if (!e.isURI) {
+                this.load.image({ key: e.name + "Img", url: e.image });
+            } else {
+                this.textures.addBase64(e.name + "Img", e.image);
+            }
+        });
 
         this.graphnodes = [];
     }
@@ -131,13 +159,20 @@ export class LocalMapScene extends Phaser.Scene {
         this.updateLocation();
     }
 
-    public updateData(newlocation: ILocationResult) {
-        this.location = newlocation;
+    public updateData(newlocation: ILocationResult<any>) {
+        if (newlocation.locationGlobalType === 2) {
+            this.locationType = LOCTYPE.INSTANCE;
+            this.location = newlocation as ILocationResult<IInstanceNode>;
+        } else {
+            this.locationType = LOCTYPE.NORMAL;
+            this.location = newlocation as ILocationResult<IMainNode>;
+        }
         this.graph = new IGraph(this.location.nodes, this.location.edges, this.HeurDist);
         // TODO first user comperer
         this.data.set("CurrentPosition", this.location.currentLocation);
         this.data.set("LocationName", this.location.locationName);
         this.data.set("Nodes", this.location.nodes);
+        this.data.set("LocationType", this.locationType);
         this.data.set("MainNodes", this.location.mainNodes);
         this.data.set("Edges", this.location.edges);
         this.data.set("TravelScale", this.location.travelScale);
@@ -217,6 +252,7 @@ export class LocalMapScene extends Phaser.Scene {
             e.sprite.y = delta.y + e.initialy + this.deltas.y;
         });
     }
+    // TODO other type
     private showDescription(mapnode: IMainNode, distance: number) {
         const traveltime = TravelTime(distance, this.data.values.TravelScale as number,18*this.velocityFactor);
         this.currentdesc.removeAll();
@@ -246,7 +282,7 @@ export class LocalMapScene extends Phaser.Scene {
                 }
                 buttonsToAdd.add(travelbutton);
                 travelbutton.Button.on("pointerup", () => {
-                    this.selectOption(i,option);
+                    this.selectOption(i,option,LOCTYPE.NORMAL);
                 });
             });
         }
@@ -309,6 +345,119 @@ export class LocalMapScene extends Phaser.Scene {
         this.currentdesc.x = nodes[mapnode.nodeID].x + 5;
         this.currentdesc.y = nodes[mapnode.nodeID].y + 5;
     }
+    private showInstanceDescription(mapnode: IInstanceNode, distance: number) {
+        const traveltime = TravelTime(distance, this.data.values.TravelScale as number, 18 * this.velocityFactor);
+        this.currentdesc.removeAll();
+
+        const graph = this.add.graphics({ fillStyle: { color: 0xffffff }, lineStyle: { width: 2, color: 0x333333 } });
+        let descr = "";
+        switch (mapnode.instanceType) {
+            case INSTANCES.ENTRANCE:
+                descr = "Entrance";
+                break;
+            case INSTANCES.ENEMY:
+                descr = (mapnode.isCleared) ? "Defeated enemy" : "Enemy";
+                break;
+            case INSTANCES.BOSS:
+                descr = (mapnode.isCleared) ? "Defeated boss" : "Boss";
+                break;
+            case INSTANCES.TREASURE:
+                descr = (mapnode.isCleared) ? "Opened treasure" : "Treasure";
+                break;
+        }
+
+        const locationname = this.add.text(0, 0, descr, { color: '#ffffff', align: 'center', fontSize: 14, fontStyle: 'bold' });
+        const time = this.add.text(0, 0, ["Travel time", TravelTimeToString(traveltime)], { color: '#222222', align: 'center', fontSize: 12 });
+        let DescWidth = Math.max(locationname.displayWidth, Settings.Description.ButtonExtend, Settings.Description.MinWidth);
+
+        const buttonsToAdd = new Collections.LinkedList<InteractiveButton>();
+        if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
+            const opt = InstanceOptionsImg[InstanceTypes[mapnode.instanceType].options[0]];
+            const travelbutton = (mapnode.isCleared || mapnode.instanceType === INSTANCES.ENTRANCE) ? this.CreateDescriptionButton("TravelImg", "Travel") : this.CreateDescriptionButton(opt.name + "Img", opt.buttonDesc);
+            
+            if (Math.max(time.displayWidth, travelbutton.Width) > DescWidth) {
+                DescWidth = Math.max(time.displayWidth, travelbutton.Width);
+            }
+            travelbutton.Button.on("pointerdown", () => {
+                this.TravelTo(mapnode.nodeID, traveltime);
+            });
+            buttonsToAdd.add(travelbutton);
+        } else {
+            const LocType = mapnode.instanceType;
+            if (!mapnode.isCleared || LocType === INSTANCES.ENTRANCE) {
+                InstanceTypes[LocType].options.forEach((option, i) => {
+                    // TODO onclick
+                    const travelbutton = this.CreateDescriptionButton(InstanceOptionsImg[option].name + "Img", InstanceOptionsImg[option].buttonDesc);
+                    if (travelbutton.Width > DescWidth) {
+                        DescWidth = travelbutton.Width;
+                    }
+                    buttonsToAdd.add(travelbutton);
+                    travelbutton.Button.on("pointerup", () => {
+                        // TODO
+                        this.selectOption(i, option,LOCTYPE.INSTANCE);
+                    });
+                });
+            }
+        }
+        DescWidth += 2 * Settings.Description.MainPadding;
+        // 4F628E
+        const buttonFill = this.add.graphics({ fillStyle: { color: 0xA8B3CC } });
+
+        locationname.setOrigin(0.5, 0);
+        locationname.x = DescWidth / 2;
+        locationname.y = Settings.Description.TopPadding;
+        let DescHeight = locationname.y + locationname.displayHeight + Settings.Description.TopPadding;
+
+        this.currentdesc.add(graph);
+        this.currentdesc.add(locationname);
+        this.currentdesc.add(buttonFill);
+
+        const arr = buttonsToAdd.toArray();
+        arr.forEach((e, i) => {
+            buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetweenButtons, DescWidth, e.Height);
+
+            e.Button.x = (DescWidth - e.Width) / 2;
+            e.Button.y = DescHeight + Settings.Description.DistanceBetweenButtons;
+            DescHeight = e.Button.y + e.Height;
+
+            e.Button.setSize(e.Width, e.Height);
+            e.Button.setInteractive(new Phaser.Geom.Rectangle(e.Width / 2, e.Height / 2, e.Width, e.Height), Phaser.Geom.Rectangle.Contains);
+            e.Button.on("pointerover", () => {
+                this.setHover();
+                this.setElementActive(i, arr, buttonFill, DescWidth);
+            });
+            e.Button.on("pointerout", () => {
+                this.setHoverEnd();
+                this.setElementActive(-1, arr, buttonFill, DescWidth);
+            });
+            // e.Button.on("pointerup", () => {
+            //    this.selectOption(i);
+            // });
+            this.currentdesc.add(e.Button);
+        });
+
+        if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
+            time.setOrigin(0.5, 0);
+            time.x = DescWidth / 2;
+            time.y = DescHeight + Settings.Description.DistanceBetween;
+            DescHeight = time.y + time.displayHeight;
+            this.currentdesc.add(time);
+        } else {
+            time.destroy();
+        }
+        // const radius = 5;
+        // graph.fillRoundedRect(0, 0, DescWidth, DescHeight + Settings.Description.TopPadding, radius);
+        graph.fillRect(0, 0, DescWidth,(arr.length>0)?(DescHeight + Settings.Description.TopPadding):DescHeight);
+        graph.fillStyle(0x2E4172);
+        // graph.fillRoundedRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding, radius);
+        graph.fillRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding);
+        // graph.fillRect(0, locationname.y + locationname.displayHeight + Settings.Description.TopPadding - radius, DescWidth, radius);
+        graph.fillStyle(0x4F628E);
+
+        const nodes = this.data.values.Nodes as INode[];
+        this.currentdesc.x = nodes[mapnode.nodeID].x + 5;
+        this.currentdesc.y = nodes[mapnode.nodeID].y + 5;
+    }
     private setHover() {
         const element = document.getElementById("Game")
         if (element !== null) {
@@ -321,6 +470,7 @@ export class LocalMapScene extends Phaser.Scene {
             element.style.cursor = "default";
         }
     }
+    // TODO other type
     private createNode(e: IMainNode) {
         const mapnode: INode = this.data.values.Nodes[e.nodeID];
         const node = this.add.image(mapnode.x + Settings.MapBorder - this.deltas.x, mapnode.y + Settings.MapBorder - this.deltas.y, LocationTypes[e.locationType].name + "Img");
@@ -361,7 +511,7 @@ export class LocalMapScene extends Phaser.Scene {
 
                 optionbutton.on("pointerover", this.setHover);
                 optionbutton.on("pointerout", this.setHoverEnd);
-                optionbutton.on("pointerup", () => { this.selectOption(index,option); });
+                optionbutton.on("pointerup", () => { this.selectOption(index,option,LOCTYPE.NORMAL); });
             }
 
             optionbutton.displayHeight = Settings.SuppNodeSize;
@@ -388,7 +538,7 @@ export class LocalMapScene extends Phaser.Scene {
         node.displayHeight = Settings.MainNodeSize;
 
         node.on("pointerdown", () => {
-            this.showTrack(e);
+            this.showTrack(e,LOCTYPE.NORMAL);
             this.SetTargetNode(e.nodeID);
         });
         node.on("pointerover", this.setHover);
@@ -396,7 +546,53 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.graphnodes.push({ sprite: node, mask, index: e.nodeID });
     }
-    private showTrack(mainnode: IMainNode) {
+    private createInstanceNode(e: IInstanceNode) {
+        const mapnode: INode = this.data.values.Nodes[e.nodeID];
+        const node = this.add.image(mapnode.x + Settings.MapBorder - this.deltas.x, mapnode.y + Settings.MapBorder - this.deltas.y, InstanceTypes[e.instanceType].name + "Img");
+        const alpha = (e.isCleared) ? 0.5 : 1
+        node.alpha = alpha;
+        this.nodesdrawer.fillStyle((!e.isCleared) ? this.nodesdrawer.defaultFillColor : 0x727272);
+        this.nodesdrawer.lineStyle(this.nodesdrawer.defaultStrokeWidth, (!e.isCleared) ? this.nodesdrawer.defaultStrokeColor : 0x727272);
+
+        this.nodesdrawer.fillCircle(mapnode.x, mapnode.y, Settings.MainNodeSize * Settings.MainNodeRadiusScale / 2);
+        this.nodesdrawer.strokeCircle(mapnode.x, mapnode.y, Settings.MainNodeSize * Settings.MainNodeRadiusScale / 2);
+
+        if (!e.isCleared && e.instanceType === INSTANCES.ENEMY || e.instanceType === INSTANCES.BOSS) {
+            const levelText = this.add.text(0, 0, "Lvl: " + e.level, { color: "white" });
+            // TODO - based on hero level background
+            const padding = 2;
+            levelText.setOrigin(0.5, 0);
+            // this.nodesdrawer.fillRect(mapnode.x - levelText.displayWidth / 2 - padding, mapnode.y + Settings.MainNodeSize * Settings.MainNodeRadiusScale / 4, levelText.displayWidth + 2 * padding, Settings.MainNodeSize * Settings.MainNodeRadiusScale / 4 + 2 * padding + levelText.displayHeight);
+            levelText.x = mapnode.x;
+            levelText.y = mapnode.y + Settings.MainNodeSize * Settings.MainNodeRadiusScale / 2 + padding;
+            levelText.setStroke("#3d3d3d", 4);
+            this.container.add(levelText);
+        }
+
+
+        const mask = this.make.graphics({}).fillCircle(node.x, node.y, Settings.MainNodeSize * Settings.MainNodeRadiusScale / 2);
+        const nodemask = new Phaser.Display.Masks.GeometryMask(this, mask);
+        node.setMask(nodemask);
+
+        const w = node.width;
+        const h = node.height;
+        const hitbox = new Phaser.Geom.Ellipse(w / 2, h / 2, w * Settings.MainNodeRadiusScale, h * Settings.MainNodeRadiusScale);
+        node.setInteractive(hitbox, Phaser.Geom.Ellipse.Contains);
+        // node.setInteractive();
+        node.displayWidth = Settings.MainNodeSize;
+        node.displayHeight = Settings.MainNodeSize;
+
+        node.on("pointerdown", () => {
+            // TODO
+            this.showTrack(e,LOCTYPE.INSTANCE);
+            this.SetTargetNode(e.nodeID);
+        });
+        node.on("pointerover", this.setHover);
+        node.on("pointerout", this.setHoverEnd);
+
+        this.graphnodes.push({ sprite: node, mask, index: e.nodeID });
+    }
+    private showTrack(mainnode: IMainNode|IInstanceNode, type: LOCTYPE) {
         const nodes = this.data.values.Nodes as INode[];
         this.pathdrawer.clear();
         const AstarRes = this.graph.Astar((this.data.values.CurrentPosition as number), mainnode.nodeID);
@@ -417,7 +613,12 @@ export class LocalMapScene extends Phaser.Scene {
             targets: this.pathdrawer,
             yoyo: true,
         });
-        this.showDescription(mainnode, AstarRes.distance);
+        if (type === LOCTYPE.NORMAL) {
+            this.showDescription(mainnode as IMainNode, AstarRes.distance);
+        }
+        else {
+            this.showInstanceDescription(mainnode as IInstanceNode, AstarRes.distance);
+        }
     }
     private HeurDist(a: INode, b: INode) {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
@@ -485,6 +686,7 @@ export class LocalMapScene extends Phaser.Scene {
         this.SetTargetNode((this.data.values.CurrentPosition as number));
         this.setHoverEnd();
     }
+    // TODO InstanceTravel
     private StartTravel(cel: number) {
         const passed: IPassedGameData<number> = {
             ActionToken: this.connData.actionToken,
@@ -516,7 +718,7 @@ export class LocalMapScene extends Phaser.Scene {
         };
         const succFun = (res: any) => {
             const received = res.data;
-            const location = received.location as ILocationResult;
+            const location = received.location as ILocationResult<any>;
             this.updateData(location);
             // alert(JSON.stringify(received));
             // this.resetPath();
@@ -537,6 +739,7 @@ export class LocalMapScene extends Phaser.Scene {
         this.data.set("CurrentPosition", this.location.currentLocation);
         this.data.set("Nodes", this.location.nodes);
         this.data.set("MainNodes", this.location.mainNodes);
+        this.data.set("LocationType", this.locationType);
         this.data.set("Edges", this.location.edges);
         this.data.set("TravelScale", this.location.travelScale);
         this.data.set("LocationID", this.location.locationID);
@@ -603,8 +806,14 @@ export class LocalMapScene extends Phaser.Scene {
         this.locationNameBGR.fillRect((this.background.displayWidth - this.locationName.displayWidth - 2 * Settings.MapBorder) / 2, -Settings.MapBorder / 2, 2 * Settings.MapBorder + this.locationName.displayWidth, this.locationName.displayHeight + Settings.MapBorder / 2);
         this.container.add([this.locationNameBGR, this.locationName]);
 
-        const MainNodes = this.data.values.MainNodes as IMainNode[];
-        MainNodes.forEach(this.createNode);
+        if (this.locationType === LOCTYPE.NORMAL) {
+            const MainNodes = this.data.values.MainNodes as IMainNode[];
+            MainNodes.forEach(this.createNode);
+        }
+        else {
+            const MainNodes = this.data.values.MainNodes as IInstanceNode[];
+            MainNodes.forEach(this.createInstanceNode);
+        }
 
         this.currentdesc = this.add.container(0, 0);
 
@@ -622,6 +831,8 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.background.setInteractive();
         this.input.setDraggable(this.background, true);
+
+        this.resetPath();
     }
 
     private setElementActive(key: number, List: InteractiveButton[], graphics: Phaser.GameObjects.Graphics, width:number) {
@@ -646,16 +857,32 @@ export class LocalMapScene extends Phaser.Scene {
             return (position > bgrSize - windowSize / 2 + Settings.MapBorder) ? bgrSize - windowSize + 2 * Settings.MapBorder : position - windowSize / 2;
         }
     }
-    private selectOption(option: number, optionType: LOCATION_OPTIONS) {
+
+    
+    private selectOption(option: number, optionType: LOCATION_OPTIONS|INSTANCE_OPTIONS, type: LOCTYPE) {
         // TODO list of implemented
         // alert(option + " " + optionType);
-        const implemented = [LOCATION_OPTIONS.TOGLOBAL, LOCATION_OPTIONS.TOLOCAL];
-        if (implemented.findIndex(e=> e === optionType) !== -1) {
-            this.UseLocationAction(option);
+        if (type === LOCTYPE.NORMAL) {
+            const implemented = [LOCATION_OPTIONS.TOGLOBAL, LOCATION_OPTIONS.TOLOCAL, LOCATION_OPTIONS.TOINSTANCE];
+            if (implemented.findIndex(e => e === optionType) !== -1) {
+                this.UseLocationAction(option);
+            }
+            if (optionType === LOCATION_OPTIONS.TOREST) {
+                this.scene.pause("MapScene");
+                this.scene.add("HealingScene", new HealingScene(this.dimentions, this.connData, this.heroUpdates, null), true);
+            }
         }
-        if (optionType === LOCATION_OPTIONS.TOREST) {
-            this.scene.pause("MapScene");
-            this.scene.add("HealingScene", new HealingScene(this.dimentions, this.connData, this.heroUpdates, null),true);
+        else {
+            // TODO 
+            const implemented: INSTANCE_OPTIONS[] = [INSTANCE_OPTIONS.TOLOCAL];
+            if (implemented.findIndex(e => e === optionType) !== -1) {
+                this.UseLocationAction(option);
+            }
+            if (optionType === INSTANCE_OPTIONS.TOTREASURE) {
+                /*this.scene.pause("MapScene");
+                this.scene.add("HealingScene", new HealingScene(this.dimentions, this.connData, this.heroUpdates, null), true);*/
+                // TODO add loot scene
+            }
         }
     }
 }
@@ -673,4 +900,9 @@ interface InteractiveButton {
     Button: Phaser.GameObjects.Container,
     Height: number;
     Width: number;
+}
+
+enum LOCTYPE {
+    NORMAL,
+    INSTANCE
 }

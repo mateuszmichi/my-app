@@ -11,7 +11,7 @@ import { Statistics } from './presentational/Statistics';
 import { IHero, IPassedGameData } from '../TYPES';
 
 import { IConnectionData, ServerConnect } from '../data/connectionConf';
-import { IEquipmentModifyResult, IItemResult, ItemTypes,  } from '../data/gameTYPES';
+import { IEquipmentModifyResult, IItemResult, ItemTypes, } from '../data/gameTYPES';
 
 import { Inventory } from './presentational/Inventory';
 import { ItemDescription } from './presentational/ItemDescription';
@@ -28,7 +28,7 @@ import { AcceptItemSchema } from '../data/gameCALC';
 
 
 
-class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero, ConnData: IConnectionData, updateEquipment: (modification: IEquipmentModifyResult) => void  }, { active: IActiveItem | null }>{
+class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero, ConnData: IConnectionData, updateEquipment: (modification: IEquipmentModifyResult) => void }, { height: number, width: number, active: IActiveItem | null }>{
     private heroScene: Phaser.Game;
     constructor(props: any) {
         super(props);
@@ -39,18 +39,23 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
         this.handleEquipmentChange = this.handleEquipmentChange.bind(this);
         this.handleButtonItemChange = this.handleButtonItemChange.bind(this);
         this.isChangeUseful = this.isChangeUseful.bind(this);
+        this.CallbackFun = this.CallbackFun.bind(this);
+        this.OnResizeFun = this.OnResizeFun.bind(this);
 
         this.state = {
             active: null,
+            height: 0,
+            width: 0,
         }
     }
     public componentWillUnmount() {
         if (this.heroScene !== undefined) {
             this.heroScene.destroy(true);
         }
+        window.removeEventListener("resize", this.OnResizeFun);
     }
     public componentDidMount() {
-        // alert(JSON.stringify(EQ));
+        window.addEventListener("resize", this.OnResizeFun);
         const Element = document.getElementById('HeroDisplay');
         if (Element !== null) {
             const width = Element.offsetWidth;
@@ -59,8 +64,8 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
                 backgroundColor: 'rgb(237, 205, 151)',
                 height,
                 parent: "HeroDisplay",
-                "render.transparent": true,
                 scene: new EquipmentScene({ height, width }),
+                type: Phaser.CANVAS,
                 width,
             });
         }
@@ -78,7 +83,7 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
     public render() {
         return (
             <ClickAwayListener onClickAway={this.handleDisactivateItem}>
-                <div id="Equipment" className={(this.props.visible) ? "Active" : "InActive"} onClick={this.handleDisactivateItem}>
+                <div id="Equipment" ref={this.CallbackFun} className={(this.props.visible) ? "Active" : "InActive"} onClick={this.handleDisactivateItem}>
                     <Backpack hero={this.props.hero} itemDetails={this.showItemDialog} activeItem={this.state.active} makeActiveFun={this.handleActivateItem} />
                     <div className="HeroModel">
                         <div className="TopField">
@@ -93,12 +98,12 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             </ClickAwayListener>);
     }
     private showItemDialog(hero: IHero, item: IItemResult, status: number) {
-        const currentActive = Object.assign({},this.state.active);
+        const currentActive = Object.assign({}, this.state.active);
         const changeItemInside = (event: any, target: string) => {
             event.stopPropagation();
             this.handleButtonItemChange(currentActive, target);
         }
-        this.props.ConnData.popDialog(<ItemDescription hero={hero} item={item} isOn={status === 1} ConnData={this.props.ConnData} equipFun={changeItemInside}/>);
+        this.props.ConnData.popDialog(<ItemDescription hero={hero} item={item} isOn={status === 1} ConnData={this.props.ConnData} equipFun={changeItemInside} />);
     }
     private handleActivateItem(event: any, activeItem: IActiveItem | null, target: string) {
         event.stopPropagation();
@@ -123,7 +128,7 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             this.setState({ active: activeItem });
         }
     }
-    private handleButtonItemChange(from: IActiveItem|null, to: string) {
+    private handleButtonItemChange(from: IActiveItem | null, to: string) {
         if (from !== null) {
             this.handleEquipmentChange(from.activeItem, to);
         }
@@ -154,7 +159,7 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
         };
         ServerConnect(`/api/EquipmentsChange`, passed, succFun, failFun, this.props.ConnData.popWaiting, this.props.ConnData.closeWaiting);
     }
-    private isChangeUseful(from: string, to: string):boolean {
+    private isChangeUseful(from: string, to: string): boolean {
         if (to === "Trash") {
             return true;
         }
@@ -162,10 +167,10 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             return true;
         }
         const onItems = AcceptItemSchema(this.props.hero.equipment);
-        const itemstoput: Array<{nr:number,item:IItemResult}> = []
+        const itemstoput: Array<{ nr: number, item: IItemResult }> = []
         if (from.startsWith("Backpack") && to.startsWith("Inventory")) {
-            const slot = parseInt(from.substring(8),10);
-            const target = parseInt(to.substring(9),10);
+            const slot = parseInt(from.substring(8), 10);
+            const target = parseInt(to.substring(9), 10);
             const itnum = this.props.hero.equipment.backpack[slot];
             if (itnum === null) {
                 throw Error("No item to pass");
@@ -177,8 +182,8 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             itemstoput.push({ nr: target, item });
         }
         if (to.startsWith("Backpack") && from.startsWith("Inventory")) {
-            const slot = parseInt(from.substring(9),10);
-            const target = parseInt(to.substring(8),10);
+            const slot = parseInt(from.substring(9), 10);
+            const target = parseInt(to.substring(8), 10);
             const itnum = this.props.hero.equipment.backpack[target];
             if (itnum !== null) {
                 const item = this.props.hero.equipment.knownItems.find(e => e.itemID === itnum);
@@ -189,8 +194,8 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             }
         }
         if (from.startsWith("Inventory") && to.startsWith("Inventory")) {
-            const slot = parseInt(from.substring(9),10);
-            const target = parseInt(to.substring(9),10);
+            const slot = parseInt(from.substring(9), 10);
+            const target = parseInt(to.substring(9), 10);
             let itnum = onItems[slot].item;
             if (itnum === null) {
                 throw Error("No item to pass");
@@ -213,7 +218,7 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
         }
         let check = true;
         itemstoput.forEach(e => {
-            if (onItems[e.nr].acceptType.findIndex(f=> f === e.item.itemType) === -1) {
+            if (onItems[e.nr].acceptType.findIndex(f => f === e.item.itemType) === -1) {
                 check = false;
                 return;
             }
@@ -222,6 +227,21 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             }
         });
         return check;
+    }
+
+    private CallbackFun(element: any) {
+        if (element === null) {
+            return;
+        }
+        const poss = element.getBoundingClientRect() as DOMRect;
+        this.setState({ height: poss.height, width: poss.width, });
+    }
+    private OnResizeFun() {
+        const element = document.getElementById("Equipment");
+        if (element === null) {
+            throw Error("Problem with names");
+        }
+        this.CallbackFun(element);
     }
 }
 // -------------------------- connection with the store

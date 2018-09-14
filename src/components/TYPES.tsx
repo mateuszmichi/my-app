@@ -47,7 +47,7 @@ export interface IHero extends ICharacterBrief {
     slmax: number;
     exp: number;
     equipment: IEquipmentResult;
-    location: ILocationResult;
+    location: ILocationResult<any>;
     status: number;
     statusData: any;
     isInvitational: boolean;

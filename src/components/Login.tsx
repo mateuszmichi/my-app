@@ -13,7 +13,7 @@ import { IMessage, IMessageTranslator } from './MessageMenager';
 
 import { IConnectionFunctions, ServerConnect } from './data/connectionConf';
 
-import { IUser, IUserToken,  } from './TYPES';
+import { IPassedData, IUser, IUserToken,   } from './TYPES';
 
 // ------------------- constants
 const cookies = new Cookies();
@@ -35,6 +35,7 @@ class ConnectedLogin extends React.Component<{ logfun: any, ConnFuns: IConnectio
         this.ActiveCheckbox = this.ActiveCheckbox.bind(this);
         this.TryLogin = this.TryLogin.bind(this);
         this.TryLoginWithToken = this.TryLoginWithToken.bind(this);
+        this.TryLoginWithAutoCookie = this.TryLoginWithAutoCookie.bind(this);
 
         this.KnownMessages = [];
 
@@ -50,6 +51,11 @@ class ConnectedLogin extends React.Component<{ logfun: any, ConnFuns: IConnectio
         const check = cookies.get('LoginCookie') as ILoginToken;
         if (check !== undefined) {
             this.TryLoginWithToken(check);
+        } else {
+            const check2 = cookies.get('AutoCookie') as IAutoCookie;
+            if (check2 !== undefined) {
+                this.TryLoginWithAutoCookie(check2);
+            }
         }
     }
 
@@ -122,6 +128,7 @@ class ConnectedLogin extends React.Component<{ logfun: any, ConnFuns: IConnectio
             }
             ntoken = { username: received.usertoken.userName, token: received.usertoken.token } as IUserToken;
             const nuser: IUser = received.user;
+            cookies.set("AutoCookie", { token: ntoken, userName: nuser.username } as IAutoCookie);
             this.props.logfun(nuser, ntoken);
         };
         const failFun = (error: any) => {
@@ -144,16 +151,38 @@ class ConnectedLogin extends React.Component<{ logfun: any, ConnFuns: IConnectio
             cookies.set('LoginCookie', t, { path: '/', expires: new Date(res.data.logintoken.expireDate) });
             const ntoken = { username: res.data.usertoken.userName, token: res.data.usertoken.token } as IUserToken;
             const nuser: IUser = res.data.user;
+            cookies.set("AutoCookie", { token: ntoken, userName: nuser.username } as IAutoCookie);
             this.props.logfun(nuser, ntoken);
         };
         const failFun = (error: any) => {
             if (error.response === undefined) {
                 this.props.ConnFuns.popMessage([{ title: "serverErr", description: "I've got bad feelings about this...", } as IMessage], this.KnownMessages);
             } else {
+                cookies.remove("LoginCookie");
                 this.props.ConnFuns.popMessage([{ title: error.response.data.type, description: error.response.data.description } as IMessage], this.KnownMessages);
             }
         };
         ServerConnect(`/api/LoginToken`, passed, succFun, failFun, this.props.ConnFuns.popWaiting, this.props.ConnFuns.closeWaiting);
+    }
+    private TryLoginWithAutoCookie(data: IAutoCookie) {
+        const passed: IPassedData<string> = {
+            Data: data.userName,
+            UserToken: data.token,
+        };
+        const succFun = (res: any) => {
+            const ntoken = { username: res.data.usertoken.userName, token: res.data.usertoken.token } as IUserToken;
+            const nuser: IUser = res.data.user;
+            this.props.logfun(nuser, ntoken);
+        };
+        const failFun = (error: any) => {
+            if (error.response === undefined) {
+                this.props.ConnFuns.popMessage([{ title: "serverErr", description: "I've got bad feelings about this...", } as IMessage], this.KnownMessages);
+            } else {
+                cookies.remove("AutoCookie");
+                this.props.ConnFuns.popMessage([{ title: error.response.data.type, description: error.response.data.description } as IMessage], this.KnownMessages);
+            }
+        };
+        ServerConnect(`/api/LoginAutoCookie`, passed, succFun, failFun, this.props.ConnFuns.popWaiting, this.props.ConnFuns.closeWaiting);
     }
 }
 
@@ -189,6 +218,11 @@ interface ILoginData {
     Name: string,
     Password: string,
     isRemembered: boolean,
+}
+
+export interface IAutoCookie {
+    userName: string,
+    token: IUserToken,
 }
 
 // ========================================

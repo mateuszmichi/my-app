@@ -72,13 +72,17 @@ export class TravelScene extends Phaser.Scene {
         const background = require('../../img/Game/Locations/Interface/TravelBGR2.png');
         this.load.image("TravelBackground", String(background));
 
-        const fromto = require('../../img/Game/Locations/Interface/from-to.png');
+        const fromto = require('../../img/Game/Locations/Interface/from-to-black.png');
         // this.load.image("FromTo", String(fromto));
-        this.textures.addBase64("FromTo", String(fromto));
+        if (!this.textures.exists("FromTo")) {
+            this.textures.addBase64("FromTo", String(fromto));
+        }
 
         const reverse = require('../../img/Game/Locations/Interface/back.png');
         // this.load.image("Reverse", String(reverse));
-        this.textures.addBase64("Reverse", String(reverse));
+        if (!this.textures.exists("Reverse")) {
+            this.textures.addBase64("Reverse", String(reverse));
+        }
     }
     public create() {
         this.cameras.resize(this.dimentions.width, this.dimentions.height);
@@ -155,7 +159,7 @@ export class TravelScene extends Phaser.Scene {
         };
         const succFun = (res: any) => {
             const mapscene = this.scene.get("MapScene") as LocalMapScene;
-            mapscene.updateData(res.data.location as ILocationResult);
+            mapscene.updateData(res.data.location as ILocationResult<any>);
             this.tweens.add({
                 alpha: 0,
                 duration: 250,

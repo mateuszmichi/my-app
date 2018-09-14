@@ -70,8 +70,9 @@ class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnection
     }
 
     private handleLogout() {
-        this.setState({ isEnd: true });
-        this.props.logFun();
+        // this.setState({ isEnd: true });
+        // this.props.logFun();
+        window.location.replace("/");
     }
     private handleChangePosition(id: number) {
         this.setState({ CurrentPosition: id });
