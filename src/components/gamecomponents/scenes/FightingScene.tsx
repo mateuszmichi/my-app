@@ -317,10 +317,10 @@ export class FightingScene extends Phaser.Scene {
         });
         this.setElementActive(-1, this.ButtonsArray, this.ButtonsBackground);
     }
-    private EndFight() {
-        const passed: IPassedGameData<number | null> = {
+    private EndFight(acceptItem:boolean) {
+        const passed: IPassedGameData<boolean> = {
             ActionToken: this.ConnData.actionToken,
-            Data: null,
+            Data: acceptItem,
             UserToken: this.ConnData.userToken,
         };
         const succFun = (res: any) => {
@@ -620,7 +620,7 @@ export class FightingScene extends Phaser.Scene {
                 this.GenApply(apply, false);
             });
             apply.on("pointerup", () => {
-                this.EndFight();
+                this.EndFight(Accept.accepted);
             });
 
             const Background = this.add.graphics({ fillStyle: { color: BackColor } });
@@ -642,7 +642,7 @@ export class FightingScene extends Phaser.Scene {
                 this.GenApply(apply, false);
             });
             apply.on("pointerup", () => {
-                this.EndFight();
+                this.EndFight(false);
             });
 
             const Background = this.add.graphics({ fillStyle: { color: BackColor } });
