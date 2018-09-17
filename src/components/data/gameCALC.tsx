@@ -9,7 +9,7 @@ export function ExpToLevel(level: number): number {
         return 10 * (level * level - level);
     }
     else {
-        return 25 * level * (level - 13 * level) + 1650;
+        return 25 * level * (level - 13) + 1650;
     }
 }
 export function MoneyToGems(money: number): string[] {
@@ -81,9 +81,9 @@ export function HeroGenStatistics(hero: IHero) {
         armour += e.armour;
     });
     return {
-        Armour: armour,
-        AttackMax: attMax,
-        AttackMin: attMin,
+        Armour: armour + Math.floor(attr[1] * 0.1),
+        AttackMax: attMax + Math.ceil(attr[0] * 0.1),
+        AttackMin: attMin + Math.ceil(attr[0] * 0.1),
         Attributes: attr,
     }
 }

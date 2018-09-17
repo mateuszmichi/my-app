@@ -4,8 +4,6 @@ import { IConnectionData, ServerConnect } from '../../data/connectionConf';
 import { TravelTimeToString } from '../../data/gameCALC';
 import { } from '../../data/gameTYPES';
 
-import { LocalMapScene } from './MapScenes';
-
 import { IMessage } from '../../MessageMenager';
 import { IPassedGameData } from '../../TYPES';
 
@@ -70,6 +68,7 @@ export class HealingScene extends Phaser.Scene {
         this.resize = this.resize.bind(this);
         this.GenerateButtons = this.GenerateButtons.bind(this);
         this.CloseHealing = this.CloseHealing.bind(this);
+        this.GenerateElements = this.GenerateElements.bind(this);
 
         if (HealingData !== null) {
             this.isHealing = true;
@@ -131,51 +130,18 @@ export class HealingScene extends Phaser.Scene {
                 this.setHoverEnd();
             }
         });
-
-        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "HealingBackground");
-        const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
-        // adjust to edges
-        this.MainScale = scale * 1.01;
-        this.Background.setScale(this.MainScale, this.MainScale);
-
-        if (this.isHealing) {
-            const gencont = this.genContainer();
-            this.ClockContainer = gencont.Container;
-            this.ClockContainer.x = (this.dimentions.width - gencont.Width) / 2;
-            this.ClockContainer.y = (this.dimentions.height / 2 - gencont.Height);
-        }
-        else {
-            this.ClockContainer = this.add.container(0, 0);
-        }
+        
+        this.GenerateElements();
 
         this.ClockContainer.alpha = 0;
         this.Background.alpha = 0;
         this.tweens.add({
             alpha: 1,
             duration: 500,
-            targets: [this.Background, this.ClockContainer],
+            targets: this.children.getAll(),
         });
         this.events.once('HealCompleted', this.EndHealing);
 
-        const animconfig: AnimationConfig = {
-            frameRate: 12,
-            frames: this.anims.generateFrameNumbers('fireplace', { start: 0, end: 15 }),
-            key: 'fire',
-            repeat: -1,
-        };
-
-        this.anims.create(animconfig);
-
-        this.GenerateButtons(this.data.values.isHealing as boolean);
-
-        const boom = this.add.sprite(400, 300, 'fireplace');
-        boom.setOrigin(0.5, 1);
-        boom.x = Settings.FirePlace.X * this.MainScale;
-        boom.y = Settings.FirePlace.Y * this.MainScale;
-
-        boom.setScale(Settings.FirePlace.Height / boom.height * this.MainScale);
-
-        boom.anims.play('fire');
     }
     public update(time: number) {
         if (this.isHealing) {
@@ -413,24 +379,51 @@ export class HealingScene extends Phaser.Scene {
     private resize(width: number, height: number) {
         if (width === undefined) { width = this.sys.game.config.width as number; }
         if (height === undefined) { height = this.sys.game.config.height as number; }
+        if (width > 0) {
+            this.cameras.resize(width, height);
+            this.dimentions = { height, width };
 
-        this.cameras.resize(width, height);
-        this.dimentions = { height, width };
+            this.GenerateElements();
+        }
+    }
+    private GenerateElements() {
+        this.children.removeAll();
 
-        this.Background.x = width / 2;
-        this.Background.y = height / 2;
+        this.Background = this.add.image(this.dimentions.width / 2, this.dimentions.height / 2, "HealingBackground");
         const scale = Math.max(this.dimentions.width / this.Background.width, this.dimentions.height / this.Background.height);
         // adjust to edges
-        this.Background.setScale(scale * 1.01, scale * 1.01);
+        this.MainScale = scale * 1.01;
+        this.Background.setScale(this.MainScale, this.MainScale);
 
-        this.ClockContainer.destroy();
-        const genC = this.genContainer();
-        this.ClockContainer = genC.Container;
-        this.ClockContainer.x = (this.dimentions.width - genC.Width) / 2;
-        this.ClockContainer.y = (this.dimentions.height / 2 - genC.Height);
+        if (this.isHealing) {
+            const gencont = this.genContainer();
+            this.ClockContainer = gencont.Container;
+            this.ClockContainer.x = (this.dimentions.width - gencont.Width) / 2;
+            this.ClockContainer.y = (this.dimentions.height / 2 - gencont.Height);
+        }
+        else {
+            this.ClockContainer = this.add.container(0, 0);
+        }
 
-        const map = this.scene.get("MapScene") as LocalMapScene;
-        map.resize(this.dimentions.width, this.dimentions.height);
+        const animconfig: AnimationConfig = {
+            frameRate: 12,
+            frames: this.anims.generateFrameNumbers('fireplace', { start: 0, end: 15 }),
+            key: 'fire',
+            repeat: -1,
+        };
+
+        this.anims.create(animconfig);
+
+        this.GenerateButtons(this.data.values.isHealing as boolean);
+
+        const boom = this.add.sprite(400, 300, 'fireplace');
+        boom.setOrigin(0.5, 1);
+        boom.x = Settings.FirePlace.X * this.MainScale;
+        boom.y = Settings.FirePlace.Y * this.MainScale;
+
+        boom.setScale(Settings.FirePlace.Height / boom.height * this.MainScale);
+
+        boom.anims.play('fire');
     }
 }
 

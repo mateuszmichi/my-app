@@ -61,6 +61,7 @@ class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserTo
 
     private handleLogOut(): void {
         cookies.remove("LoginCookie");
+        cookies.remove("AutoCookie");
         this.props.logoutFun();
     }
     private handleAddHero(): void {
