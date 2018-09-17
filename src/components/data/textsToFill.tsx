@@ -179,25 +179,41 @@ export const GameElements: IToExpand[] = [
 
 export const TODOS: IToDo[] = [
     {
+        feature: "Adapt website for small resolutions",
+        isMade: false,
+    },
+    {
+        feature: "Adjust pictures resolutions for better loading performance",
+        isMade: false,
+    },
+    {
         feature: "Add global map entry",
         isMade: true,
     },
     {
         feature: "Add instance entry and travel logic",
-        isMade: false,
+        isMade: true,
     },
     {
         feature: "Add simple fight",
-        isMade: false,
+        isMade: true,
     },
     {
         feature: "Add simple fight reward system",
+        isMade: true,
+    },
+    {
+        feature: "Add healing mechanics",
+        isMade: true,
+    },
+    {
+        feature: "Generate greater variety of enemies, loot and locations",
         isMade: false,
     },
     {
-        feature: "Add rest mechanics",
+        feature: "Add treasure mechanics",
         isMade: false,
-    }
+    },
 ];
 
 export const RosharCarts: IRosharCart[] = [

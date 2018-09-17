@@ -12,11 +12,13 @@ import { Grid } from '@material-ui/core';
 import MainMenu from './gamecomponents/MainMenu';
 import MainWindow from './gamecomponents/MainWindow';
 
-import { Close_Dialog, Close_Messages, End_Game, End_Waiting, Pop_Dialog, Pop_Messages, Start_Waiting, Update_Hero_Hp, } from './actions/actionCreators';
+import { Add_To_Equipment, Close_Dialog, Close_Messages, End_Game, End_Waiting, Pop_Dialog, Pop_Messages, Start_Waiting, Update_Equipment, Update_Hero_Exp, Update_Hero_Hp, Update_Hero_HpBase,   } from './actions/actionCreators';
 import { IActionToken, IAppStatus, IHero, IUserToken,  } from './TYPES';
 
 import { IConnectionData, IConnectionFunctions,  } from './data/connectionConf';
 import { IMessage, IMessageTranslator } from './MessageMenager';
+
+import { IEquipmentModification, IEquipmentModifyResult,  IItemResult } from './data/gameTYPES';
 
 
 class ConnectedGame extends React.Component<{ hero: IHero, ConnFuns: IConnectionFunctions, userToken: IUserToken, actionToken: IActionToken, logFun: any, HeroUpdates: IHeroUpdates}, { CurrentPosition: number, isEnd: boolean }> {
@@ -92,7 +94,11 @@ const mapDispatchToProps = (dispatch: any) => {
             popWaiting: () => dispatch(Start_Waiting()),
         } as IConnectionFunctions,
         HeroUpdates: {
-            UpdateHP: (hp:number) => dispatch(Update_Hero_Hp(hp)),
+            AddToEQ: (added: IEquipmentModification[], newItems: IItemResult[]) => dispatch(Add_To_Equipment(added,newItems)),
+            UpdateEQ: (modification: IEquipmentModifyResult) => dispatch(Update_Equipment(modification)),
+            UpdateEXP: (exp:number,lvl:number) => dispatch(Update_Hero_Exp(exp,lvl)),
+            UpdateHP: (hp: number) => dispatch(Update_Hero_Hp(hp)),
+            UpdateHPBase: (hpMax: number) => dispatch(Update_Hero_HpBase(hpMax)),
         } as IHeroUpdates,
         logFun: () => dispatch(End_Game()),
     };
@@ -107,7 +113,11 @@ const Game = connect(mapStateToProps, mapDispatchToProps)(ConnectedGame);
 // -------------------------- interfaces
 
 export interface IHeroUpdates {
+    AddToEQ: (added: IEquipmentModification[], newItems: IItemResult[]) => void;
     UpdateHP: (hp: number) => void;
+    UpdateEQ: (modification: IEquipmentModifyResult) => void;
+    UpdateEXP: (exp: number, lvl: number) => void;
+    UpdateHPBase: (hpmax: number) => void;
 }
 
 // ========================================

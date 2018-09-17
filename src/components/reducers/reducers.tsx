@@ -1,8 +1,8 @@
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_HP } from '../actions/actionTypes';
+import { ADD_HERO, ADD_TO_EQUIPMENT, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_EXP, UPDATE_HERO_HP, UPDATE_HERO_HPBASE,   } from '../actions/actionTypes';
 
 import { IAction, IAppStatus, ICharacterBrief, ILoadHeroData, ILoginData } from '../TYPES';
 
-import { IEquipmentModifyResult } from '../data/gameTYPES';
+import { IEquipmentModification, IEquipmentModifyResult,  IItemResult } from '../data/gameTYPES';
 
 
 const initialState: IAppStatus = {
@@ -162,6 +162,32 @@ function shatteredApp(state = initialState, action: any) {
             let heroCopy = Object.assign({}, state.activeHero);
             heroCopy = Object.assign(heroCopy, { equipment: eqCopy });
             return Object.assign({}, state, { activeHero: heroCopy });
+        case ADD_TO_EQUIPMENT:
+            const data7 = pass.payload as { added: IEquipmentModification[], newItems: IItemResult[] };
+            if (state.activeHero === null) {
+                return state;
+            }
+            const eqCopy2 = Object.assign({}, state.activeHero.equipment);
+            data7.added.forEach(e => {
+                if (e.target.startsWith("Backpack")) {
+                    const nub = parseInt(e.target.substring(8), 10);
+                    eqCopy2.backpack[nub] = e.itemID;
+                }
+                else {
+                    throw new Error("Add not into backpack");
+                }
+            });
+            data7.newItems.forEach(e => {
+                const pos = eqCopy2.knownItems.findIndex(f => f.itemID === e.itemID);
+                if (pos === -1) {
+                    eqCopy2.knownItems.push(e);
+                }
+            });
+            
+            let heroCopy4 = Object.assign({}, state.activeHero);
+            heroCopy4 = Object.assign(heroCopy4, { equipment: eqCopy2 });
+            return Object.assign({}, state, { activeHero: heroCopy4 });
+
 
         case UPDATE_HERO_HP:
             if (state.activeHero === null) {
@@ -170,6 +196,20 @@ function shatteredApp(state = initialState, action: any) {
             let heroCopy2 = Object.assign({}, state.activeHero);
             heroCopy2 = Object.assign(heroCopy2, { hp: pass.payload as number });
             return Object.assign({}, state, { activeHero: heroCopy2 });
+        case UPDATE_HERO_HPBASE:
+            if (state.activeHero === null) {
+                return state;
+            }
+            let heroCopy5 = Object.assign({}, state.activeHero);
+            heroCopy5 = Object.assign(heroCopy5, { hpmax: pass.payload as number });
+            return Object.assign({}, state, { activeHero: heroCopy5 });
+        case UPDATE_HERO_EXP:
+            if (state.activeHero === null) {
+                return state;
+            }
+            let heroCopy3 = Object.assign({}, state.activeHero);
+            heroCopy3 = Object.assign(heroCopy3, { exp: pass.payload.exp as number, level: pass.payload.lvl as number });
+            return Object.assign({}, state, { activeHero: heroCopy3 });
 
         default: return state;
     }

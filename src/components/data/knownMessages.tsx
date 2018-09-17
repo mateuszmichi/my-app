@@ -137,6 +137,15 @@ export const MessageHeroCustomiseSucc: IMessageTranslator =
     title: "Customization successfull",
     type: MessageType.SUCCESS,
 };
+export const MessageBackpackErr: IMessageTranslator =
+{
+    actions: [],
+    images: [],
+    ispopup: true,
+    name: "backpackErr",
+    title: "Backpack is full",
+    type: MessageType.ERROR,
+};
 
 // ---------------- export groups
 
@@ -148,4 +157,4 @@ export const MessagesForLogin = [
 
 export const MessagesAll = [MessageLoginErr, MessageNameErr, MessageServerErr,
     MessageSecurityErr, MessageChangeEqErr, MessageCreateUserSucc, MessageCreateHeroSucc, MessageRemoveHeroSucc,
-    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc, MessageHpRestoreSucc, MessageHeroCustomiseSucc];
+    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc, MessageHpRestoreSucc, MessageHeroCustomiseSucc, MessageBackpackErr];

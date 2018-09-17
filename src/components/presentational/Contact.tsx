@@ -270,14 +270,11 @@ class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions 
     }
     private validate_Content(login: IStringValidation): boolean {
         login.description = [];
-        const reg = [/^.{5,300}$/];
-        const desc = ["Between 5 to 300 characters."];
+        const len = login.text.length;
         let result = true;
-        for (let i = 0; i < reg.length; i++) {
-            if (!reg[i].test(login.text)) {
-                result = false;
-                login.description.push(desc[i]);
-            }
+        if (len > 300 || len < 5) {
+            result = false;
+            login.description.push("Between 5 to 300 characters.");
         }
         login.isValid = (result) ? 0 : 1;
         return result;

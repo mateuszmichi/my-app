@@ -21,7 +21,7 @@ import * as yesSrc from '../../img/Login/valid.png';
 
 
 
-export class ItemDescription extends React.Component<{ item: IItemResult, hero: IHero, isOn: boolean, ConnData: IConnectionData, equipFun: (event: any, target: string) => void },
+export class ItemDescription extends React.Component<{ item: IItemResult, hero: IHero, isOn: boolean, ConnData: IConnectionData, equipFun: (event: any, target: string) => void, disabled: boolean },
     { toConfirm: boolean }>{
     constructor(props: any) {
         super(props);
@@ -132,22 +132,23 @@ export class ItemDescription extends React.Component<{ item: IItemResult, hero: 
                                 {this.showStat(comp)}
                             </div>))}
                         </div>))}
-
-                        <div className="Options">
-                            <div className="OptionsRow" /><div className="OptionsRow" />
-                            {options.wearing.map((e, i) => {
-                                const fun = (event: any) => {
-                                    this.props.equipFun(event, "Inventory" + e.num);
-                                    this.props.ConnData.closeDialog();
-                                }
-                                return (<div className="OptionsRow" key={i}>
-                                    <button disabled={this.props.item.lvl > this.props.hero.level} onClick={fun}>
-                                        Equip
+                        {!this.props.disabled &&
+                            (<div className="Options">
+                                <div className="OptionsRow" /><div className="OptionsRow" />
+                                {options.wearing.map((e, i) => {
+                                    const fun = (event: any) => {
+                                        this.props.equipFun(event, "Inventory" + e.num);
+                                        this.props.ConnData.closeDialog();
+                                    }
+                                    return (<div className="OptionsRow" key={i}>
+                                        <button disabled={this.props.item.lvl > this.props.hero.level} onClick={fun}>
+                                            Equip
                                         </button>
-                                </div>)
-                            })
-                            }
-                        </div>
+                                    </div>)
+                                })
+                                }
+                            </div>)
+                        }
                     </div>
                     <Divider />
                     <div className="BottomPart"><Button
@@ -156,14 +157,16 @@ export class ItemDescription extends React.Component<{ item: IItemResult, hero: 
                         onClick={this.props.ConnData.closeDialog}
                     >
                         Back</Button></div>
-                    <div className="RemovePart">
-                        <div id="RemoveItemButton" className="inlineDiv" onClick={this.handleTrashClick}><DeleteTwoToneIcon /></div>
-                        <div className={(this.state.toConfirm) ? "inlineDiv ConfirmPart Visible" : "inlineDiv ConfirmPart Invisible"}>
-                            <div className="inlineDiv">Confirm</div>
-                            <div className="inlineDiv" onClick={this.removeItem}><img src={yesSrc} /></div>
-                            <div className="inlineDiv" onClick={this.dismissTrashClick}><img src={noSrc} /></div>
-                        </div>
-                    </div>
+                    {!this.props.disabled &&
+                        (<div className="RemovePart">
+                            <div id="RemoveItemButton" className="inlineDiv" onClick={this.handleTrashClick}><DeleteTwoToneIcon /></div>
+                            <div className={(this.state.toConfirm) ? "inlineDiv ConfirmPart Visible" : "inlineDiv ConfirmPart Invisible"}>
+                                <div className="inlineDiv">Confirm</div>
+                                <div className="inlineDiv" onClick={this.removeItem}><img src={yesSrc} /></div>
+                                <div className="inlineDiv" onClick={this.dismissTrashClick}><img src={noSrc} /></div>
+                            </div>
+                        </div>)
+                    }
                 </div>
             </ClickAwayListener>)
     }

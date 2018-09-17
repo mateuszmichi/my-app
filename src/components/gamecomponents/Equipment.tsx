@@ -103,7 +103,7 @@ class ConnectedEquipment extends React.Component<{ visible: boolean, hero: IHero
             event.stopPropagation();
             this.handleButtonItemChange(currentActive, target);
         }
-        this.props.ConnData.popDialog(<ItemDescription hero={hero} item={item} isOn={status === 1} ConnData={this.props.ConnData} equipFun={changeItemInside} />);
+        this.props.ConnData.popDialog(<ItemDescription hero={hero} item={item} isOn={status === 1} ConnData={this.props.ConnData} equipFun={changeItemInside} disabled={false}/>);
     }
     private handleActivateItem(event: any, activeItem: IActiveItem | null, target: string) {
         event.stopPropagation();

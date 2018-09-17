@@ -379,12 +379,12 @@ export class HealingScene extends Phaser.Scene {
     private resize(width: number, height: number) {
         if (width === undefined) { width = this.sys.game.config.width as number; }
         if (height === undefined) { height = this.sys.game.config.height as number; }
+        if (width > 0) {
+            this.cameras.resize(width, height);
+            this.dimentions = { height, width };
 
-        this.cameras.resize(width, height);
-        this.dimentions = { height, width };
-
-        this.GenerateElements();
-        
+            this.GenerateElements();
+        }
     }
     private GenerateElements() {
         this.children.removeAll();

@@ -1,7 +1,7 @@
 import * as Collections from 'typescript-collections';
 
 import * as Phaser from 'phaser';
-import { IGraph, IInstanceNode, ILocationResult, IMainNode, INode, INSTANCE_OPTIONS, InstanceOptionsImg, INSTANCES, InstanceTypes,  ITravelResult, LOCATION_OPTIONS,  LocationOptionsImg, LocationTypes,    } from '../../data/gameTYPES';
+import { IAstarResult, IGraph, IInstanceNode, ILocationResult, IMainNode, INode, INSTANCE_OPTIONS, InstanceOptionsImg, INSTANCES, InstanceTypes, ITravelResult, LOCATION_OPTIONS, LocationOptionsImg, LocationTypes, } from '../../data/gameTYPES';
 
 import { ChildNodeRange, TravelTime, TravelTimeToString, VectorInGlobal, } from '../../data/gameCALC';
 import { IMessage } from '../../MessageMenager';
@@ -13,9 +13,10 @@ import { TravelScene } from './TravelScene';
 
 // ------------------ constants
 import { IConnectionData, ServerConnect } from '../../data/connectionConf';
-import { HealingScene } from './HealingScene';
+import { HealingScene, IHealingResult } from './HealingScene';
 
 import { IHeroUpdates } from '../../Game';
+import { FightingScene, IFightingResult,  } from './FightingScene';
 
 // ----------- settings
 const Settings = {
@@ -37,9 +38,10 @@ const Settings = {
 }
 
 export class LocalMapScene extends Phaser.Scene {
+    private hero: IHero;
     private velocityFactor: number;
     private locationType: LOCTYPE;
-    private location: ILocationResult<IMainNode>|ILocationResult<IInstanceNode>;
+    private location: ILocationResult<IMainNode> | ILocationResult<IInstanceNode>;
     private connData: IConnectionData;
     private heroUpdates: IHeroUpdates;
 
@@ -49,11 +51,13 @@ export class LocalMapScene extends Phaser.Scene {
 
     private dimentions: { height: number, width: number };
     private deltas: { x: number, y: number };
+    private travelingData: { travelStart: Date, travelEnd: Date, travel: ITravelResult, Astar: IAstarResult } | null;
 
     private graph: IGraph<INode>;
     private graphnodes: Array<{ sprite: Phaser.GameObjects.Image, mask: Phaser.GameObjects.Graphics | null, index: number }>;
 
     private pathdrawer: Phaser.GameObjects.Graphics;
+    private traveldrawer: Phaser.GameObjects.Image;
     private nodesdrawer: Phaser.GameObjects.Graphics;
     private currentdesc: Phaser.GameObjects.Container;
     private targetNode: Phaser.GameObjects.Image;
@@ -64,13 +68,14 @@ export class LocalMapScene extends Phaser.Scene {
     private toMove: LinkedList<ItoMove>;
 
     constructor(dim: { height: number, width: number }, hero: IHero, ConnData: IConnectionData, HeroUpdates: IHeroUpdates) {
-        
+
         super({ key: "MapScene", });
         this.dimentions = dim;
-        this.deltas = {x: 0,y: 0};
+        this.deltas = { x: 0, y: 0 };
         // ----- bindings
         this.createNode = this.createNode.bind(this);
         this.showTrack = this.showTrack.bind(this);
+        this.drawPath = this.drawPath.bind(this);
         this.showDescription = this.showDescription.bind(this);
         this.HeurDist = this.HeurDist.bind(this);
         this.MaxDistanceAngle = this.MaxDistanceAngle.bind(this);
@@ -79,6 +84,9 @@ export class LocalMapScene extends Phaser.Scene {
         this.TravelTo = this.TravelTo.bind(this);
         this.resetPath = this.resetPath.bind(this);
         this.StartTravel = this.StartTravel.bind(this);
+        this.EndTravel = this.EndTravel.bind(this);
+        this.InstanceTravel = this.InstanceTravel.bind(this);
+
         this.DataHandling = this.DataHandling.bind(this);
         this.loadLocationImage = this.loadLocationImage.bind(this);
         this.AdjustElementsPosition = this.AdjustElementsPosition.bind(this);
@@ -94,6 +102,7 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.toMove = new LinkedList<ItoMove>();
 
+        this.hero = hero;
         this.velocityFactor = hero.velocityFactor;
 
         if (hero.location.locationGlobalType === 2) {
@@ -106,6 +115,14 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.connData = ConnData;
         this.heroUpdates = HeroUpdates;
+
+        // TODO put here logic of running game not in myGame !!!
+        if (hero.status === 1 && this.locationType === LOCTYPE.INSTANCE) {
+            const now = Date.now();
+            this.travelingData = { Astar: { distance: 0, nodes: [] }, travel: hero.statusData as ITravelResult, travelStart: new Date(now), travelEnd: new Date(now + 1000) };
+        } else {
+            this.travelingData = null;
+        }
     }
     public preload() {
         const img = require('../../img/Game/Locations/Location' + this.location.locationID + '.png');
@@ -113,10 +130,14 @@ export class LocalMapScene extends Phaser.Scene {
 
         const travel = require('../../img/Game/Locations/Interface/travel.png');
         // this.load.image({ key: "TravelImg", url: String(travel) });
-        this.textures.addBase64("TravelImg",String(travel));
+        this.textures.addBase64("TravelImg", String(travel));
 
         const target = require('../../img/Game/Locations/Interface/target.png');
         this.load.image({ key: "Target", url: String(target) });
+
+        const gps = require('../../img/Game/Locations/Interface/gps.png');
+        // this.load.image({ key: "GPS", url: String(gps) });
+        this.textures.addBase64("GPS", String(gps));
 
         LocationTypes.forEach(e => {
             if (!e.isURI) {
@@ -124,7 +145,7 @@ export class LocalMapScene extends Phaser.Scene {
             } else {
                 this.textures.addBase64(e.name + "Img", e.image);
             }
-            
+
         });
         LocationOptionsImg.forEach(e => {
             if (!e.isURI) {
@@ -153,12 +174,54 @@ export class LocalMapScene extends Phaser.Scene {
     }
     public create() {
         this.cameras.resize(this.dimentions.width, this.dimentions.height);
-        this.events.on('resize', this.resize, this); 
+        this.events.on('resize', this.resize, this);
         this.DataHandling();
-
         this.updateLocation();
-    }
 
+        this.events.once('JourneyCompleted', this.EndTravel);
+    }
+    public update() {
+        if (this.locationType === LOCTYPE.INSTANCE) {
+            this.traveldrawer.alpha = 0;
+            if (this.travelingData !== null) {
+                const travelData = this.travelingData;
+                const progress = (Date.now() - this.travelingData.travelStart.getTime()) / (this.travelingData.travelEnd.getTime() - this.travelingData.travelStart.getTime());
+                if (progress > 1) {
+                    // TODO
+                    this.travelingData = null;
+                    this.events.emit('JourneyCompleted');
+                    return;
+                }
+                let currDist = progress * travelData.Astar.distance;
+                let it = 0;
+                let proc = 0;
+                while (currDist > 0 && it < travelData.Astar.nodes.length - 1) {
+                    let distBet = this.HeurDist(this.graph.nodes[travelData.Astar.nodes[it]], this.graph.nodes[travelData.Astar.nodes[it + 1]]);
+                    const edgeMno = this.graph.outEdges(travelData.Astar.nodes[it]).find(e => e.to === travelData.Astar.nodes[it + 1]);
+                    if (edgeMno === undefined) {
+                        throw Error("Edge not found");
+                    }
+                    distBet *= edgeMno.value;
+                    if (distBet >= currDist) {
+                        proc = currDist / distBet;
+                        currDist = 0;
+                    } else {
+                        currDist -= distBet;
+                        it++;
+                    }
+                }
+                if (currDist > 0.001) {
+                    throw Error("Travel exides range + " + currDist);
+                }
+
+                const nx = this.graph.nodes[travelData.Astar.nodes[it]].x * (1 - proc) + this.graph.nodes[travelData.Astar.nodes[it + 1]].x * proc;
+                const ny = this.graph.nodes[travelData.Astar.nodes[it]].y * (1 - proc) + this.graph.nodes[travelData.Astar.nodes[it + 1]].y * proc;
+                this.traveldrawer.x = nx;
+                this.traveldrawer.y = ny;
+                this.traveldrawer.alpha = 1;
+            }
+        }
+    }
     public updateData(newlocation: ILocationResult<any>) {
         if (newlocation.locationGlobalType === 2) {
             this.locationType = LOCTYPE.INSTANCE;
@@ -240,7 +303,7 @@ export class LocalMapScene extends Phaser.Scene {
                 e.mask.x = delta.x + this.deltas.x;
                 e.mask.y = delta.y + this.deltas.y;
             }
-            e.sprite.x = delta.x + Settings.MapBorder + nodes[e.index].x ;
+            e.sprite.x = delta.x + Settings.MapBorder + nodes[e.index].x;
             e.sprite.y = delta.y + Settings.MapBorder + nodes[e.index].y;
         });
         this.toMove.forEach(e => {
@@ -254,7 +317,7 @@ export class LocalMapScene extends Phaser.Scene {
     }
     // TODO other type
     private showDescription(mapnode: IMainNode, distance: number) {
-        const traveltime = TravelTime(distance, this.data.values.TravelScale as number,18*this.velocityFactor);
+        const traveltime = TravelTime(distance, this.data.values.TravelScale as number, 18 * this.velocityFactor);
         this.currentdesc.removeAll();
 
         const graph = this.add.graphics({ fillStyle: { color: 0xffffff }, lineStyle: { width: 2, color: 0x333333 } });
@@ -282,7 +345,7 @@ export class LocalMapScene extends Phaser.Scene {
                 }
                 buttonsToAdd.add(travelbutton);
                 travelbutton.Button.on("pointerup", () => {
-                    this.selectOption(i,option,LOCTYPE.NORMAL);
+                    this.selectOption(i, option, LOCTYPE.NORMAL);
                 });
             });
         }
@@ -300,7 +363,7 @@ export class LocalMapScene extends Phaser.Scene {
         this.currentdesc.add(buttonFill);
 
         const arr = buttonsToAdd.toArray();
-        arr.forEach((e,i) => {
+        arr.forEach((e, i) => {
             buttonFill.fillRect(0, DescHeight + Settings.Description.DistanceBetweenButtons, DescWidth, e.Height);
 
             e.Button.x = (DescWidth - e.Width) / 2;
@@ -308,10 +371,10 @@ export class LocalMapScene extends Phaser.Scene {
             DescHeight = e.Button.y + e.Height;
 
             e.Button.setSize(e.Width, e.Height);
-            e.Button.setInteractive(new Phaser.Geom.Rectangle(e.Width/2,e.Height/2,e.Width,e.Height), Phaser.Geom.Rectangle.Contains);
+            e.Button.setInteractive(new Phaser.Geom.Rectangle(e.Width / 2, e.Height / 2, e.Width, e.Height), Phaser.Geom.Rectangle.Contains);
             e.Button.on("pointerover", () => {
                 this.setHover();
-                this.setElementActive(i,arr,buttonFill,DescWidth);
+                this.setElementActive(i, arr, buttonFill, DescWidth);
             });
             e.Button.on("pointerout", () => {
                 this.setHoverEnd();
@@ -344,6 +407,13 @@ export class LocalMapScene extends Phaser.Scene {
         const nodes = this.data.values.Nodes as INode[];
         this.currentdesc.x = nodes[mapnode.nodeID].x + 5;
         this.currentdesc.y = nodes[mapnode.nodeID].y + 5;
+        // finding best position:
+        if (DescWidth + this.currentdesc.x > this.background.displayWidth) {
+            this.currentdesc.x -= (10 + DescWidth);
+        }
+        if (DescHeight + this.currentdesc.y > this.background.displayHeight) {
+            this.currentdesc.y = this.background.displayHeight - DescHeight;
+        }
     }
     private showInstanceDescription(mapnode: IInstanceNode, distance: number) {
         const traveltime = TravelTime(distance, this.data.values.TravelScale as number, 18 * this.velocityFactor);
@@ -374,7 +444,7 @@ export class LocalMapScene extends Phaser.Scene {
         if (mapnode.nodeID !== (this.data.values.CurrentPosition as number)) {
             const opt = InstanceOptionsImg[InstanceTypes[mapnode.instanceType].options[0]];
             const travelbutton = (mapnode.isCleared || mapnode.instanceType === INSTANCES.ENTRANCE) ? this.CreateDescriptionButton("TravelImg", "Travel") : this.CreateDescriptionButton(opt.name + "Img", opt.buttonDesc);
-            
+
             if (Math.max(time.displayWidth, travelbutton.Width) > DescWidth) {
                 DescWidth = Math.max(time.displayWidth, travelbutton.Width);
             }
@@ -394,7 +464,7 @@ export class LocalMapScene extends Phaser.Scene {
                     buttonsToAdd.add(travelbutton);
                     travelbutton.Button.on("pointerup", () => {
                         // TODO
-                        this.selectOption(i, option,LOCTYPE.INSTANCE);
+                        this.selectOption(i, option, LOCTYPE.INSTANCE);
                     });
                 });
             }
@@ -447,7 +517,7 @@ export class LocalMapScene extends Phaser.Scene {
         }
         // const radius = 5;
         // graph.fillRoundedRect(0, 0, DescWidth, DescHeight + Settings.Description.TopPadding, radius);
-        graph.fillRect(0, 0, DescWidth,(arr.length>0)?(DescHeight + Settings.Description.TopPadding):DescHeight);
+        graph.fillRect(0, 0, DescWidth, (arr.length > 0) ? (DescHeight + Settings.Description.TopPadding) : DescHeight);
         graph.fillStyle(0x2E4172);
         // graph.fillRoundedRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding, radius);
         graph.fillRect(0, 0, DescWidth, locationname.y + locationname.displayHeight + Settings.Description.TopPadding);
@@ -457,6 +527,15 @@ export class LocalMapScene extends Phaser.Scene {
         const nodes = this.data.values.Nodes as INode[];
         this.currentdesc.x = nodes[mapnode.nodeID].x + 5;
         this.currentdesc.y = nodes[mapnode.nodeID].y + 5;
+
+        if (DescWidth + this.currentdesc.x > this.background.displayWidth) {
+            this.currentdesc.x -= (10 + DescWidth);
+        }
+        if (DescHeight + this.currentdesc.y > this.background.displayHeight) {
+            this.currentdesc.y = this.background.displayHeight - DescHeight;
+            // this.currentdesc.y -= (10 + DescHeight);
+        }
+
     }
     private setHover() {
         const element = document.getElementById("Game")
@@ -511,7 +590,7 @@ export class LocalMapScene extends Phaser.Scene {
 
                 optionbutton.on("pointerover", this.setHover);
                 optionbutton.on("pointerout", this.setHoverEnd);
-                optionbutton.on("pointerup", () => { this.selectOption(index,option,LOCTYPE.NORMAL); });
+                optionbutton.on("pointerup", () => { this.selectOption(index, option, LOCTYPE.NORMAL); });
             }
 
             optionbutton.displayHeight = Settings.SuppNodeSize;
@@ -538,7 +617,7 @@ export class LocalMapScene extends Phaser.Scene {
         node.displayHeight = Settings.MainNodeSize;
 
         node.on("pointerdown", () => {
-            this.showTrack(e,LOCTYPE.NORMAL);
+            this.showTrack(e, LOCTYPE.NORMAL);
             this.SetTargetNode(e.nodeID);
         });
         node.on("pointerover", this.setHover);
@@ -584,18 +663,31 @@ export class LocalMapScene extends Phaser.Scene {
 
         node.on("pointerdown", () => {
             // TODO
-            this.showTrack(e,LOCTYPE.INSTANCE);
-            this.SetTargetNode(e.nodeID);
+            if (this.travelingData === null) {
+                this.showTrack(e, LOCTYPE.INSTANCE);
+                this.SetTargetNode(e.nodeID);
+            }
         });
         node.on("pointerover", this.setHover);
         node.on("pointerout", this.setHoverEnd);
 
         this.graphnodes.push({ sprite: node, mask, index: e.nodeID });
     }
-    private showTrack(mainnode: IMainNode|IInstanceNode, type: LOCTYPE) {
+    private showTrack(mainnode: IMainNode | IInstanceNode, type: LOCTYPE) {
+        if (this.travelingData === null) {
+            const AstarRes = this.drawPath(mainnode.nodeID);
+            if (type === LOCTYPE.NORMAL) {
+                this.showDescription(mainnode as IMainNode, AstarRes.distance);
+            }
+            else {
+                this.showInstanceDescription(mainnode as IInstanceNode, AstarRes.distance);
+            }
+        }
+    }
+    private drawPath(target: number) {
         const nodes = this.data.values.Nodes as INode[];
         this.pathdrawer.clear();
-        const AstarRes = this.graph.Astar((this.data.values.CurrentPosition as number), mainnode.nodeID);
+        const AstarRes = this.graph.Astar((this.data.values.CurrentPosition as number), target);
         this.pathdrawer.beginPath();
         this.pathdrawer.moveTo(nodes[AstarRes.nodes[0]].x, nodes[AstarRes.nodes[0]].y);
         for (let aa = 1; aa < AstarRes.nodes.length; aa++) {
@@ -613,12 +705,7 @@ export class LocalMapScene extends Phaser.Scene {
             targets: this.pathdrawer,
             yoyo: true,
         });
-        if (type === LOCTYPE.NORMAL) {
-            this.showDescription(mainnode as IMainNode, AstarRes.distance);
-        }
-        else {
-            this.showInstanceDescription(mainnode as IInstanceNode, AstarRes.distance);
-        }
+        return AstarRes;
     }
     private HeurDist(a: INode, b: INode) {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
@@ -681,10 +768,12 @@ export class LocalMapScene extends Phaser.Scene {
         this.StartTravel(nodeIndex);
     }
     private resetPath() {
-        this.currentdesc.removeAll();
-        this.pathdrawer.clear();
-        this.SetTargetNode((this.data.values.CurrentPosition as number));
-        this.setHoverEnd();
+        if (this.travelingData === null) {
+            this.currentdesc.removeAll();
+            this.pathdrawer.clear();
+            this.SetTargetNode((this.data.values.CurrentPosition as number));
+            this.setHoverEnd();
+        }
     }
     // TODO InstanceTravel
     private StartTravel(cel: number) {
@@ -697,9 +786,15 @@ export class LocalMapScene extends Phaser.Scene {
             const received = res.data;
             const travel = received.travel as ITravelResult;
             // alert(JSON.stringify(travel));
-            this.resetPath();
-            this.scene.pause("MapScene");
-            this.scene.add("TravelScene", new TravelScene(this.dimentions, travel, this.connData), true);
+            // TODO 
+            if (this.locationType === LOCTYPE.NORMAL) {
+                this.resetPath();
+                this.scene.pause("MapScene");
+                this.scene.add("TravelScene", new TravelScene(this.dimentions, travel, this.connData), true);
+            }
+            else {
+                this.InstanceTravel(travel, cel);
+            }
         };
         const failFun = (error: any) => {
             if (error.response === undefined) {
@@ -710,6 +805,34 @@ export class LocalMapScene extends Phaser.Scene {
         };
         ServerConnect(`/api/TravelingsStart`, passed, succFun, failFun, this.connData.popWaiting, this.connData.closeWaiting);
     }
+    // should be executed only for instance
+    private EndTravel() {
+        const passed: IPassedGameData<number | null> = {
+            ActionToken: this.connData.actionToken,
+            Data: null,
+            UserToken: this.connData.userToken,
+        };
+        const succFun = (res: any) => {
+            this.updateData(res.data.location as ILocationResult<any>);
+            this.events.once('JourneyCompleted', this.EndTravel);
+        };
+        const failFun = (error: any) => {
+            if (error.response === undefined) {
+                this.connData.popMessage([{ title: "serverErr", description: "I've got bad feelings about this...", } as IMessage], []);
+            } else {
+                this.connData.popMessage([{ title: error.response.data.type, description: error.response.data.description } as IMessage], []);
+            }
+            this.events.once('JourneyCompleted', this.EndTravel);
+        };
+        ServerConnect(`/api/HerosLocationsLoad`, passed, succFun, failFun, this.connData.popWaiting, this.connData.closeWaiting);
+    }
+    private InstanceTravel(travel: ITravelResult, targetID: number) {
+        this.currentdesc.removeAll();
+        const Astar = this.drawPath(targetID);
+        const now = Date.now();
+        this.travelingData = { Astar, travel, travelEnd: new Date(now + travel.fullDuration - travel.currentDuration), travelStart: new Date(now - travel.currentDuration) };
+        // 
+    }
     private UseLocationAction(cel: number) {
         const passed: IPassedGameData<number> = {
             ActionToken: this.connData.actionToken,
@@ -719,6 +842,10 @@ export class LocalMapScene extends Phaser.Scene {
         const succFun = (res: any) => {
             const received = res.data;
             const location = received.location as ILocationResult<any>;
+            // TODO? czy nie rozwalamy reacta?
+            // alert(JSON.stringify(received));
+            this.hero.statusData = received.statusData;
+            this.hero.status = received.heroStatus;
             this.updateData(location);
             // alert(JSON.stringify(received));
             // this.resetPath();
@@ -752,8 +879,8 @@ export class LocalMapScene extends Phaser.Scene {
     }
     private loadLocationImage(LocationID: number) {
         if (this.textures.exists("LocalMapBGR" + LocationID)) {
-                this.background.setTexture("LocalMapBGR" + LocationID);
-                this.updateLocation();
+            this.background.setTexture("LocalMapBGR" + LocationID);
+            this.updateLocation();
         } else {
             this.load.once("complete", () => {
                 this.background.setTexture("LocalMapBGR" + LocationID);
@@ -798,6 +925,23 @@ export class LocalMapScene extends Phaser.Scene {
 
         this.nodesdrawer = this.add.graphics({ fillStyle: { color: 0xAD7942 }, lineStyle: { width: 2, color: 0x865420 } });
         this.container.add(this.nodesdrawer);
+        // this.traveldrawer = this.add.graphics({ fillStyle: { color: 0x000080 } });
+        this.traveldrawer = this.add.image(0, 0, "GPS");
+        this.traveldrawer.setScale(0.2);
+        this.traveldrawer.setOrigin(0.5, 1);
+        this.tweens.add({
+            duration: 2000,
+            ease: 'Sine.easeInOut',
+            repeat: -1,
+            scaleX: 0.25,
+            scaleY: 0.25,
+            targets: this.traveldrawer,
+            yoyo: true,
+        });
+
+
+        this.traveldrawer.alpha = 0;
+        this.container.add(this.traveldrawer);
 
         this.locationNameBGR = this.add.graphics({ fillStyle: { color: 0x5e3408 } });
         this.locationName = this.add.text(this.background.displayWidth / 2, -Settings.MapBorder / 2, this.data.values.LocationName, { color: "white", fontStyle: "bold", fontSize: "18px" });
@@ -833,9 +977,36 @@ export class LocalMapScene extends Phaser.Scene {
         this.input.setDraggable(this.background, true);
 
         this.resetPath();
+
+        switch (this.hero.status) {
+            case 0:
+                break;
+            case 1:
+                const travelData = this.hero.statusData as ITravelResult;
+                if (this.locationType === LOCTYPE.NORMAL) {
+                    this.scene.pause("MapScene");
+                    this.scene.add("TravelScene", new TravelScene(this.dimentions, travelData, this.connData), true);
+                } else {
+                    const newTargetNode = parseInt(travelData.targetName, 10);
+                    this.SetTargetNode(newTargetNode);
+
+                    this.InstanceTravel(travelData, newTargetNode);
+                }
+                break;
+            case 2:
+                const healingData = this.hero.statusData as IHealingResult;
+                this.scene.pause("MapScene");
+                this.scene.add("HealingScene", new HealingScene(this.dimentions, this.connData, this.heroUpdates, healingData), true);
+                break;
+            case 3:
+                const fightingData = this.hero.statusData as IFightingResult;
+                this.scene.pause("MapScene");
+                this.scene.add("FightingScene", new FightingScene(this.dimentions, this.hero, this.connData, this.heroUpdates, fightingData), true);
+                break;
+        }
     }
 
-    private setElementActive(key: number, List: InteractiveButton[], graphics: Phaser.GameObjects.Graphics, width:number) {
+    private setElementActive(key: number, List: InteractiveButton[], graphics: Phaser.GameObjects.Graphics, width: number) {
         graphics.clear();
         List.forEach((e, i) => {
             graphics.fillStyle((i !== key) ? 0xA8B3CC : 0x4F628E);
@@ -849,7 +1020,7 @@ export class LocalMapScene extends Phaser.Scene {
         const y = this.nodeCenterPosition(mapnode.y, this.background.displayHeight, this.dimentions.height);
         return { x, y };
     }
-    private nodeCenterPosition(position: number, bgrSize: number, windowSize:number):number {
+    private nodeCenterPosition(position: number, bgrSize: number, windowSize: number): number {
         if (position < bgrSize - position) {
             return (position < windowSize / 2) ? 0 : position - windowSize / 2;
         }
@@ -858,8 +1029,8 @@ export class LocalMapScene extends Phaser.Scene {
         }
     }
 
-    
-    private selectOption(option: number, optionType: LOCATION_OPTIONS|INSTANCE_OPTIONS, type: LOCTYPE) {
+
+    private selectOption(option: number, optionType: LOCATION_OPTIONS | INSTANCE_OPTIONS, type: LOCTYPE) {
         // TODO list of implemented
         // alert(option + " " + optionType);
         if (type === LOCTYPE.NORMAL) {
@@ -874,7 +1045,7 @@ export class LocalMapScene extends Phaser.Scene {
         }
         else {
             // TODO 
-            const implemented: INSTANCE_OPTIONS[] = [INSTANCE_OPTIONS.TOLOCAL];
+            const implemented: INSTANCE_OPTIONS[] = [INSTANCE_OPTIONS.TOLOCAL,INSTANCE_OPTIONS.TOFIGHT];
             if (implemented.findIndex(e => e === optionType) !== -1) {
                 this.UseLocationAction(option);
             }

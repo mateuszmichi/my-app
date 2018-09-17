@@ -202,7 +202,7 @@ class PriorQueue {
         return this.list.isEmpty();
     }
 }
-interface IAstarResult {
+export interface IAstarResult {
     distance: number;
     nodes: number[];
 }

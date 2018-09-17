@@ -1,9 +1,9 @@
 import { IAction, IActionToken, ICharacterBrief, IHero, ILoadHeroData,  ILoginData, IUser, IUserToken,    } from '../TYPES';
-import { ADD_HERO, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_HP   } from './actionTypes';
+import { ADD_HERO, ADD_TO_EQUIPMENT, CLOSE_DIALOG, CLOSE_MESSAGE, END_GAME, END_WAITING, LOG_IN, LOG_OUT, POP_DIALOG, POP_MESSAGE, REMOVE_HERO, START_GAME, START_WAITING, UPDATE_EQUIPMENT, UPDATE_HERO_EXP, UPDATE_HERO_HP, UPDATE_HERO_HPBASE,     } from './actionTypes';
 
 import { IMessage, IMessageTranslator } from '../MessageMenager';
 
-import { IEquipmentModifyResult } from '../data/gameTYPES';
+import { IEquipmentModification, IEquipmentModifyResult,  IItemResult } from '../data/gameTYPES';
 
 export function Log_In(loadedUser:IUser, receivedToken:IUserToken) :IAction {
     return {
@@ -94,10 +94,31 @@ export function Update_Equipment(modification: IEquipmentModifyResult): IAction 
         type: UPDATE_EQUIPMENT,
     }
 }
+export function Add_To_Equipment(added: IEquipmentModification[], newItems: IItemResult[]): IAction {
+    return {
+        payload: {
+            added,
+            newItems
+        },
+        type: ADD_TO_EQUIPMENT,
+    }
+}
 
 export function Update_Hero_Hp(currentHP: number):IAction {
     return {
         payload: currentHP,
         type: UPDATE_HERO_HP,
+    }
+}
+export function Update_Hero_HpBase(currentHPmax: number): IAction {
+    return {
+        payload: currentHPmax,
+        type: UPDATE_HERO_HPBASE,
+    }
+}
+export function Update_Hero_Exp(exp: number,lvl: number): IAction {
+    return {
+        payload: { exp, lvl},
+        type: UPDATE_HERO_EXP,
     }
 }
