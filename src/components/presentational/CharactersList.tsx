@@ -12,9 +12,15 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import * as noneSrc from '../img/CommonGlyphs/Sas.svg';
 import * as windrunnerSrc from '../img/CommonGlyphs/Windrunners_glyph.svg';
 
+import { isMobile } from "react-device-detect";
+
+import {
+    Link,
+} from 'react-router-dom';
+
 //
 
-class CharacterList extends React.Component<{ characters: ICharacterBrief[], playFun: (index:number) => void, addHeroFun: VoidFunction }, {}> {
+class CharacterList extends React.Component<{ characters: ICharacterBrief[], playFun: (index: number) => void, addHeroFun: VoidFunction }, {}> {
     public render() {
         return (<div className="buttonGroup">
             <List component="nav">
@@ -24,16 +30,29 @@ class CharacterList extends React.Component<{ characters: ICharacterBrief[], pla
                 }
                 )}
                 {(this.props.characters.length > 0 && (this.props.characters.length < 5)) ? <Divider /> : ""}
-                {(this.props.characters.length < 5) && (
-                    <ListItem component="button" onClick={this.props.addHeroFun} >
-                        <ListItemIcon>
-                            <AddIcon className="AddHeroButton" />
-                        </ListItemIcon>
-                        <ListItemText primary="Create a new character" />
-                    </ListItem>
-                )}
+                {(this.props.characters.length < 5) &&
+                    this.genAdd()
+                }
             </List>
         </div>);
+    }
+    private genAdd() {
+        return (isMobile) ?
+            <Link to={"/account/addcharacter"} style={{ textDecoration: "none" }}>
+                <ListItem component="button">
+                    <ListItemIcon>
+                        <AddIcon className="AddHeroButton" />
+                    </ListItemIcon>
+                    <ListItemText primary="Create a new character" />
+                </ListItem>
+            </Link>
+            :
+            <ListItem component="button" onClick={this.props.addHeroFun} >
+                <ListItemIcon>
+                    <AddIcon className="AddHeroButton" />
+                </ListItemIcon>
+                <ListItemText primary="Create a new character" />
+            </ListItem>
     }
 }
 class HeroDisplay extends React.Component<{ hero: ICharacterBrief, playFun: VoidFunction }, {}>{

@@ -227,6 +227,7 @@ export const RosharCarts: IRosharCart[] = [
         Alethkar, Jah Keved, Herdaz, Azir, Shinovar and more and more. Each of the kingdoms has it own culture and peoples.</p>
         </div>),
         graphics: String(rosharSrc),
+        route: "roshar",
         title: "Roshar",
     },
     {
@@ -240,6 +241,7 @@ export const RosharCarts: IRosharCart[] = [
                 however, some could become sentient and there are some that already are, for example Kaladin's honorspren.
             </p></div>),
         graphics: String(sprensSrc),
+        route: "sprens",
         title: "Sprens",
     },
     {
@@ -250,6 +252,7 @@ export const RosharCarts: IRosharCart[] = [
             according to the Order of which they were a member.</p>
             <p> Each Radiant was bonded to a spren, and that spren determined the powers and Order to which the Radiant belonged.</p></div>),
         graphics: String(knightsSrc),
+        route: "knightsradiant",
         title: "Knights Radiant",
     },
     {
@@ -260,6 +263,7 @@ export const RosharCarts: IRosharCart[] = [
                 they also provide Stormlight,
             an energy which can be stored within gemstones and power a range of devices and magical abilities.</p></div>),
         graphics: String(stormSrc),
+        route: "highstorm",
         title: "Highstorm",
     },
     {
@@ -270,6 +274,7 @@ export const RosharCarts: IRosharCart[] = [
             which had ten Orders. Each Order possessed different abilities. However, Stormlight can be used by any Surgebinder to
             <b> increase battle reflexes, reactivity, speed, and strength</b>.</p></div>),
         graphics: String(stormlightSrc),
+        route: "stormlight",
         title: "Stormlight",
     },
     {
@@ -281,6 +286,7 @@ export const RosharCarts: IRosharCart[] = [
                 a source of magical potency necessary for certain types of magic, such as Soulcasting, powering fabrials replicating
                 types of Surgebinding, and as common sources of illumination. An infused gemstone can also trap a spren.</p></div>),
         graphics: String(gemsSrc),
+        route: "gemstones",
         title: "Gemstones",
     },
     {
@@ -294,6 +300,7 @@ export const RosharCarts: IRosharCart[] = [
     from chrysalises, as well as for the opportunity to possibly gain Shardplate and Shardblades from Parshendi Shardbearers.
             </p></div>),
         graphics: String(plainsSrc),
+        route: "shatteredplains",
         title: "Shattered Plains",
     },
     {
@@ -305,6 +312,7 @@ export const RosharCarts: IRosharCart[] = [
             <p>Individual Parshendi are capable of seeking the Old Magic and receiving a boon and a curse from the Nightwatcher.
             </p></div>),
         graphics: String(parshendiSrc),
+        route: "parshendi",
         title: "Parshendi",
     },
     {
@@ -316,6 +324,7 @@ export const RosharCarts: IRosharCart[] = [
                 The process of summoning takes exactly ten heartbeats.</p><p>
                 Shardbearers are soul-bound to their Blades until death, or until their Blades are willingly relinquished.</p></div>),
         graphics: String(sharedbladeSrc),
+        route: "shardblades",
         title: "Shardblades",
     },
     {
@@ -327,6 +336,7 @@ export const RosharCarts: IRosharCart[] = [
                 a scratch, arrows are all but completely ineffective except when shot through the eyeslit of the helm, and the Plate can
                 withstand many hits from hammers and maces before showing signs of damage.</p></div>),
         graphics: String(sharedplateSrc),
+        route: "shardplates",
         title: "Shardplates",
     },
     {
@@ -335,6 +345,7 @@ export const RosharCarts: IRosharCart[] = [
         </p><p>The Windrunners' Nahel bond is with honorspren, who are inclined toward truth and justice.</p>
         </div>),
         graphics: String(windrunnersSrc),
+        route: "windrunners",
         title: "Windrunners",
     },
     {
@@ -347,6 +358,7 @@ export const RosharCarts: IRosharCart[] = [
             </div>
         </div>),
         graphics: String(whoissandersonSrc),
+        route: "more",
         title: "Find out more...",
     },
 ];
@@ -504,6 +516,7 @@ export interface IToDo {
     isMade: boolean;
 }
 export interface IRosharCart {
+    route: string;
     title: string;
     graphics: string;
     brief: string;

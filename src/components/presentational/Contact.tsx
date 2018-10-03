@@ -46,10 +46,12 @@ margin-top:20px;
 margin-bottom:20px;
 `
 const ContactDisplay = styled.div`
-width: 60%;11
-min-width: 320px;
+width: 60%;
+min-width: 520px;
 max-width: 660px;
 margin: auto;
+margin-top:10px;
+margin-bottom:10px;
 background-color:rgba(255,255,255,0.78);
 border: solid 2px rgba(255,255,255,0.95);
 border-radius:16px;
@@ -77,6 +79,13 @@ input[type=submit] {
             background-color: rgba(170,170,170,1.0);
     }
 }
+
+@media (max-width: 580px) {
+    width:calc(100% - 30px);
+    min-width:290px;
+    padding: 5px;
+  }
+
 `;
 
 class ConnectedContact extends React.Component<{ ConnFuns: IConnectionFunctions }, { inputs: IMailForm, validation: boolean, showEmail:boolean }> {

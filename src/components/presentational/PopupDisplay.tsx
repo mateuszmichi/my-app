@@ -16,6 +16,8 @@ import { Close_Dialog, Close_Messages, } from '../actions/actionCreators';
 import { disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
 // const enableBodyScroll = bodyScrollLock.enableBodyScroll;
 
+import { isMobile } from "react-device-detect";
+
 class ConnectedPopupDisplay extends React.Component<{dialog: React.ReactNode, messages: IMessage[], additionalTranslators: IMessageTranslator[], closemessfun: VoidFunction, closedialogFun:VoidFunction},
     { messagesToDisplay: IMessageConverted[], messagesToExecute: IMessageConverted[] }> {
     private KnownMessages: IMessageTranslator[];
@@ -34,9 +36,13 @@ class ConnectedPopupDisplay extends React.Component<{dialog: React.ReactNode, me
     }
 
     public render() {
-
+        const classArr: string[] = [];
+        classArr.push((this.state.messagesToDisplay.length === 0 && this.props.dialog === undefined) ? "popupClosed" : "popupVisible");
+        if (isMobile) {
+            classArr.push("PopupMobile");
+        }
         return (
-            <div id="PopupDisplay" className={(this.state.messagesToDisplay.length === 0 && this.props.dialog === undefined) ? "popupClosed" : "popupVisible"} >
+            <div id="PopupDisplay" className={classArr.join(" ")} >
                 <div className="dialogContainer">
                     {this.props.dialog}
                 </div>

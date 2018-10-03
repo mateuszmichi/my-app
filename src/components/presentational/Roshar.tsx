@@ -1,8 +1,14 @@
 import * as React from 'react';
 import { connect } from "react-redux";
 
-import { Close_Dialog, Pop_Dialog,} from '../actions/actionCreators';
+import { Close_Dialog, Pop_Dialog, } from '../actions/actionCreators';
 
+import { isMobile } from "react-device-detect";
+
+import {
+    Link,
+    Route,
+} from 'react-router-dom';
 
 import '../css/Roshar.css';
 import { IRosharCart } from '../data/textsToFill';
@@ -11,10 +17,10 @@ import Button from '@material-ui/core/Button';
 
 // ---------- data
 import { RosharCarts } from '../data/textsToFill';
-import InfoCart from './InfoCart';
+import InfoCart, { MobileInfoCart } from './InfoCart';
 
 
-class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, { }> {
+class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, {}> {
     constructor(props: any) {
         super(props);
         this.renderCart = this.renderCart.bind(this);
@@ -28,11 +34,30 @@ class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, 
     }
 
     public render(): JSX.Element {
+        const menu = (match: any) => {
+            return (
+                <div className="insideContent">
+                    <Route path="/roshar" exact={true}>
+                        <div className="CartContext">
+                            {
+                                (!isMobile) ? RosharCarts.map((e, i) => this.renderCart(e, i)) : RosharCarts.map((e, i) => this.renderMobileCart(e, i))
+                            }
+                        </div>
+                    </Route>
+                </div>
+            );
+        }
         return (
             <div className="insideContent">
-                <div className="CartContext">
-                    {RosharCarts.map((e, i) => this.renderCart(e, i))}
-                </div>
+                <Route path="/roshar" exact={true} component={menu} />
+                {RosharCarts.map((e, i) => {
+                    const comp = (match: any) => {
+                        return (
+                            <MobileInfoCart cart={RosharCarts[i]} />
+                        );
+                    }
+                    return (<Route key={i} path={"/roshar/" + e.route} exact={true} component={comp} />);
+                })}
             </div>
         );
     }
@@ -57,7 +82,26 @@ class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, 
         );
     }
     private PopCart(id: number) {
-        this.props.DialogFuns.popDialog(<InfoCart cart={RosharCarts[id]} closeFun={this.props.DialogFuns.closeDialog}/>);
+        this.props.DialogFuns.popDialog(<InfoCart cart={RosharCarts[id]} closeFun={this.props.DialogFuns.closeDialog} />);
+    }
+    private renderMobileCart(element: IRosharCart, key: number): JSX.Element {
+        return (
+            <Link to={"/roshar/" + element.route}>
+                <div className="Cart" key={key}>
+                    <div className="ImagePlace" style={{ backgroundImage: "url(" + element.graphics + ")" }} />
+                    <div className="ImageTitle">
+                        <div>{element.title}</div>
+                    </div>
+                    <div className="ButtonPlace">
+                        <Button
+                            variant="flat"
+                            color="default"
+                            size="small"
+                        >Description</Button>
+                    </div>
+                </div>
+            </Link>
+        );
     }
 }
 

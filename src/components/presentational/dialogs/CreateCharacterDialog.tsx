@@ -114,9 +114,10 @@ class ConnectedHeroCreationStepper extends React.Component<{ userToken: IUserTok
                         );
                     })}
                 </Stepper>
-                <div className="StepperNavigation">
-                    <div className="NavButton NavButtonLeft">
-                        <Button disabled={this.state.activeStep === 0} onClick={this.handleBack}>
+                <div className="StepperNavigation" >
+                    <div className={this.state.activeStep === 0 ? "NavButton NavButtonLeft NavButtonDisabled" : "NavButton NavButtonLeft"}>
+                        <div className="NavButtonCircle" />
+                        <Button disabled={this.state.activeStep === 0} onClick={this.handleBack} >
                             <NavigateBeforeIcon />
                         </Button>
                     </div>
@@ -133,7 +134,8 @@ class ConnectedHeroCreationStepper extends React.Component<{ userToken: IUserTok
                             </div>
                         )}
                     </div>
-                    <div className="NavButton NavButtonRight">
+                    <div className={!this.LogSteps[this.state.activeStep].validation() ? "NavButton NavButtonRight NavButtonDisabled" : "NavButton NavButtonRight"}>
+                        <div className="NavButtonCircle" />
                         <Button
                             disabled={!this.LogSteps[this.state.activeStep].validation()}
                             onClick={this.handleNext}

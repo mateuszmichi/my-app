@@ -208,7 +208,7 @@ class ConnectedRegistry extends React.Component<{ ConnFuns: IConnectionFunctions
     }
     private validate_Password(password: IStringValidation): boolean {
         password.description = [];
-        const reg = [/(?=.*\d)/, /(?=.*[a-z])/, /(?=.*[A-Z])/, /[a-zA-Z0-9]{8,}/];
+        const reg = [/(?=.*\d)/, /(?=.*[a-z])/, /(?=.*[A-Z])/, /^.{8,25}$/];
         const desc = ["At least one digit required.", "At least one lower case required.", "At least one upper case required.", "Between 8 to 25 characters."];
         let result = true;
         for (let i = 0; i < reg.length; i++) {

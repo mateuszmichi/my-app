@@ -23,6 +23,13 @@ import * as validSrc from '../../img/Login/valid.png';
 // ----------- constants
 const cookies = new Cookies();
 
+import { isMobile } from "react-device-detect";
+
+import {
+    Link,
+} from 'react-router-dom';
+
+
 class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserToken, logoutFun: VoidFunction, ConnFuns: IConnectionFunctions }, { inputs: IRemoveAccount }>{
     private KnownMessages: IMessageTranslator[];
     constructor(props: any) {
@@ -93,12 +100,21 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
                 </div>
             </div>
             <div className="dialogBottom">
-                <Button
-                    variant="flat"
-                    color="primary"
-                    onClick={this.props.ConnFuns.closeDialog}
-                >
-                    Abort</Button>
+                {(isMobile) ?
+                    <Button
+                        variant="flat"
+                        color="primary"
+                        size="large"
+                    ><Link to="/" style={{ textDecoration: 'none' }}>
+                            Back</Link></Button>
+                    :
+                    <Button
+                        variant="flat"
+                        color="primary"
+                        onClick={this.props.ConnFuns.closeDialog}
+                    >
+                        Abort</Button>
+                }
             </div>
         </div>);
     }
@@ -109,6 +125,7 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
             type={type}
             name={name}
             value={this.state.inputs[name].text} onChange={this.handleUserInput}
+            style={{ minWidth: 200 }}
         />);
         if (multiline) {
             element = (<TextField
@@ -119,6 +136,7 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
                 type={type}
                 name={name}
                 value={this.state.inputs[name].text} onChange={this.handleUserInput}
+                style={{ minWidth: 200 }}
             />);
         }
 
@@ -158,6 +176,7 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
         }
         const succFun = (res: any) => {
             cookies.remove("LoginCookie");
+            cookies.remove("AutoCookie");
             this.props.ConnFuns.closeDialog();
             this.props.logoutFun();
             this.props.ConnFuns.popMessage([{ title: "removeAccountSucc", description: "Account has been successfully removed.", } as IMessage], this.KnownMessages);

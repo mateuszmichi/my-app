@@ -125,6 +125,26 @@ export class LocalMapScene extends Phaser.Scene {
         }
     }
     public preload() {
+        const progressBGR = this.add.graphics({ fillStyle: { color: 0x5e3408, alpha: 0.2 } });
+        progressBGR.fillRect(0, 0, this.dimentions.width, this.dimentions.height);
+        const progressText = this.add.text(this.dimentions.width / 2, this.dimentions.height / 2, "Loading...", { color: "white", fontSize: 25 });
+        progressText.alpha = 0;
+        const tween = this.tweens.add({
+            alpha: 1,
+            duration: 500,
+            targets: [progressBGR, progressText],
+        });
+
+        this.load.on('progress', (value: number) => {
+            progressText.setText("Loading...\n" + Math.floor(value * 100) + "%");
+        });
+        this.load.on('complete', () => {
+            progressBGR.destroy();
+            progressText.destroy();
+            tween.stop();
+        });
+
+
         const img = require('../../img/Game/Locations/Location' + this.location.locationID + '.png');
         this.load.image({ key: "LocalMapBGR" + this.location.locationID, url: img, });
 

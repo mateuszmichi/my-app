@@ -7,6 +7,10 @@ import { IRosharCart } from '../data/textsToFill';
 import { ClickAwayListener } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
+import {
+    Link,
+} from 'react-router-dom';
+
 
 // ---------- data
 const Cart = styled.div`
@@ -19,7 +23,13 @@ const Cart = styled.div`
     max-width: 800px;
     overflow: hidden;
 `;
-
+const MobileCart = styled.div`
+    background-color:white;
+    position:relative;
+    margin:auto;
+    width: 100%;
+    min-height:100%;
+`;
 const ImageContainer = styled.div`
     position:relative;
     width:100%;
@@ -116,6 +126,46 @@ class InfoCart extends React.Component<{ cart: IRosharCart, closeFun: VoidFuncti
                     </BottomDiv>
                 </Cart>
             </ClickAwayListener>
+        );
+    }
+}
+
+export class MobileInfoCart extends React.Component<{ cart: IRosharCart }, {}> {
+    constructor(props: any) {
+        super(props);
+    }
+
+    public render() {
+        return (
+            <MobileCart>
+                <ImageContainer>
+                    <img src={this.props.cart.graphics} />
+                    <TitleDiv>
+                        <span>
+                            {this.props.cart.title}
+                        </span>
+                    </TitleDiv>
+                </ImageContainer>
+                <InfoDiv>
+
+                    <IntroDiv>
+                        {this.props.cart.brief}
+                    </IntroDiv>
+                    <MoreDiv>
+                        {this.props.cart.description}
+                    </MoreDiv>
+                </InfoDiv>
+                <BottomDiv>
+                    <Button
+                        color="default"
+                        size="medium"
+                    >
+                        <Link to="/roshar" style={{ textDecoration: 'none' }}>
+                            BACK
+                            </Link>
+                    </Button>
+                </BottomDiv>
+            </MobileCart>
         );
     }
 }
