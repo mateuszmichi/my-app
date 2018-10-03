@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import MediaQuery from 'react-responsive';
+
 import styled from 'styled-components';
 
 import { TechnologiesList } from '../data/textsToFill';
@@ -7,13 +9,17 @@ import { TechnologiesList } from '../data/textsToFill';
 // ---------- data
 const TechnologiesDisplay = styled.div`
 width:60%;
-min-width:360px;
+min-width:500px;
 max-width:1160px;
 margin:auto;
 > div {
     margin-top:1.5rem;
     margin-bottom:1.5rem;
 }
+@media (max-width: 520px) {
+    width:100%;
+    min-width:300px;
+  }
 `;
 const GroupName = styled.div`
 position: relative;
@@ -40,11 +46,10 @@ border-radius:14px;
 margin:5px;
 cursor:pointer;
 `;
-const MainTechnology = styled.div`
+const MainTechnology = styled.div <{ isMobile: boolean }>`
 position:relative;
 display: inline-block;
-width: 150px;
-height: 150px;
+${props => !props.isMobile ? `width: 150px;height: 150px;` : `width: 120px;height: 150px;`}
 overflow:hidden;
 `;
 const TechnologyDescription = styled.div<{ isActive: boolean }>`
@@ -76,10 +81,36 @@ transition: width 0.3s ease-in-out;
     
 }
 `;
-const TechnologyIconField = styled.div<{ image: string, isFull: boolean }>`
+const MobileTechnologyDescription = styled.div`
+display: inline-block;
+width: 170px;
+height: 150px;
+overflow:hidden;
+> div {
+    position:absolute;
+    top:0;
+    left:120px;
+    width:160px;
+    height: 150px;
+    > div {
+        height:70%;
+        display: flex;
+        align-content:center;
+        > div {
+            margin:auto;
+        }
+    }
+    > div:first-child {
+        height: 30%;
+        font-size:1.1rem;
+        font-weight:bold;
+    } 
+}
+`;
+const TechnologyIconField = styled.div<{ image: string, isFull: boolean, isMobile:boolean }>`
 position:relative;
 width:100%;
-padding-bottom: ${props => props.isFull ? `100%` : `70%`};
+padding-bottom: ${props => props.isFull ? `100%` : (props.isMobile?`85%`:`70%`)};
 > div {
     position:absolute;
     background-image: url("${props => props.image}");
@@ -130,49 +161,94 @@ class Technologies extends React.Component<{}, { activeTechnology: { group: numb
     }
 
     public render(): JSX.Element {
-        const disactiveFun = (event:any) => {
-            this.activateTechnology(event,-1, -1);
+        const disactiveFun = (event: any) => {
+            this.activateTechnology(event, -1, -1);
         };
 
         return (
-            <div className="insideContent" onClick={disactiveFun}>
-                <TechnologiesDisplay>
-                    {TechnologiesList.map((e, i) =>
-                        <div key={i}>
-                            <GroupName >
-                                {e.description}
-                            </GroupName>
-                            <GroupTechnologies>
-                                {e.technologies.map((f, j) => {
-                                    const activeFun = (event:any) => { this.activateTechnology(event,i, j); };
-                                    return (
-                                        <Technology key={j} background={f.background} color={f.color} onClick={activeFun}>
-                                            <MainTechnology>
-                                                <TechnologyIconField image={f.graphics} isFull={!f.displayName}>
-                                                    <div />
-                                                </TechnologyIconField>
-                                                {(f.displayName) &&
-                                                    <TechnologyName>
-                                                        <span>{f.title}</span>
-                                                    </TechnologyName>
-                                                }
-                                            </MainTechnology>
-                                            <TechnologyDescription isActive={(this.state.activeTechnology.group === i && this.state.activeTechnology.item === j)}>
-                                                <div>
-                                                    <div><div>Applications:</div></div>
-                                                    <div><div>{f.target}</div></div>
-                                                </div>
-                                            </TechnologyDescription>
-                                        </Technology>
-                                    );
+            <MediaQuery minWidth={520}>
+                {(matches: boolean) => {
+                    if (matches) {
+                        return (
+                            <div className="insideContent" onClick={disactiveFun}>
+                                <TechnologiesDisplay>
+                                    {TechnologiesList.map((e, i) =>
+                                        <div key={i}>
+                                            <GroupName >
+                                                {e.description}
+                                            </GroupName>
+                                            <GroupTechnologies>
+                                                {e.technologies.map((f, j) => {
+                                                    const activeFun = (event: any) => { this.activateTechnology(event, i, j); };
+                                                    return (
+                                                        <Technology key={j} background={f.background} color={f.color} onClick={activeFun}>
+                                                            <MainTechnology isMobile={false}>
+                                                                <TechnologyIconField image={f.graphics} isFull={!f.displayName} isMobile={false}>
+                                                                    <div />
+                                                                </TechnologyIconField>
+                                                                {(f.displayName) &&
+                                                                    <TechnologyName>
+                                                                        <span>{f.title}</span>
+                                                                    </TechnologyName>
+                                                                }
+                                                            </MainTechnology>
+                                                            <TechnologyDescription isActive={(this.state.activeTechnology.group === i && this.state.activeTechnology.item === j)}>
+                                                                <div>
+                                                                    <div><div>Applications:</div></div>
+                                                                    <div><div>{f.target}</div></div>
+                                                                </div>
+                                                            </TechnologyDescription>
+                                                        </Technology>
+                                                    );
 
-                                }
-                                )}
-                            </GroupTechnologies>
-                        </div>
-                    )}
-                </TechnologiesDisplay>
-            </div>
+                                                }
+                                                )}
+                                            </GroupTechnologies>
+                                        </div>
+                                    )}
+                                </TechnologiesDisplay>
+                            </div>
+                        );
+                    }
+                    else {
+                        return (
+                            <div className="insideContent">
+                                <TechnologiesDisplay>
+                                    {TechnologiesList.map((e, i) =>
+                                        <div key={i}>
+                                            <GroupName >
+                                                {e.description}
+                                            </GroupName>
+                                            <GroupTechnologies>
+                                                {e.technologies.map((f, j) =>
+                                                    <Technology key={j} background={f.background} color={f.color}>
+                                                        <MainTechnology isMobile={true}>
+                                                            <TechnologyIconField image={f.graphics} isFull={!f.displayName} isMobile={true}>
+                                                                <div />
+                                                            </TechnologyIconField>
+                                                            {(f.displayName) &&
+                                                                <TechnologyName>
+                                                                    <span>{f.title}</span>
+                                                                </TechnologyName>
+                                                            }
+                                                        </MainTechnology>
+                                                        <MobileTechnologyDescription>
+                                                            <div>
+                                                                <div><div>Applications:</div></div>
+                                                                <div><div>{f.target}</div></div>
+                                                            </div>
+                                                        </MobileTechnologyDescription>
+                                                    </Technology>
+                                                )}
+                                            </GroupTechnologies>
+                                        </div>
+                                    )}
+                                </TechnologiesDisplay>
+                            </div>
+                        );
+                    }
+                }}
+            </MediaQuery>
         );
     }
     private activateTechnology(event: any, group: number, item: number) {

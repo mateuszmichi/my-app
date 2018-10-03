@@ -274,6 +274,7 @@ export class ChampionsName extends React.Component<{ initialData: IHeroData, upd
                         type="text"
                         name="name"
                         value={this.state.input.name} onChange={this.handleUserInput}
+                        style={{minWidth:200}}
                     /><br />
                     <TextField
                         id="nickname-input"
@@ -281,6 +282,7 @@ export class ChampionsName extends React.Component<{ initialData: IHeroData, upd
                         type="text"
                         name="nickname"
                         value={this.state.input.nickname} onChange={this.handleUserInput}
+                        style={{ minWidth: 200 }}
                     />
                     <div className="TitleBar">Hints</div>
                     <Divider />

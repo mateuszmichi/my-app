@@ -9,7 +9,7 @@ import { IConnectionFunctions, ServerConnect } from './data/connectionConf';
 
 import './css/Account.css';
 
-import { IActionToken, IAppStatus, IHero, IPassedData, IUser,  IUserToken,   } from './TYPES';
+import { IActionToken, IAppStatus, IHero, IPassedData, IUser, IUserToken, } from './TYPES';
 
 import Cookies from 'universal-cookie';
 
@@ -22,12 +22,29 @@ import CreateCharacterDialog from './presentational/dialogs/CreateCharacterDialo
 import RemoveAccountDialog from './presentational/dialogs/RemoveAccountDialog';
 import RemoveCharacterDialog from './presentational/dialogs/RemoveCharacterDialog';
 
+import MobileCreateCharacterDialog from './presentational/dialogs/mobile/MobileCreateCharacterDialog';
+
+import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import EmailIcon from '@material-ui/icons/Email';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import LockIcon from '@material-ui/icons/Lock';
+
+import {
+    // Link,
+    Route,
+    Switch,
+} from 'react-router-dom';
+
+import { isMobile } from 'react-device-detect';
 
 // ------------------ constants
 const cookies = new Cookies();
 
 
 class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserToken, logoutFun: VoidFunction, startFun: (hero: IHero, actionToken: IActionToken) => void, ConnFuns: IConnectionFunctions }, { isGame: boolean }>{
+    private AccountOptions: IAccountOption[];
+
     constructor(props: any) {
         super(props);
         // -------binding
@@ -42,27 +59,85 @@ class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserTo
         this.state = {
             isGame: false,
         }
+
+        this.AccountOptions = [
+            {
+                element: <ChangePasswordDialog />,
+                icon: <LockIcon />,
+                onClick: this.handlePassChange,
+                route: 'changepassword',
+                text: "Change password",
+            },
+            {
+                element: <ChangeEmailDialog />,
+                icon: <EmailIcon />,
+                onClick: this.handleEmailChange,
+                route: 'changeemail',
+                text: "Change email"
+            },
+            {
+                element: <RemoveCharacterDialog />,
+                icon: <DeleteIcon />,
+                onClick: this.handleCharacterRemove,
+                route: 'removecharacter',
+                text: "Remove a character"
+            },
+            {
+                element: <RemoveAccountDialog />,
+                icon: <DeleteForeverIcon />,
+                onClick: this.handleAccountRemove,
+                route: 'removeaccount',
+                text: "Delete account"
+            },
+            {
+                element: null,
+                icon: <ExitToAppIcon />,
+                onClick: this.handleLogOut,
+                route: null,
+                text: "Log Out"
+            },
+        ];
     }
 
     public render(): JSX.Element {
         if (this.state.isGame) {
             return <Redirect to="/game" />;
         }
-        return (<div className="ContentField">
-            <div className="SectionTitle">Available Characters</div>
-            <Divider />
-            <CharacterList characters={this.props.user.characters} addHeroFun={this.handleAddHero} playFun={this.handleGame}/>
-            <Divider />
-            <div className="SectionTitle">Account's Management</div>
-            <Divider />
-            <AccountManagement emailFun={this.handleEmailChange} logFun={this.handleLogOut} passFun={this.handlePassChange} removeCharacterFun={this.handleCharacterRemove} removeAccountFun={this.handleAccountRemove} />
-        </div>);
+        const menu = (match: any) => {
+            return (
+                <div className={isMobile ?"ContentField MobileContentField":"ContentField"}>
+                    <div className="SectionTitle">Available Characters</div>
+                    <Divider />
+                    <CharacterList characters={this.props.user.characters} addHeroFun={this.handleAddHero} playFun={this.handleGame} />
+                    <Divider />
+                    <div className="SectionTitle">Account's Management</div>
+                    <Divider />
+                    <AccountManagement AccountOptions={this.AccountOptions} />
+                </div>
+            );
+        }
+        return (
+            <Switch>
+                <Route path="/(account|)/" exact={true} component={menu} />
+                {
+                    this.AccountOptions.filter(f => f.element !== null && f.route !== null).map((e, i) => {
+                        const Fun = (match: any) => {
+                            return <div className="MobileContentField">{e.element}</div>;
+                        };
+                        return <Route key={i} path={"/account/" + e.route} exact={true} component={Fun} />;
+                    })
+                }
+                <Route path="/account/addcharacter" exact={true} component={MobileCreateCharacterDialog} />
+            </Switch>);
     }
 
     private handleLogOut(): void {
         cookies.remove("LoginCookie");
         cookies.remove("AutoCookie");
         this.props.logoutFun();
+        if (isMobile) {
+            location.reload(true);
+        }
     }
     private handleAddHero(): void {
         this.props.ConnFuns.popDialog(<CreateCharacterDialog />);
@@ -99,6 +174,15 @@ class ConnectedAccount extends React.Component<{ user: IUser, userToken: IUserTo
         ServerConnect(`/api/HerosLoad`, passed, succFun, failFun, this.props.ConnFuns.popWaiting, this.props.ConnFuns.closeWaiting);
     }
 }
+
+export interface IAccountOption {
+    text: string,
+    onClick: VoidFunction,
+    icon: JSX.Element,
+    route: string | null,
+    element: JSX.Element | null,
+}
+
 // ----------------- connect to the store
 
 const mapDispatchToProps = (dispatch: any) => {
@@ -112,7 +196,7 @@ const mapDispatchToProps = (dispatch: any) => {
             popWaiting: () => dispatch(Start_Waiting()),
         } as IConnectionFunctions,
         logoutFun: () => dispatch(Log_Out()),
-        startFun: (hero: IHero, actionToken: IActionToken) => dispatch(Start_Game(hero,actionToken)),        
+        startFun: (hero: IHero, actionToken: IActionToken) => dispatch(Start_Game(hero, actionToken)),
     };
 };
 

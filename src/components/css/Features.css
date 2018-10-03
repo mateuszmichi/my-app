@@ -45,11 +45,11 @@
 }
 
     .ImageContainer img.ImageSmall {
-        width: calc(25%);
+        width: calc(33%);
     }
 
     .ImageContainer img.ImageMedium {
-        width: calc(40%);
+        width: calc(55%);
     }
     .ImageContainer img.ImageBig {
         width: calc(75%);
@@ -62,4 +62,32 @@
 }
 .TodoElements svg {
     color:green;
+}
+
+@media (max-width:800px) {
+    .ImageContainer img.ImageSmall {
+        width: calc(45%);
+    }
+
+    .ImageContainer img.ImageMedium {
+        width: calc(70%);
+    }
+
+    .ImageContainer img.ImageBig {
+        width: calc(90%);
+    }
+}
+
+@media (max-width:500px){
+    .ImageContainer img.ImageSmall {
+        width: calc(75%);
+    }
+
+    .ImageContainer img.ImageMedium {
+        width: calc(75%);
+    }
+
+    .ImageContainer img.ImageBig {
+        width: calc(95%);
+    }
 }

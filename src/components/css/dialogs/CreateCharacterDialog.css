@@ -34,12 +34,30 @@
         }
 
 .StepperNavigation .NavButton {
+    position: relative;
     display: flex;
 }
-
-.CharacterIdentity {
-    text-align: center;
-}
+    .StepperNavigation .NavButton .NavButtonCircle {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        top: 50%;
+        padding-top: 50%;
+        padding-bottom: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background-color: rgba(52, 52, 119,0.2);
+        transition:ease-in-out background-color 0.5s;
+    }
+        .StepperNavigation .NavButton.NavButtonDisabled .NavButtonCircle {
+            background-color: rgba(170, 68, 57,0.2);
+        }
+    .StepperNavigation .NavButton:hover:not(.NavButtonDisabled) .NavButtonCircle {
+        background-color: transparent;
+    }
+    .CharacterIdentity {
+        text-align: center;
+    }
 
     .CharacterIdentity p {
         padding: 10px;
@@ -176,6 +194,16 @@
         height: 100%;
         padding:5px;
     }
+    @media (max-width:500px){
+        .AttributesSelector {
+            flex-direction:column;
+            justify-content:center;
+        }
+            .AttributesSelector .AttributesSelectorPart {
+                margin:auto;
+                width:auto;
+            }
+    }
 .AttributeShow div {
     text-align: right;
     display: table-cell;
@@ -197,11 +225,12 @@
     text-align:justify;
 }
 .AttributeShow button {
-    border:none;
-    border-left:1px solid #666666;
-    width:22px;
-    cursor:pointer;
-    background-color:lightgreen;
+    border: none;
+    border-left: 1px solid #666666;
+    width: 30px;
+    height: 24px;
+    cursor: pointer;
+    background-color: lightgreen;
 }
 .AttributeShow button:hover {
         background-color:forestgreen;
@@ -210,9 +239,53 @@
     .AttributeShow button:first-child {
         border: none;
         border-right: 1px solid #666666;
-        width: 22px;
         background-color: palevioletred;
     }
     .AttributeShow button:first-child:hover {
         background-color: red;
+    }
+
+
+/* mobile */
+.MobileHeroCreator {
+    margin: auto;
+    height: auto;
+    width: 100%;
+    position: absolute;
+    flex-grow:unset;
+    background-color:white;
+}
+.MobileHeroCreator .StepperNavigation{
+    height:auto;
+    
+}
+.MobileHeroCreator .NavContent {
+    height:auto;
+    margin:10px;
+}
+
+    .MobileHeroCreator .HeroCreatorTop {
+        position:relative;
+        background-color: #757FC1;
+        color:white;
+        padding: 10px;
+        font-size: 1.1rem;
+        font-weight:bold;
+    }
+    .MobileHeroCreator .HeroCreatorSteps{
+        margin-left:10px;
+        margin-right:10px;
+    }
+    .MobileHeroCreator .StepperNavigation {
+        height:auto;
+        position:relative;
+    }
+    .MobileHeroCreator .HeroCreatorBottom {
+        text-align: center;
+        padding: 10px;
+    }
+    .MobileHeroCreator .HeroCreatorBottom button {
+        margin-left:5px;
+        margin-right:5px;
+        min-width:105px;
     }

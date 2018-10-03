@@ -23,6 +23,12 @@ import * as validSrc from '../../img/Login/valid.png';
 
 // ----------- constants
 
+import { isMobile } from "react-device-detect";
+
+import {
+    Link,
+} from 'react-router-dom';
+
 
 class ConnectedChangePasswordDialog extends React.Component<{ userToken: IUserToken, ConnFuns: IConnectionFunctions }, { inputs: IChangeEmail, validation: boolean, previousEmail: string }>{
     private KnownMessages: IMessageTranslator[];
@@ -144,12 +150,21 @@ class ConnectedChangePasswordDialog extends React.Component<{ userToken: IUserTo
                 </div>
             </div>
             <div className="dialogBottom">
-                <Button
-                    variant="flat"
-                    color="primary"
-                    onClick={this.props.ConnFuns.closeDialog}
-                >
-                    Abort</Button>
+                {(isMobile) ?
+                    <Button
+                        variant="flat"
+                        color="primary"
+                        size="large"
+                    ><Link to="/" style={{textDecoration:'none'}}>
+                        Back</Link></Button>
+                    :
+                    <Button
+                        variant="flat"
+                        color="primary"
+                        onClick={this.props.ConnFuns.closeDialog}
+                    >
+                        Abort</Button>
+                    }
             </div>
         </div>);
     }
@@ -160,6 +175,7 @@ class ConnectedChangePasswordDialog extends React.Component<{ userToken: IUserTo
             type={type}
             name={name}
             value={this.state.inputs[name].text} onChange={this.handleUserInput}
+            style={{minWidth:200}}
         />);
         let ret = (<div>{element}</div>);
         switch (this.state.inputs[name].isValid) {

@@ -6,9 +6,6 @@ import { IconsAuthors, picturesData, } from '../data/picturesData';
 
 import { Divider } from '@material-ui/core';
 
-// import { ClickAwayListener } from '@material-ui/core';
-// import Button from '@material-ui/core/Button';
-
 
 // ---------- data
 const IconsList = styled.div`
@@ -32,13 +29,14 @@ a {
 }
 `;
 const CreditsDisplay = styled.div`
-height:100%:
-width: 60%;
+min-height:100%;
+width: 80%;
 min-width: 320px;
 max-width: 720px;
 margin: auto;
 background-color:rgb(255,255,255);
 padding:10px;
+box-sizing: border-box;
 `;
 const PictureContainer = styled.div`
     margin-top:10px;

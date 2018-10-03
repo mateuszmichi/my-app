@@ -35,6 +35,8 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    transform: translate3d(0,0,0);
+    -webkit-overflow-scrolling: touch;
 }
 
     .popupContainer div {
@@ -64,6 +66,8 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    transform: translate3d(0,0,0);
+    -webkit-overflow-scrolling: touch;
 }
 
 .PopupBackground {
@@ -83,6 +87,10 @@
 }
 
 .dialogBottom {
-    text-align: right;
+    text-align: center;
     padding: 10px;
+}
+
+.PopupMobile {
+    position: fixed;
 }

@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 
 import '../../css/dialogs/RemoveCharacterDialog.css';
 
-import { Close_Dialog, Close_Messages, End_Waiting, Pop_Dialog, Pop_Messages, Remove_Hero, Start_Waiting,  } from '../../actions/actionCreators';
+import { Close_Dialog, Close_Messages, End_Waiting, Pop_Dialog, Pop_Messages, Remove_Hero, Start_Waiting, } from '../../actions/actionCreators';
 import { IMessage, IMessageTranslator, MessageType } from '../../MessageMenager';
 import { IStringValidation } from '../../Registry';
 import { IAppStatus, ICharacterBrief, IPassedData, IUserToken, } from '../../TYPES';
@@ -19,9 +19,14 @@ import ValidationImg from '../ValidationImg';
 import * as warriorSrc from '../../img/Account/warrioricon.png';
 import * as validSrc from '../../img/Login/valid.png';
 
+import { isMobile } from "react-device-detect";
+
+import {
+    Link,
+} from 'react-router-dom';
 
 
-class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserToken, removeHeroFromList: (heroname: string) => void, characters: ICharacterBrief[], ConnFuns: IConnectionFunctions}, { inputs: IRemoveCharacter, chosenHero: number }>{
+class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserToken, removeHeroFromList: (heroname: string) => void, characters: ICharacterBrief[], ConnFuns: IConnectionFunctions }, { inputs: IRemoveCharacter, chosenHero: number }>{
     private KnownMessages: IMessageTranslator[];
     constructor(props: any) {
         super(props);
@@ -96,12 +101,21 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
                 </div>
             </div>
             <div className="dialogBottom">
-                <Button
-                    variant="flat"
-                    color="primary"
-                    onClick={this.props.ConnFuns.closeDialog}
-                >
-                    Abort</Button>
+                {(isMobile) ?
+                    <Button
+                        variant="flat"
+                        color="primary"
+                        size="large"
+                    ><Link to="/" style={{ textDecoration: 'none' }}>
+                            Back</Link></Button>
+                    :
+                    <Button
+                        variant="flat"
+                        color="primary"
+                        onClick={this.props.ConnFuns.closeDialog}
+                    >
+                        Abort</Button>
+                }
             </div>
         </div>);
     }
@@ -112,6 +126,7 @@ class ConnectedRemoveCharacterDialog extends React.Component<{ userToken: IUserT
             type={type}
             name={name}
             value={this.state.inputs[name].text} onChange={this.handleUserInput}
+            style={{ minWidth: 200 }}
         />);
         let ret = (<div>{element}</div>);
         switch (this.state.inputs[name].isValid) {
@@ -181,7 +196,7 @@ const mapDispatchToProps = (dispatch: any) => {
             popMessage: (messages: IMessage[], translators: IMessageTranslator[]) => dispatch(Pop_Messages(messages, translators)),
             popWaiting: () => dispatch(Start_Waiting()),
         } as IConnectionFunctions,
-        removeHeroFromList: (heroname:string) => dispatch(Remove_Hero(heroname)),
+        removeHeroFromList: (heroname: string) => dispatch(Remove_Hero(heroname)),
     };
 };
 const mapStateToProps = (state: IAppStatus) => {

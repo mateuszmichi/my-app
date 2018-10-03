@@ -34,15 +34,13 @@
             #topMenu .menuContent .menuDescription {
                 padding: 10px;
             }
-
-
-
         #topMenu .menuContent .menuButton {
             /*margin-left: 1px;
             margin-right: 1px;*/
             /*border-left: 2px solid grey;*/
             /*min-width: 130px;*/
             /*border-left: 2px solid grey;*/
+            cursor:pointer;
             display:table-cell;
             text-align: center;
             padding: 10px;
