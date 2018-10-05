@@ -36,15 +36,13 @@ class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, 
     public render(): JSX.Element {
         const menu = (match: any) => {
             return (
-                <div className="insideContent">
-                    <Route path="/roshar" exact={true}>
-                        <div className="CartContext">
-                            {
-                                (!isMobile) ? RosharCarts.map((e, i) => this.renderCart(e, i)) : RosharCarts.map((e, i) => this.renderMobileCart(e, i))
-                            }
-                        </div>
-                    </Route>
-                </div>
+                <Route path="/roshar" exact={true}>
+                    <div className="CartContext">
+                        {
+                            (!isMobile) ? RosharCarts.map((e, i) => this.renderCart(e, i)) : RosharCarts.map((e, i) => this.renderMobileCart(e, i))
+                        }
+                    </div>
+                </Route>
             );
         }
         return (
