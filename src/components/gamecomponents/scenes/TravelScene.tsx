@@ -7,7 +7,7 @@ import { ILocationResult, ITravelResult, } from '../../data/gameTYPES';
 import { LocalMapScene } from './MapScenes';
 
 import { IMessage } from '../../MessageMenager';
-import { IPassedGameData } from '../../TYPES';
+import { IHero, IPassedGameData,  } from '../../TYPES';
 
 
 const Settings = {
@@ -32,6 +32,9 @@ export class TravelScene extends Phaser.Scene {
     private endDate: Date;
     private reverseDate: Date | null;
 
+    // for update
+    private hero: IHero;
+
     private Background: Phaser.GameObjects.Image;
     private TextTime: Phaser.GameObjects.Text;
     private TimeToTravel: number;
@@ -40,7 +43,7 @@ export class TravelScene extends Phaser.Scene {
 
     private ProgressBarWidth: number;
 
-    constructor(dim: { height: number, width: number }, travel: ITravelResult, ConnData: IConnectionData) {
+    constructor(dim: { height: number, width: number }, travel: ITravelResult, ConnData: IConnectionData, hero:IHero) {
         super({ key: "TravelScene", });
         this.dimentions = dim;
         this.ConnData = ConnData;
@@ -52,6 +55,8 @@ export class TravelScene extends Phaser.Scene {
         this.setElementActive = this.setElementActive.bind(this);
         this.ReverseTravel = this.ReverseTravel.bind(this);
         this.resize = this.resize.bind(this);
+
+        this.hero = hero;
 
         this.travelData = travel;
         const now = Date.now();
@@ -177,17 +182,26 @@ export class TravelScene extends Phaser.Scene {
             UserToken: this.ConnData.userToken,
         };
         const succFun = (res: any) => {
-            const mapscene = this.scene.get("MapScene") as LocalMapScene;
-            mapscene.updateData(res.data.location as ILocationResult<any>);
-            this.tweens.add({
-                alpha: 0,
-                duration: 250,
-                onComplete: () => {
-                    this.scene.resume("MapScene");
-                    this.scene.remove("TravelScene");
-                },
-                targets: [this.Background, this.ClockContainer],
-            });
+            // TODO - this part should be without error, check why it fails but still works
+            try {
+                const mapscene = this.scene.get("MapScene") as LocalMapScene;
+                this.hero.status = res.data.herostatus;
+                this.hero.statusData = res.data.statusdata;
+                mapscene.updateData(res.data.location as ILocationResult<any>);
+            } catch (err) {
+                // alert(err);
+                // problem is probably fixed now
+            }finally {
+                this.tweens.add({
+                    alpha: 0,
+                    duration: 250,
+                    onComplete: () => {
+                        this.scene.resume("MapScene");
+                        this.scene.remove("TravelScene");
+                    },
+                    targets: [this.Background, this.ClockContainer],
+                });
+            }
             // TODO only testing
         };
         const failFun = (error: any) => {

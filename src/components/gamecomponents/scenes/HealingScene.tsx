@@ -5,7 +5,7 @@ import { TravelTimeToString } from '../../data/gameCALC';
 import { } from '../../data/gameTYPES';
 
 import { IMessage } from '../../MessageMenager';
-import { IPassedGameData } from '../../TYPES';
+import { IHero, IPassedGameData,  } from '../../TYPES';
 
 import * as React from 'react';
 
@@ -36,6 +36,7 @@ export class HealingScene extends Phaser.Scene {
     private dimentions: { height: number, width: number };
     private ConnData: IConnectionData;
     private heroUpdates: IHeroUpdates;
+    private hero: IHero;
 
     private isHealing: boolean;
     private HealingData: IHealingResult;
@@ -53,11 +54,12 @@ export class HealingScene extends Phaser.Scene {
 
     private ProgressBarWidth: number;
 
-    constructor(dim: { height: number, width: number }, ConnData: IConnectionData, HeroUpdates: IHeroUpdates, HealingData: IHealingResult | null /*TO DO */) {
+    constructor(dim: { height: number, width: number }, ConnData: IConnectionData, HeroUpdates: IHeroUpdates, HealingData: IHealingResult | null, hero: IHero) {
         super({ key: "HealingScene", });
         this.dimentions = dim;
         this.ConnData = ConnData;
         this.heroUpdates = HeroUpdates;
+        this.hero = hero;
         // ----- bindings
         this.EndHealing = this.EndHealing.bind(this);
         this.StartHealing = this.StartHealing.bind(this);
@@ -254,12 +256,18 @@ export class HealingScene extends Phaser.Scene {
     }
     private CloseHealing() {
         this.ConnData.closeDialog();
+
+        this.hero.status = 0;
+        this.hero.statusData = null;
+
         this.tweens.add({
             alpha: 0,
             duration: 250,
             onComplete: () => {
                 this.scene.remove("HealingScene");
                 this.scene.resume("MapScene");
+
+
             },
             targets: this.children.getAll(),
         });

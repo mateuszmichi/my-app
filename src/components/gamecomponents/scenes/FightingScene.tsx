@@ -174,6 +174,10 @@ export class FightingScene extends Phaser.Scene {
         this.data.events.on("changedata_FightingData", () => {
             // TODO update bars etc
             if (this.FightingData.isOver) {
+                // block makeTurnButtons
+                this.isClickEnabled = false;
+                this.GenerateButtons(this.EnemyImage.displayWidth);
+
                 const graphic = this.add.graphics({ fillStyle: { color: 0xFFFFFF, alpha: 0.3 } });
                 graphic.fillRect(0, 0, this.dimentions.width, this.dimentions.height);
                 if (this.FightingData.loot !== null) {
@@ -380,6 +384,7 @@ export class FightingScene extends Phaser.Scene {
     }
     private MakeTurn(type: AttackType) {
         // TODO action interface
+        this.isClickEnabled = false;
         const passed: IPassedGameData<number> = {
             ActionToken: this.ConnData.actionToken,
             Data: type,
@@ -397,12 +402,14 @@ export class FightingScene extends Phaser.Scene {
             this.FightingData = res.data.fightingData;
             // alert(JSON.stringify(this.FightingData.log));
             this.LogData = [...this.LogData, ...this.PrepairLogs(this.FightingData.log, now)];
+            // this for not overwriting
+            this.isClickEnabled = true;
             this.data.set("FightingData", this.FightingData);
 
             this.heroUpdates.UpdateHP(res.data.heroHP);
-
         };
         const failFun = (error: any) => {
+            this.isClickEnabled = true;
             // alert(JSON.stringify(error));
             if (error.response === undefined) {
                 this.ConnData.popMessage([{ title: "serverErr", description: "I've got bad feelings about this...", } as IMessage], []);

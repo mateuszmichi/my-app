@@ -92,9 +92,9 @@ class MainWindow extends React.Component<{ CurrentPosition: number, character: I
             this.props.ConnData.popMessage([{ title: "customiseSucc", description: "Character has been successfully updated to requirements.", } as IMessage], []);
             // this.props.logFun();
             if (fast || level || equipment) {
-                this.props.ConnData.closeDialog();
                 this.props.logFun();
             }
+            this.props.ConnData.closeDialog();
         };
         const failFun = (error: any) => {
             if (error.response === undefined) {

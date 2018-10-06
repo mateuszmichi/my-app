@@ -146,6 +146,15 @@ export const MessageBackpackErr: IMessageTranslator =
     title: "Backpack is full",
     type: MessageType.ERROR,
 };
+export const MessageNotImplementedErr: IMessageTranslator =
+{
+    actions: [],
+    images: [],
+    ispopup: true,
+    name: "notImplementedErr",
+    title: "Not implemented",
+    type: MessageType.ERROR,
+};
 
 // ---------------- export groups
 
@@ -157,4 +166,5 @@ export const MessagesForLogin = [
 
 export const MessagesAll = [MessageLoginErr, MessageNameErr, MessageServerErr,
     MessageSecurityErr, MessageChangeEqErr, MessageCreateUserSucc, MessageCreateHeroSucc, MessageRemoveHeroSucc,
-    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc, MessageHpRestoreSucc, MessageHeroCustomiseSucc, MessageBackpackErr];
+    MessageTimeoutErr, MessageRemoveAccountSucc, MessageSentEmailSucc, MessageHpRestoreSucc, MessageHeroCustomiseSucc,
+    MessageBackpackErr, MessageNotImplementedErr];

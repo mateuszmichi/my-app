@@ -16,6 +16,9 @@ import Website from './components/Webside';
 
 import { ServerConnect } from './components/data/connectionConf';
 
+import { isIE } from 'react-device-detect';
+
+import { NoSupport } from './components/presentational/NoSupport';
 
 class App extends React.Component {
     public componentDidMount() {
@@ -26,6 +29,9 @@ class App extends React.Component {
         ServerConnect(`/api/WakeUp`, passed, Fun, Fun, BlindFun, BlindFun,false);
     }
     public render() {
+        if (isIE) {
+            return <NoSupport />
+        }
         return (
             <Router>
                 <div>
