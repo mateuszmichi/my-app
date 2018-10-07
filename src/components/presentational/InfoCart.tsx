@@ -8,7 +8,7 @@ import { ClickAwayListener } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
 import {
-    Link,
+    Redirect
 } from 'react-router-dom';
 
 
@@ -95,11 +95,12 @@ class InfoCart extends React.Component<{ cart: IRosharCart, closeFun: VoidFuncti
     }
 
     public render() {
+        const graphics = require('../img/AboutProject/roshar/' + this.props.cart.graphics);
         return (
             <ClickAwayListener onClickAway={this.props.closeFun}>
                 <Cart>
                     <ImageContainer>
-                        <img src={this.props.cart.graphics} />
+                        <img src={graphics} />
                         <TitleDiv>
                             <span>
                                 {this.props.cart.title}
@@ -130,16 +131,26 @@ class InfoCart extends React.Component<{ cart: IRosharCart, closeFun: VoidFuncti
     }
 }
 
-export class MobileInfoCart extends React.Component<{ cart: IRosharCart }, {}> {
+export class MobileInfoCart extends React.Component<{ cart: IRosharCart }, {back:boolean}> {
     constructor(props: any) {
         super(props);
+
+        this.handleRedirect = this.handleRedirect.bind(this);
+
+        this.state = {
+            back: false,
+        } 
     }
 
     public render() {
+        const graphics = require('../img/AboutProject/roshar/' + this.props.cart.graphics);
+        if (this.state.back) {
+            return <Redirect to="/roshar" />
+        }
         return (
             <MobileCart>
                 <ImageContainer>
-                    <img src={this.props.cart.graphics} />
+                    <img src={graphics} />
                     <TitleDiv>
                         <span>
                             {this.props.cart.title}
@@ -159,14 +170,16 @@ export class MobileInfoCart extends React.Component<{ cart: IRosharCart }, {}> {
                     <Button
                         color="default"
                         size="medium"
+                        onClick={this.handleRedirect}
                     >
-                        <Link to="/roshar" style={{ textDecoration: 'none' }}>
                             BACK
-                            </Link>
                     </Button>
                 </BottomDiv>
             </MobileCart>
         );
+    }
+    private handleRedirect() {
+        this.setState({ back: true });
     }
 }
 

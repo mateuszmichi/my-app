@@ -63,9 +63,10 @@ class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, 
         const onClickFun = () => {
             this.PopCart(key);
         }
+        const graphics = require('../img/AboutProject/roshar/minatures/' + element.graphics);
         return (
             <div className="Cart" key={key} onClick={onClickFun}>
-                <div className="ImagePlace" style={{ backgroundImage: "url(" + element.graphics + ")" }} />
+                <div className="ImagePlace" style={{ backgroundImage: "url("+ graphics + ")" }} />
                 <div className="ImageTitle">
                     <div>{element.title}</div>
                 </div>
@@ -83,10 +84,11 @@ class ConnectedRoshar extends React.Component<{ DialogFuns: IDialogFunctions }, 
         this.props.DialogFuns.popDialog(<InfoCart cart={RosharCarts[id]} closeFun={this.props.DialogFuns.closeDialog} />);
     }
     private renderMobileCart(element: IRosharCart, key: number): JSX.Element {
+        const graphics = require('../img/AboutProject/roshar/minatures/' + element.graphics);
         return (
             <Link to={"/roshar/" + element.route}>
                 <div className="Cart" key={key}>
-                    <div className="ImagePlace" style={{ backgroundImage: "url(" + element.graphics + ")" }} />
+                    <div className="ImagePlace" style={{ backgroundImage: "url(" + graphics + ")" }} />
                     <div className="ImageTitle">
                         <div>{element.title}</div>
                     </div>

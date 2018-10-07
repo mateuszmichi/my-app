@@ -22,8 +22,9 @@
 
     .ContentField .ProjectDescription img {
         border-radius: 10px;
-        width: 250px;
-        max-width: 50%;
+        width: 50%;
+        max-width: 400px;
+        min-width: 200px;
         margin-right: 10px;
         margin-bottom: 10px;
     }
@@ -32,11 +33,24 @@
         }
 #Sanderson {
     float: right;
-    width: 150px;
-    max-width: 30%;
+    width: 30%;
+    max-width: 250px;
+    min-width: 100px;
     margin: 0;
     margin-left: 10px;
     margin-bottom: 10px;
+}
+@media (max-width: 400px) {
+    #Sanderson {
+        width: 50%;
+    }
+
+    .ContentField .ProjectDescription img:first-child {
+        float: unset;
+        display: block;
+        margin: auto;
+        width: 90%;
+    }
 }
 .ContentField .LinkFromText {
     text-decoration: none;

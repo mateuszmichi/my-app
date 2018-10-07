@@ -21,11 +21,6 @@ import Registry from './Registry';
 
 import MobileWebsite from './mobile/MobileWebsite';
 
-
-
-
-
-
 class Website extends React.Component {
     public render() {
         return (

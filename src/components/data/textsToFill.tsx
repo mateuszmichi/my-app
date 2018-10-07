@@ -15,6 +15,14 @@ import * as map4Src from '../img/AboutProject/features/map_4.png';
 
 import * as travelSrc from '../img/AboutProject/features/travel.png';
 
+import * as fight1Src from '../img/AboutProject/features/fighting1.png';
+import * as fight2Src from '../img/AboutProject/features/fighting2.png';
+import * as fight3Src from '../img/AboutProject/features/fighting3.png';
+import * as fight4Src from '../img/AboutProject/features/fighting4.png';
+import * as fight5Src from '../img/AboutProject/features/fighting5.png';
+
+import * as healingSrc from '../img/AboutProject/features/healing1.png';
+
 import * as eq1Src from '../img/AboutProject/features/equipment_1.png';
 import * as eq2Src from '../img/AboutProject/features/equipment_2.png';
 import * as eq3Src from '../img/AboutProject/features/equipment_3.png';
@@ -22,19 +30,6 @@ import * as eq3Src from '../img/AboutProject/features/equipment_3.png';
 import * as account1Src from '../img/AboutProject/features/account_1.png';
 import * as account2Src from '../img/AboutProject/features/account_2.png';
 import * as account3Src from '../img/AboutProject/features/account_3.png';
-
-import * as gemsSrc from '../img/AboutProject/roshar/gems.jpg';
-import * as stormSrc from '../img/AboutProject/roshar/Highstorm.png';
-import * as rosharSrc from '../img/AboutProject/roshar/Map_roshar_small.jpg';
-import * as parshendiSrc from '../img/AboutProject/roshar/parshendi.jpg';
-import * as sharedbladeSrc from '../img/AboutProject/roshar/shardblade.jpg';
-import * as sharedplateSrc from '../img/AboutProject/roshar/shardplate.jpg';
-import * as plainsSrc from '../img/AboutProject/roshar/shatteredplains.jpg';
-import * as sprensSrc from '../img/AboutProject/roshar/sprens.jpg';
-import * as stormlightSrc from '../img/AboutProject/roshar/stormlight.jpg';
-import * as knightsSrc from '../img/AboutProject/roshar/Surgebinders.jpg';
-import * as whoissandersonSrc from '../img/AboutProject/roshar/whoissanderson.jpg';
-import * as windrunnersSrc from '../img/AboutProject/roshar/windrunners.jpg';
 
 import * as aspnetSrc from '../img/AboutProject/technologies/Asp.Net-Core.jpg';
 import * as css3Src from '../img/AboutProject/technologies/css3_logo.png';
@@ -122,10 +117,51 @@ export const GameElements: IToExpand[] = [
                     more ways to move. It is also the only way to get to new locations.
                 </div>
                 <div className="ImageContainer">
-                    <img className="ImageSmall" src={String(map2Src)} />
+                    <img className="ImageMedium" src={String(map2Src)} />
                 </div>
             </div>),
         title: "Traveling system"
+    },
+    {
+        description:
+            (<div className="Description">
+                <div className="ImageContainer">
+                    <img className="ImageBig" src={String(fight5Src)} />
+                </div>
+                <div className="DescriptionDetails">
+                    After entering the location, there is possibility to due with several enemies, that are there. It is adviced to 
+                    equip previously all new equipment. Enemies provide additional experience, that will be gained after winning the fight.
+                    Sometimes enemies will drop loot.
+                </div>
+                <div className="ImageContainer">
+                    <img className="ImageMedium" src={String(fight2Src)} />
+                    <img className="ImageMedium" src={String(fight3Src)} />
+                    <img className="ImageMedium" src={String(fight4Src)} />
+                </div>
+                <div className="DescriptionDetails">
+                    At this moment fight is simplified. It is planned to turn this feature more in decition-based fighting. Moreover,
+                    it is planned to provied other forms of defeating enemy - like sneaking by or using conversation options. But that is 
+                    a far future.
+                </div>
+                <div className="ImageContainer">
+                    <img className="ImageBig" src={String(fight1Src)} />
+                </div>
+            </div>),
+        title: "Fighting"
+    },
+    {
+        description:
+            (<div className="Description">
+                <div className="ImageContainer">
+                    <img className="ImageBig" src={String(healingSrc)} />
+                </div>
+                <div className="DescriptionDetails">
+                    If you loose the battle, it is required to restore some missing health. At this moment character can heal in the
+                    camp, or after a lost battle. In the future penalty will be harder - the character will be transported to hospital
+                    and will be forced to spend time to go back into previous location.
+                </div>
+            </div>),
+        title: "Healing"
     },
     {
         description:
@@ -179,12 +215,16 @@ export const GameElements: IToExpand[] = [
 
 export const TODOS: IToDo[] = [
     {
-        feature: "Adapt website for small resolutions",
+        feature: "Adapt main website for small resolutions",
+        isMade: true,
+    },
+    {
+        feature: "Adapt game elements for small resolutions",
         isMade: false,
     },
     {
         feature: "Adjust pictures resolutions for better loading performance",
-        isMade: false,
+        isMade: true,
     },
     {
         feature: "Add global map entry",
@@ -214,6 +254,18 @@ export const TODOS: IToDo[] = [
         feature: "Add treasure mechanics",
         isMade: false,
     },
+    {
+        feature: "Add shoping mechanics",
+        isMade: false,
+    },
+    {
+        feature: "Add leveling up",
+        isMade: false,
+    },
+    {
+        feature: "Add hospital and Alethi Camp",
+        isMade: false,
+    },
 ];
 
 export const RosharCarts: IRosharCart[] = [
@@ -226,7 +278,7 @@ export const RosharCarts: IRosharCart[] = [
             <p>During main plot of Stormlight Archive book's Roshar contains of multi kingsdoms, f.e.
         Alethkar, Jah Keved, Herdaz, Azir, Shinovar and more and more. Each of the kingdoms has it own culture and peoples.</p>
         </div>),
-        graphics: String(rosharSrc),
+        graphics: "Map_roshar_small.jpg",
         route: "roshar",
         title: "Roshar",
     },
@@ -240,7 +292,7 @@ export const RosharCarts: IRosharCart[] = [
                 Spren come in many different varieties, each associated with and named for their own phenomenon. Most spren are non-sentient,
                 however, some could become sentient and there are some that already are, for example Kaladin's honorspren.
             </p></div>),
-        graphics: String(sprensSrc),
+        graphics: "sprens.jpg",
         route: "sprens",
         title: "Sprens",
     },
@@ -251,7 +303,7 @@ export const RosharCarts: IRosharCart[] = [
             The Knights Radiant used Shardblades and Shardplate, which were etched with glyphs and glowed a different color
             according to the Order of which they were a member.</p>
             <p> Each Radiant was bonded to a spren, and that spren determined the powers and Order to which the Radiant belonged.</p></div>),
-        graphics: String(knightsSrc),
+        graphics: "Surgebinders.jpg",
         route: "knightsradiant",
         title: "Knights Radiant",
     },
@@ -262,7 +314,7 @@ export const RosharCarts: IRosharCart[] = [
             <p>While highstorms have meteorological significance,
                 they also provide Stormlight,
             an energy which can be stored within gemstones and power a range of devices and magical abilities.</p></div>),
-        graphics: String(stormSrc),
+        graphics: "Highstorm.png",
         route: "highstorm",
         title: "Highstorm",
     },
@@ -273,7 +325,7 @@ export const RosharCarts: IRosharCart[] = [
             stormlight is used by all Surgebinders to perform certain feats, which are akin to those performed by the Knights Radiant,
             which had ten Orders. Each Order possessed different abilities. However, Stormlight can be used by any Surgebinder to
             <b> increase battle reflexes, reactivity, speed, and strength</b>.</p></div>),
-        graphics: String(stormlightSrc),
+        graphics: "stormlight.jpg",
         route: "stormlight",
         title: "Stormlight",
     },
@@ -285,7 +337,7 @@ export const RosharCarts: IRosharCart[] = [
             <p>Gemstones are used in spheres, which are the primary currency of Roshar. Their <b>ability to absorb Stormlight</b> make them
                 a source of magical potency necessary for certain types of magic, such as Soulcasting, powering fabrials replicating
                 types of Surgebinding, and as common sources of illumination. An infused gemstone can also trap a spren.</p></div>),
-        graphics: String(gemsSrc),
+        graphics: "gems.jpg",
         route: "gemstones",
         title: "Gemstones",
     },
@@ -299,7 +351,7 @@ export const RosharCarts: IRosharCart[] = [
                 </p><p>The second is between the armies of the individual Highprinces, who contest over the gemhearts
     from chrysalises, as well as for the opportunity to possibly gain Shardplate and Shardblades from Parshendi Shardbearers.
             </p></div>),
-        graphics: String(plainsSrc),
+        graphics: "shatteredplains.jpg",
         route: "shatteredplains",
         title: "Shattered Plains",
     },
@@ -311,7 +363,7 @@ export const RosharCarts: IRosharCart[] = [
                 of which allows them to leap the chasms of the Shattered Plains.</p>
             <p>Individual Parshendi are capable of seeking the Old Magic and receiving a boon and a curse from the Nightwatcher.
             </p></div>),
-        graphics: String(parshendiSrc),
+        graphics: "parshendi.jpg",
         route: "parshendi",
         title: "Parshendi",
     },
@@ -323,7 +375,7 @@ export const RosharCarts: IRosharCart[] = [
             <p>A Shardblade is summoned by the intent of the Shardbearer, willing it into existence, typically dropping into his/her hand extended to the side.
                 The process of summoning takes exactly ten heartbeats.</p><p>
                 Shardbearers are soul-bound to their Blades until death, or until their Blades are willingly relinquished.</p></div>),
-        graphics: String(sharedbladeSrc),
+        graphics: "shardblade.jpg",
         route: "shardblades",
         title: "Shardblades",
     },
@@ -335,7 +387,7 @@ export const RosharCarts: IRosharCart[] = [
             <p>Shardplate protects its bearer far more than traditional, non-Plate armor. Swords glance off the armor with little more than
                 a scratch, arrows are all but completely ineffective except when shot through the eyeslit of the helm, and the Plate can
                 withstand many hits from hammers and maces before showing signs of damage.</p></div>),
-        graphics: String(sharedplateSrc),
+        graphics: "shardplate.jpg",
         route: "shardplates",
         title: "Shardplates",
     },
@@ -344,7 +396,7 @@ export const RosharCarts: IRosharCart[] = [
         description: (<div><p>Windrunners are one of the ten orders of Knights Radiant. They share Surges with the orders of Bondsmiths (Adhesion) and Skybreakers (Gravitation).
         </p><p>The Windrunners' Nahel bond is with honorspren, who are inclined toward truth and justice.</p>
         </div>),
-        graphics: String(windrunnersSrc),
+        graphics: "windrunners.jpg",
         route: "windrunners",
         title: "Windrunners",
     },
@@ -357,7 +409,7 @@ export const RosharCarts: IRosharCart[] = [
                 <a target="_blank" rel="noopener noreferrer" href="https://brandonsanderson.com/">Bandon Sanderson's Page</a>
             </div>
         </div>),
-        graphics: String(whoissandersonSrc),
+        graphics: "whoissanderson.jpg",
         route: "more",
         title: "Find out more...",
     },
